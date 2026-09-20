@@ -113,6 +113,20 @@
   border: 1px solid rgba(0, 240, 255, 0.1);
 }
 
+@media (max-width: 640px) {
+  .target-screen {
+    padding: 0 16px 40px;
+  }
+
+  .target-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .target-thumb-wrap {
+    aspect-ratio: 16 / 9;
+  }
+}
+
 .target-card-container {
   display: flex;
   flex-direction: column;

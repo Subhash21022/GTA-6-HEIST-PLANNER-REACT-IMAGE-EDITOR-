@@ -52,9 +52,9 @@
 
 .title-name {
   font-family: var(--font-heading);
-  font-size: clamp(2.8rem, 10vw, 5.5rem);
+  font-size: clamp(2.4rem, 8.5vw, 5rem);
   color: var(--color-cyan);
-  letter-spacing: clamp(4px, 1vw, 8px);
+  letter-spacing: clamp(2px, 1vw, 8px);
   margin: 0;
   text-shadow:
     0 0 40px rgba(0, 240, 255, 0.4),
@@ -76,6 +76,7 @@
   color: var(--color-sand);
   margin: 20px 0 0;
   max-width: 500px;
+  padding: 0 12px;
 }
 
 .title-actions {
@@ -161,20 +162,34 @@
   padding: 0 16px;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 840px) {
   .title-steps {
     flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
     align-items: center;
   }
 
   .title-step {
     max-width: 100%;
     width: 100%;
+    background: rgba(17, 24, 39, 0.6);
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 240, 255, 0.1);
   }
+}
 
+@media (max-width: 600px) {
   .title-actions {
     flex-direction: column;
     width: 100%;
-    padding: 0 16px;
+    max-width: 340px;
+    padding: 0;
+  }
+
+  .title-actions .btn {
+    width: 100%;
   }
 }
