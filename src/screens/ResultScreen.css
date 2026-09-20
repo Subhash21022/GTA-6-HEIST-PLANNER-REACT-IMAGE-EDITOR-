@@ -1,0 +1,184 @@
+.result-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(24px, 4vw, 40px);
+  gap: clamp(16px, 3vw, 24px);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.result-stamp-container {
+  perspective: 500px;
+}
+
+.result-stamp {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  letter-spacing: clamp(3px, 1vw, 6px);
+  padding: 12px clamp(20px, 4vw, 40px);
+  border: 4px solid;
+  border-radius: var(--radius-md);
+  transform: rotate(-8deg);
+}
+
+.result-stamp.approved {
+  color: var(--color-success);
+  border-color: var(--color-success);
+  text-shadow: 0 0 30px rgba(0, 255, 163, 0.4);
+}
+
+.result-stamp.compromised {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+  text-shadow: 0 0 30px rgba(255, 42, 68, 0.4);
+}
+
+.result-meta {
+  text-align: center;
+}
+
+.result-codename {
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  color: var(--color-hot-pink);
+  letter-spacing: clamp(1px, 0.5vw, 3px);
+  margin: 0 0 12px;
+  text-shadow: 0 0 20px rgba(255, 18, 117, 0.3);
+}
+
+.result-score-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+}
+
+.result-score {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 6vw, 3rem);
+  color: var(--color-white);
+}
+
+.result-grade {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  border: 2px solid;
+}
+
+.result-grade[data-grade="S"] { color: var(--color-teal); border-color: var(--color-teal); text-shadow: 0 0 12px rgba(0, 255, 163, 0.4); }
+.result-grade[data-grade="A"] { color: var(--color-success); border-color: var(--color-success); }
+.result-grade[data-grade="B"] { color: var(--color-cyan); border-color: var(--color-cyan); }
+.result-grade[data-grade="C"] { color: var(--color-warning); border-color: var(--color-warning); }
+.result-grade[data-grade="D"] { color: var(--color-sunset-orange); border-color: var(--color-sunset-orange); }
+.result-grade[data-grade="F"] { color: var(--color-danger); border-color: var(--color-danger); }
+
+.result-image-wrap {
+  max-width: 960px;
+  width: 100%;
+  border: 1px solid rgba(0, 240, 255, 0.12);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.result-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.result-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ── Tabs ── */
+.result-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(16, 24, 46, 0.7);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+}
+
+.result-tab {
+  flex: 1;
+  padding: 8px 20px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 1.8vw, 0.78rem);
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.result-tab:hover {
+  color: var(--color-white);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.result-tab.active {
+  background: var(--color-hot-pink);
+  color: var(--color-white);
+  box-shadow: 0 0 16px rgba(255, 18, 117, 0.35);
+}
+
+/* ── News loading placeholder ── */
+.result-news-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 300px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+/* ── News editor row ── */
+.result-news-editor-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .result-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .result-stamp {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    padding: 8px clamp(12px, 4vw, 20px);
+  }
+
+  .result-stamp-container {
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .result-tabs {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .result-news-editor-row {
+    flex-direction: column;
+    width: 100%;
+  }
+}

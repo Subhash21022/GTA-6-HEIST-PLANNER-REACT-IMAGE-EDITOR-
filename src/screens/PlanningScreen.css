@@ -1,0 +1,192 @@
+.planning-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0 clamp(16px, 4vw, 40px) clamp(30px, 5vw, 60px);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.planning-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: clamp(16px, 3vw, 32px);
+}
+
+.planning-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.blueprint-frame {
+  position: relative;
+  border: 1px solid rgba(0, 240, 255, 0.12);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-blueprint-bg);
+}
+
+.blueprint-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+.blueprint-analysing {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(4, 6, 13, 0.8);
+  color: var(--color-cyan);
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+.planning-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.planning-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mission-panel,
+.results-panel {
+  padding: clamp(16px, 3vw, 24px);
+}
+
+.mission-panel h3,
+.results-panel h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--color-cyan);
+  margin: 0 0 16px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+}
+
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.objectives-list li {
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 1.8vw, 0.8rem);
+  color: var(--color-text-secondary);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 240, 255, 0.04);
+  border-left: 3px solid var(--color-text-dim);
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.objectives-list li.done {
+  border-left-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.score-display {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.score-value {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 6vw, 3rem);
+  color: var(--color-white);
+  line-height: 1;
+}
+
+.score-grade {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  padding: 4px 12px;
+  border-radius: var(--radius-sm);
+  border: 2px solid;
+}
+
+.score-grade[data-grade="S"] { color: var(--color-teal); border-color: var(--color-teal); text-shadow: 0 0 12px rgba(0, 255, 163, 0.4); }
+.score-grade[data-grade="A"] { color: var(--color-success); border-color: var(--color-success); }
+.score-grade[data-grade="B"] { color: var(--color-cyan); border-color: var(--color-cyan); }
+.score-grade[data-grade="C"] { color: var(--color-warning); border-color: var(--color-warning); }
+.score-grade[data-grade="D"] { color: var(--color-sunset-orange); border-color: var(--color-sunset-orange); }
+.score-grade[data-grade="F"] { color: var(--color-danger); border-color: var(--color-danger); }
+
+.findings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.finding {
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 1.6vw, 0.75rem);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.finding-icon {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
+.finding-success {
+  background: rgba(0, 255, 163, 0.08);
+  color: var(--color-success);
+}
+
+.finding-warning {
+  background: rgba(255, 200, 59, 0.08);
+  color: var(--color-warning);
+}
+
+.finding-error {
+  background: rgba(255, 42, 68, 0.08);
+  color: var(--color-danger);
+}
+
+.planning-continue {
+  width: 100%;
+}
+
+/* Tablet & Mobile */
+@media (max-width: 900px) {
+  .planning-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .planning-sidebar {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .planning-actions {
+    flex-direction: column;
+  }
+
+  .planning-actions .btn {
+    width: 100%;
+  }
+}

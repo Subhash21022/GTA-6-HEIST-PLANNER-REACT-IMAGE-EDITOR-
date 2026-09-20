@@ -1,0 +1,599 @@
+/* =====================================================
+   Editor Modal — Full-viewport overlay with sidebar
+   ===================================================== */
+
+.editor-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--color-overlay);
+  height: 100vh;
+  height: 100dvh;
+}
+
+.editor-file-input {
+  display: none;
+}
+
+/* ---- Container: sidebar + main ---- */
+.editor-modal-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.editor-modal-container.dock-left {
+  flex-direction: row-reverse;
+}
+
+/* =====================================================
+   Sidebar
+   ===================================================== */
+
+.editor-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(0, 240, 255, 0.1);
+  overflow: hidden;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dock-left .editor-sidebar {
+  border-right: none;
+  border-left: 1px solid rgba(0, 240, 255, 0.1);
+}
+
+.editor-sidebar.collapsed {
+  width: 48px;
+}
+
+/* Dark theme sidebar (default) */
+.theme-dark .editor-sidebar {
+  background: #0b0f19;
+  color: #f8fafc;
+}
+
+/* Light theme sidebar */
+.theme-light .editor-sidebar {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* ---- Sidebar header ---- */
+.editor-sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  flex-shrink: 0;
+  min-height: 48px;
+}
+
+.editor-sidebar-toggle {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: var(--radius-sm);
+  color: var(--color-cyan);
+  font-size: 1.1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.editor-sidebar-toggle:hover {
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.theme-light .editor-sidebar-toggle {
+  color: #6366f1;
+  border-color: #e2e8f0;
+}
+
+.theme-light .editor-sidebar-toggle:hover {
+  background: #e2e8f0;
+}
+
+.editor-sidebar-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.theme-dark .editor-sidebar-title {
+  color: var(--color-cyan);
+}
+
+.theme-light .editor-sidebar-title {
+  color: #6366f1;
+}
+
+/* ---- Sidebar scrollable content ---- */
+.editor-sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---- Status toast ---- */
+.sidebar-status {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  animation: sidebar-status-in 0.25s ease-out;
+  margin-bottom: 4px;
+}
+
+.theme-dark .sidebar-status {
+  background: rgba(0, 240, 255, 0.1);
+  color: var(--color-cyan);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.theme-light .sidebar-status {
+  background: #ede9fe;
+  color: #6366f1;
+  border: 1px solid #c7d2fe;
+}
+
+@keyframes sidebar-status-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Sidebar groups ---- */
+.sidebar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+}
+
+.sidebar-group + .sidebar-group {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.theme-light .sidebar-group + .sidebar-group {
+  border-top-color: #e2e8f0;
+}
+
+.sidebar-group-title {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.theme-dark .sidebar-group-title {
+  color: var(--color-text-dim);
+}
+
+.theme-light .sidebar-group-title {
+  color: #94a3b8;
+}
+
+/* ---- Sidebar buttons ---- */
+.sidebar-btn {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+  border: 1px solid transparent;
+}
+
+.theme-dark .sidebar-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.theme-dark .sidebar-btn:hover {
+  background: rgba(0, 240, 255, 0.08);
+  color: var(--color-cyan);
+  border-color: rgba(0, 240, 255, 0.2);
+}
+
+.theme-light .sidebar-btn {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #e2e8f0;
+}
+
+.theme-light .sidebar-btn:hover {
+  background: #e0e7ff;
+  color: #4338ca;
+  border-color: #c7d2fe;
+}
+
+/* ---- Sidebar fields (dropdowns) ---- */
+.sidebar-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sidebar-field span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+
+.theme-dark .sidebar-field span {
+  color: #cbd5e1;
+}
+
+.theme-light .sidebar-field span {
+  color: #475569;
+}
+
+.sidebar-field select {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.theme-dark .sidebar-field select {
+  background: #131824;
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-dark .sidebar-field select:focus {
+  border-color: var(--color-cyan);
+}
+
+.theme-light .sidebar-field select {
+  background: #fff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+}
+
+.theme-light .sidebar-field select:focus {
+  border-color: #6366f1;
+}
+
+/* ---- Tool checkboxes ---- */
+.sidebar-checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.sidebar-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.theme-dark .sidebar-checkbox {
+  color: #cbd5e1;
+}
+
+.theme-dark .sidebar-checkbox:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.theme-light .sidebar-checkbox {
+  color: #475569;
+}
+
+.theme-light .sidebar-checkbox:hover {
+  background: #f1f5f9;
+}
+
+.sidebar-checkbox input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--color-cyan);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.theme-light .sidebar-checkbox input[type="checkbox"] {
+  accent-color: #6366f1;
+}
+
+/* =====================================================
+   Main editor content
+   ===================================================== */
+
+.editor-main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ---- Top nav bar ---- */
+.editor-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px;
+  flex-shrink: 0;
+  gap: 12px;
+  height: 44px;
+  min-height: 44px;
+}
+
+.theme-dark .editor-top-nav {
+  background: var(--color-navy-panel-solid);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+}
+
+.theme-light .editor-top-nav {
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.editor-task-label {
+  font-family: var(--font-heading);
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  letter-spacing: 1px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.editor-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Zen-mode / fullscreen canvas toggle */
+.editor-zen-toggle {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--color-cyan);
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.editor-zen-toggle:hover {
+  background: rgba(0, 240, 255, 0.08);
+  border-color: var(--color-cyan);
+}
+
+.theme-light .editor-zen-toggle {
+  color: #6366f1;
+  border-color: #e2e8f0;
+}
+
+.theme-light .editor-zen-toggle:hover {
+  background: #e0e7ff;
+  border-color: #6366f1;
+}
+
+.theme-dark .editor-task-label {
+  color: var(--color-cyan);
+}
+
+.theme-light .editor-task-label {
+  color: #1e293b;
+}
+
+/* Cancel button */
+.editor-modal-cancel {
+  background: transparent;
+  border: 1px solid var(--color-hot-pink);
+  color: var(--color-hot-pink);
+  padding: 6px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 2vw, 0.82rem);
+  transition: background 0.2s, color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 40px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.editor-modal-cancel:hover {
+  background: var(--color-hot-pink);
+  color: var(--color-white);
+}
+
+.theme-light .editor-modal-cancel {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.theme-light .editor-modal-cancel:hover {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* ---- Editor canvas frame ---- */
+.editor-frame-wrapper {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Force Unlayer's wrapper div and iframe to fill the flex column */
+.editor-frame-wrapper > div,
+.editor-frame-wrapper div[style*="min-height"],
+.editor-frame-wrapper [id^="image-editor-"] {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.editor-frame-wrapper iframe {
+  flex: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  border: none !important;
+  display: block !important;
+}
+
+/* Loading / Error overlays */
+.editor-modal-loading,
+.editor-modal-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: var(--font-mono);
+  z-index: 2;
+}
+
+.theme-dark .editor-modal-loading,
+.theme-dark .editor-modal-error {
+  color: var(--color-text-secondary);
+}
+
+.theme-light .editor-modal-loading,
+.theme-light .editor-modal-error {
+  color: #64748b;
+}
+
+.editor-modal-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-cyan-dim);
+  border-top-color: var(--color-cyan);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.theme-light .editor-modal-spinner {
+  border-color: #e2e8f0;
+  border-top-color: #6366f1;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =====================================================
+   Mobile: sidebar becomes off-canvas drawer
+   ===================================================== */
+
+@media (max-width: 768px) {
+  .editor-modal-container {
+    flex-direction: column;
+  }
+
+  .editor-modal-container.dock-left {
+    flex-direction: column;
+  }
+
+  .editor-sidebar {
+    width: 100%;
+    max-height: 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .dock-left .editor-sidebar {
+    border-left: none;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  }
+
+  .editor-sidebar.collapsed {
+    width: 100%;
+    max-height: 48px;
+  }
+
+  .editor-sidebar.open {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .editor-sidebar-header {
+    padding: 8px 12px;
+  }
+
+  .editor-sidebar-content {
+    padding: 0 12px 12px;
+  }
+
+  .sidebar-checkbox-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .editor-top-nav {
+    padding: 6px 12px;
+    height: 40px;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-checkbox-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sidebar-field {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+}
