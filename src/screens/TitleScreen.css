@@ -136,7 +136,7 @@
 }
 
 .title-name {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(2.4rem, 8.5vw, 5rem);
   color: var(--color-cyan);
   letter-spacing: clamp(2px, 1vw, 8px);
@@ -148,7 +148,7 @@
 }
 
 .title-subtitle {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.7rem, 2vw, 0.9rem);
   color: var(--color-text-secondary);
   margin: 12px 0 0;
@@ -156,7 +156,7 @@
 }
 
 .title-tagline {
-  font-family: var(--font-typewriter);
+  font-family: var(--font-subheading);
   font-size: clamp(0.9rem, 2.5vw, 1.15rem);
   color: var(--color-sand);
   margin: 20px 0 0;
@@ -201,13 +201,13 @@
   border-radius: 50%;
   border: 2px solid var(--color-hot-pink);
   color: var(--color-hot-pink);
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: 1.2rem;
   margin-bottom: 12px;
 }
 
 .title-step h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1.1rem, 2.5vw, 1.3rem);
   color: var(--color-white);
   margin: 0 0 8px;
@@ -215,7 +215,7 @@
 }
 
 .title-step p {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: clamp(0.7rem, 1.8vw, 0.8rem);
   color: var(--color-text-secondary);
   line-height: 1.5;
@@ -223,7 +223,7 @@
 }
 
 .title-desktop-note {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.75rem;
   color: var(--color-text-dim);
   margin-bottom: clamp(20px, 4vw, 40px);
@@ -240,7 +240,7 @@
 }
 
 .title-author {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.75rem, 1.8vw, 0.85rem);
   color: var(--color-cyan);
   text-align: center;
@@ -252,7 +252,7 @@
 }
 
 .disclaimer {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: clamp(0.55rem, 1.5vw, 0.65rem);
   color: var(--color-text-dim);
   max-width: 700px;

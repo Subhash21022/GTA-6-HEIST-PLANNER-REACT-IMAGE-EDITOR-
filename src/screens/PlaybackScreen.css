@@ -33,7 +33,7 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: var(--color-hot-pink);
   letter-spacing: 3px;
@@ -53,7 +53,7 @@
 }
 
 .playback-log h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: var(--color-cyan);
   margin: 0 0 16px;
@@ -70,7 +70,7 @@
 }
 
 .log-entry {
-  font-family: var(--font-typewriter);
+  font-family: var(--font-body);
   font-size: clamp(0.72rem, 1.8vw, 0.8rem);
   padding: 6px 10px;
   display: flex;

@@ -3,6 +3,39 @@
 @import '@fontsource/space-mono/400.css';
 @import '@fontsource/space-mono/700.css';
 
+/* ── AUTHENTIC GTA FONTS (PRICEDOWN & CHALET) ────────────────────────── */
+@font-face {
+  font-family: 'Pricedown';
+  src: url('/fonts/pricedown.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pricedown';
+  src: url('/fonts/pricedown.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Chalet';
+  src: url('/fonts/ChaletLondonNineteenSixty.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Chalet';
+  src: url('/fonts/ChaletNewYorkNineteenSixty.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Vice City Tactical Neon Noir Palette */
   --color-navy-deep: #04060d;
@@ -32,10 +65,13 @@
   --color-overlay: rgba(3, 4, 10, 0.9);
   --color-blueprint-bg: #0d1b2a;
 
-  /* Fonts */
-  --font-heading: 'Bebas Neue', sans-serif;
+  /* GTA Official Typography */
+  --font-gta: 'Pricedown', 'Chalet', sans-serif;
+  --font-heading: 'Pricedown', 'Chalet', 'Bebas Neue', sans-serif;
+  --font-subheading: 'Chalet', 'Bebas Neue', sans-serif;
+  --font-body: 'Chalet', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-typewriter: 'Special Elite', monospace;
-  --font-mono: 'Space Mono', monospace;
+  --font-mono: 'Chalet', 'Space Mono', monospace;
 
   /* Radii */
   --radius-sm: 4px;
@@ -49,7 +85,7 @@
   --shadow-teal-glow: 0 0 20px rgba(0, 255, 163, 0.3);
   --shadow-cyan-glow: 0 0 20px rgba(0, 240, 255, 0.3);
 
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   color-scheme: dark;
   color: var(--color-text-primary);
   background: var(--color-navy-deep);
@@ -171,7 +207,9 @@ img {
   gap: 8px;
   padding: 10px 24px;
   border-radius: var(--radius-md);
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   font-size: clamp(0.75rem, 2vw, 0.85rem);
   font-weight: 700;
   cursor: pointer;
@@ -251,8 +289,8 @@ img {
 }
 
 .screen-title {
-  font-family: var(--font-heading);
-  font-size: clamp(1rem, 4vw, 2rem);
+  font-family: var(--font-gta);
+  font-size: clamp(1.2rem, 4vw, 2.2rem);
   color: var(--color-cyan);
   letter-spacing: clamp(2px, 0.5vw, 4px);
   margin: 0;
@@ -284,7 +322,7 @@ img {
   color: var(--color-cyan);
   padding: 12px 20px;
   border-radius: var(--radius-md);
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.85rem;
   text-decoration: none;
   border: 2px solid var(--color-cyan);
@@ -327,7 +365,7 @@ img {
   bottom: 16px;
   left: 16px;
   z-index: 50;
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.6rem;
   font-weight: 700;
   color: var(--color-cyan);

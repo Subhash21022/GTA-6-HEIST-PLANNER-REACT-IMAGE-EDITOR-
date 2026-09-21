@@ -8,7 +8,7 @@
 }
 
 .crew-counter {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.75rem, 2vw, 0.85rem);
   color: var(--color-text-secondary);
 }
@@ -89,7 +89,7 @@
 }
 
 .crew-name {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: var(--color-white);
   margin: 0;
@@ -97,14 +97,14 @@
 }
 
 .crew-role {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.65rem, 1.5vw, 0.75rem);
   text-transform: uppercase;
   letter-spacing: 2px;
 }
 
 .crew-bio {
-  font-family: var(--font-typewriter);
+  font-family: var(--font-body);
   font-size: clamp(0.65rem, 1.5vw, 0.75rem);
   color: var(--color-text-secondary);
   line-height: 1.5;
@@ -112,7 +112,7 @@
 }
 
 .crew-modifier {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.58rem, 1.3vw, 0.65rem);
   color: var(--color-teal);
   background: rgba(0, 255, 163, 0.08);
@@ -129,7 +129,7 @@
 }
 
 .crew-sidebar h3 {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: var(--color-cyan);
   margin: 0 0 16px;
@@ -137,7 +137,7 @@
 }
 
 .crew-sidebar-empty {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.7rem, 1.8vw, 0.8rem);
   color: var(--color-text-dim);
 }
@@ -150,7 +150,7 @@
 }
 
 .crew-modifier-card strong {
-  font-family: var(--font-heading);
+  font-family: var(--font-subheading);
   font-size: 1rem;
   color: var(--color-white);
   display: block;
@@ -158,14 +158,14 @@
 }
 
 .crew-modifier-role {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.65rem;
   color: var(--color-text-dim);
   text-transform: uppercase;
 }
 
 .crew-modifier-card p {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.75rem;
   color: var(--color-teal);
   margin: 4px 0 0;
@@ -253,7 +253,10 @@
 }
 
 .crew-disguise-btn {
+  font-family: var(--font-subheading);
   font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   padding: 6px 12px;
   color: var(--color-cyan);
   border: 1px solid rgba(0, 240, 255, 0.2);
@@ -271,7 +274,7 @@
   bottom: 2px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.5rem;
   font-weight: 700;
   color: var(--color-navy-deep);

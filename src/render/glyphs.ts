@@ -1,4 +1,4 @@
-import { PALETTE } from '../config/theme';
+import { PALETTE, FONTS } from '../config/theme';
 
 export function drawCamera(
   ctx: CanvasRenderingContext2D,
@@ -87,7 +87,7 @@ export function drawVault(
   ctx.setLineDash([]);
 
   ctx.fillStyle = PALETTE.vaultMarker;
-  ctx.font = 'bold 14px "Space Mono", monospace';
+  ctx.font = `bold 15px ${FONTS.gta}`;
   ctx.textAlign = 'center';
   ctx.fillText('VAULT', x + w / 2, y + h / 2 + 5);
   ctx.restore();
@@ -109,7 +109,7 @@ export function drawEntryMarker(
   ctx.closePath();
   ctx.fill();
 
-  ctx.font = '11px "Space Mono", monospace';
+  ctx.font = `11px ${FONTS.subheading}`;
   ctx.textAlign = 'center';
   ctx.fillText(label, x, y - 16);
   ctx.restore();

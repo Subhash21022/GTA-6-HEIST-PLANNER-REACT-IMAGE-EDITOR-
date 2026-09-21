@@ -16,7 +16,7 @@
 }
 
 .result-stamp {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(2.5rem, 8vw, 4rem);
   letter-spacing: clamp(3px, 1vw, 6px);
   padding: 12px clamp(20px, 4vw, 40px);
@@ -42,7 +42,7 @@
 }
 
 .result-codename {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1.3rem, 4vw, 2rem);
   color: var(--color-hot-pink);
   letter-spacing: clamp(1px, 0.5vw, 3px);
@@ -58,13 +58,13 @@
 }
 
 .result-score {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(2rem, 6vw, 3rem);
   color: var(--color-white);
 }
 
 .result-grade {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1.5rem, 4vw, 2rem);
   padding: 4px 12px;
   border-radius: var(--radius-sm);
@@ -113,9 +113,11 @@
   flex: 1;
   padding: 8px 20px;
   border-radius: var(--radius-md);
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.68rem, 1.8vw, 0.78rem);
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   cursor: pointer;
   border: none;
   background: transparent;
@@ -144,7 +146,7 @@
   gap: 16px;
   min-height: 300px;
   color: var(--color-text-secondary);
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.85rem;
 }
 
@@ -202,10 +204,11 @@
 }
 
 .cctv-rec-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   color: #fff;
   display: flex;
   align-items: center;
@@ -249,11 +252,12 @@
 }
 
 .cctv-group-label {
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--color-text-secondary);
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   margin-right: 4px;
 }
 

@@ -131,7 +131,7 @@ function drawStamp(
   ctx.rotate((angle * Math.PI) / 180);
   ctx.strokeStyle = color;
   ctx.lineWidth = 4;
-  ctx.font = `bold 64px ${FONTS.heading}`;
+  ctx.font = `bold 64px ${FONTS.gta}`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   const w = ctx.measureText(text).width + 40;
@@ -160,12 +160,12 @@ export async function composeBriefingBoard(
   drawBackground(ctx);
 
   ctx.fillStyle = PALETTE.cyan;
-  ctx.font = `72px ${FONTS.heading}`;
+  ctx.font = `72px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.fillText(targetName.toUpperCase(), 60, 85);
 
   ctx.fillStyle = PALETTE.hotPink;
-  ctx.font = `34px ${FONTS.heading}`;
+  ctx.font = `34px ${FONTS.gta}`;
   ctx.fillText(`OPERATION: ${codename.toUpperCase()}`, 60, 125);
 
   const approachLabel = approach === 'subtle' ? 'PLAN A: THE SUBTLE ROUTE (SILENT)' : 'PLAN B: THE LOUD ROUTE (C4 BREACH)';
@@ -220,12 +220,12 @@ export async function composeBriefingBoard(
   drawStamp(ctx, stampText, 960, 660, stampColor, -8);
 
   ctx.fillStyle = PALETTE.sand;
-  ctx.font = `28px ${FONTS.heading}`;
+  ctx.font = `28px ${FONTS.gta}`;
   ctx.textAlign = 'center';
   ctx.fillText(`GRADE: ${grade}`, 960, 740);
 
   ctx.fillStyle = PALETTE.teal;
-  ctx.font = `24px ${FONTS.heading}`;
+  ctx.font = `26px ${FONTS.gta}`;
   ctx.fillText(`ESTIMATED TAKE: ${take}`, 960, 780);
 
   drawTapeStrip(ctx, 1600, 20, 240, 30, 12, COPY.confidential);

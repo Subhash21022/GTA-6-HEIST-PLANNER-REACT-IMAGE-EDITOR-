@@ -1385,15 +1385,15 @@ function drawCCTVHUD(
     ctx.shadowBlur = 10;
   }
   ctx.fillStyle = '#ffffff';
-  ctx.font = `bold 14px ${FONTS.mono}`;
+  ctx.font = `bold 15px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.fillText(isFreezeFrame ? 'EVIDENCE STILL' : cameraIndex === 0 ? 'SKY-WEAZEL LIVE' : 'REC', 44, 33);
 
   // Camera Name & Mode
   const cam = CCTV_CAMERAS[cameraIndex] || CCTV_CAMERAS[0];
   ctx.fillStyle = '#00f0ff';
-  ctx.font = `bold 13px ${FONTS.mono}`;
-  ctx.fillText(`${cam.label} — ${cam.name}`, 180, 33);
+  ctx.font = `bold 13px ${FONTS.subheading}`;
+  ctx.fillText(`${cam.label} — ${cam.name}`, 190, 33);
 
   // Live Timestamp ticking (YYYY-MM-DD HH:MM:SS.ms)
   const now = new Date(1789972800000 + timeMs);

@@ -122,12 +122,12 @@ function drawMapTitleBlock(ctx: CanvasRenderingContext2D, targetName: string, w:
   ctx.strokeRect(bx, by, bw, bh);
 
   ctx.fillStyle = PALETTE.cyan;
-  ctx.font = `bold 16px ${FONTS.mono}`;
+  ctx.font = `bold 18px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.fillText('GETAWAY ROUTE', bx + 10, by + 22);
 
   ctx.fillStyle = PALETTE.blueprintLabel;
-  ctx.font = `12px ${FONTS.mono}`;
+  ctx.font = `12px ${FONTS.subheading}`;
   ctx.fillText(COPY.location.toUpperCase(), bx + 10, by + 42);
   ctx.fillText(targetName.toUpperCase(), bx + 10, by + 58);
 

@@ -65,7 +65,7 @@ function drawTitleBlock(
   ctx.strokeRect(bx, by, bw, bh);
 
   ctx.fillStyle = approach === 'subtle' ? PALETTE.cyan : PALETTE.hotPink;
-  ctx.font = `bold 16px ${FONTS.mono}`;
+  ctx.font = `bold 20px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.fillText(targetName.toUpperCase(), bx + 10, by + 22);
 
@@ -75,7 +75,7 @@ function drawTitleBlock(
   ctx.fillText('SCALE: 1:200', bx + 10, by + 56);
 
   ctx.fillStyle = approach === 'subtle' ? PALETTE.teal : PALETTE.hotPink;
-  ctx.font = `bold 12px ${FONTS.mono}`;
+  ctx.font = `bold 12px ${FONTS.subheading}`;
   ctx.fillText(`APPROACH: ${approach.toUpperCase()} ROUTE`, bx + 10, by + 74);
 
   ctx.fillStyle = PALETTE.gold;

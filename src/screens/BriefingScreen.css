@@ -22,7 +22,7 @@
   gap: 16px;
   min-height: 300px;
   color: var(--color-text-secondary);
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
 }
 
 .briefing-preview {

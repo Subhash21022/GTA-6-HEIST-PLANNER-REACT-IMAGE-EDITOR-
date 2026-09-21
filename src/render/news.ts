@@ -87,14 +87,14 @@ export async function composeWeazelNews(
 
   // "WEAZEL NEWS" logo
   ctx.fillStyle = '#fff';
-  ctx.font = `56px ${FONTS.heading}`;
+  ctx.font = `56px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillText('WEAZEL NEWS', 30, BANNER_H / 2 + 2);
 
   // "BREAKING" badge on the right
   const breakingText = 'BREAKING';
-  ctx.font = `bold 28px ${FONTS.mono}`;
+  ctx.font = `bold 28px ${FONTS.gta}`;
   const breakW = ctx.measureText(breakingText).width + 30;
   ctx.fillStyle = '#fff';
   ctx.fillRect(W - breakW - 20, 18, breakW, 44);
@@ -150,12 +150,12 @@ export async function composeWeazelNews(
 
   // Headline text over photo
   ctx.fillStyle = '#fff';
-  ctx.font = `48px ${FONTS.heading}`;
+  ctx.font = `52px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.fillText(targetName.toUpperCase(), 30, contentBottom - 70);
 
   ctx.fillStyle = PALETTE.cyan;
-  ctx.font = `28px ${FONTS.heading}`;
+  ctx.font = `28px ${FONTS.subheading}`;
   ctx.fillText(`OPERATION: ${codename.toUpperCase()}`, 30, contentBottom - 30);
 
   // Right column: dark panel
@@ -203,12 +203,12 @@ export async function composeWeazelNews(
   ctx.strokeRect(splitX + 30, scoreY - 35, W - splitX - 60, 60);
 
   ctx.fillStyle = PALETTE.cyan;
-  ctx.font = `bold 28px ${FONTS.heading}`;
+  ctx.font = `bold 30px ${FONTS.gta}`;
   ctx.textAlign = 'center';
   ctx.fillText(`SCORE: ${score}`, polaroidCenterX - 70, scoreY + 5);
 
   ctx.fillStyle = PALETTE.hotPink;
-  ctx.font = `bold 28px ${FONTS.heading}`;
+  ctx.font = `bold 30px ${FONTS.gta}`;
   ctx.fillText(`GRADE: ${grade}`, polaroidCenterX + 70, scoreY + 5);
 
   // ── Bottom ticker bar ─────────────────────────────────────
@@ -314,12 +314,12 @@ export async function createNewsRightPanel(
   ctx.strokeRect(30, scoreY - 35, panelW - 60, 60);
 
   ctx.fillStyle = PALETTE.cyan;
-  ctx.font = `bold 28px ${FONTS.heading}`;
+  ctx.font = `bold 28px ${FONTS.gta}`;
   ctx.textAlign = 'center';
   ctx.fillText(`SCORE: ${score}`, centerX - 70, scoreY + 5);
 
   ctx.fillStyle = PALETTE.hotPink;
-  ctx.font = `bold 28px ${FONTS.heading}`;
+  ctx.font = `bold 28px ${FONTS.gta}`;
   ctx.fillText(`GRADE: ${grade}`, centerX + 70, scoreY + 5);
 
   return panelCanvas;
@@ -380,14 +380,14 @@ export function renderLiveNewsFrame(
   ctx.fillStyle = photoOverlay;
   ctx.fillRect(0, contentBottom - 140, splitX, 140);
 
-  // Target headline
+  // Target headline in Pricedown GTA font
   ctx.fillStyle = '#fff';
-  ctx.font = `46px ${FONTS.heading}`;
+  ctx.font = `50px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.fillText(targetName.toUpperCase(), 30, contentBottom - 65);
 
   ctx.fillStyle = PALETTE.cyan;
-  ctx.font = `26px ${FONTS.heading}`;
+  ctx.font = `26px ${FONTS.subheading}`;
   ctx.fillText(`OPERATION: ${codename.toUpperCase()} // SURVEILLANCE FEED`, 30, contentBottom - 26);
 
   // 3. Render Right Panel (Suspects & score)
@@ -407,7 +407,7 @@ export function renderLiveNewsFrame(
   ctx.fillRect(0, BANNER_H, W, 3);
 
   ctx.fillStyle = '#fff';
-  ctx.font = `56px ${FONTS.heading}`;
+  ctx.font = `56px ${FONTS.gta}`;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillText('WEAZEL NEWS', 30, BANNER_H / 2 + 2);
@@ -415,7 +415,7 @@ export function renderLiveNewsFrame(
   // Blinking "BREAKING" badge
   const breakingBlink = Math.sin(timeMs / 400) > -0.5;
   const breakingText = 'BREAKING';
-  ctx.font = `bold 28px ${FONTS.mono}`;
+  ctx.font = `bold 28px ${FONTS.gta}`;
   const breakW = ctx.measureText(breakingText).width + 30;
   ctx.fillStyle = breakingBlink ? '#ffffff' : '#ffd0e0';
   ctx.fillRect(W - breakW - 20, 18, breakW, 44);

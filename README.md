@@ -1,43 +1,48 @@
-# Heist Planner — A GTA VI Fan Concept
+# The Vice Syndicate: GTA VI Heist Board & Tactical Command
 
-An interactive browser experience where you plan a heist in Vice City: pick a target, assemble a crew of specialists, draw infiltration and getaway routes on procedurally generated blueprints using **@unlayer/react-image-editor**, watch the plan play out, then export a shareable mission briefing as a PNG.
+An interactive GTA VI-inspired web experience where you plan high-stakes heists across Vice City: recon targets, select tactical approaches (**Subtle** vs. **Loud**), assemble specialist crews, draw architectural infiltration & high-speed getaway routes on procedural blueprints using **[@unlayer/react-image-editor](https://github.com/unlayer/react-image-editor)**, simulate the heist with interactive telemetry, and witness the getaway via an animated **Sky-Weazel 4 CCTV Police Pursuit** with dynamic sirens and authentic GTA soundscapes.
 
-Built for the **Build with React Image Editor Challenge**.
+Built for the **Build with React Image Editor Challenge** by [Unlayer](https://unlayer.com/).
 
 > **Disclaimer:** This is an unofficial, non-commercial fan concept. Grand Theft Auto and GTA VI are trademarks of Take-Two Interactive / Rockstar Games. This project is not affiliated with, endorsed by, or sponsored by them. All artwork is original or user-supplied.
 
-## Features
+## Key Features
 
-- **9-screen flow:** Title → Target Selection → Tactical Approach (Subtle vs. Loud) → Crew Assembly → Infiltration Planning → Getaway Planning → Playback → Briefing Board → Result/Export
-- **Tactical Approach Selection (GTA V / Movie Style):** Lester whiteboard tactical branch choosing between:
-  - **Plan A (The Subtle Route):** Silent ingress, ventilation ducts, keycard bypass terminals, zero-alarm tolerance, Hacker/Safecracker synergy, and Ghost Operator scoring bonuses.
-  - **Plan B (The Loud Route):** Kinetic C4 structural wall detonations, thermite drills, SWAT intercept crossfire chokepoints, Muscle/Driver blitz synergy, and Vault Blown Weazel News headlines.
-- **3 hand-authored targets** with unique floor plans, hazard layouts, and getaway maps (Sable Trust Bank, Gilded Flamingo Casino, Villa Aurelia)
-- **6 crew members** with gameplay-affecting modifiers (hacker neutralises cameras, driver shortens getaway, muscle suppresses SWAT, etc.)
-- **Procedural blueprint & map rendering** — canvas-drawn floor plans with approach overlays (air ducts vs. C4 breach points), walls, cameras, patrol routes, vault markers, and a paper-grain aesthetic
-- **Route analysis pipeline:** pixel diff → grid downsampling → ink detection → dilation → BFS connectivity → approach-specific hazard rasterization → crossing detection → weighted scoring
-- **Animated telemetry playback** of planned routes with approach-aware sensor pings, C4 detonations, and event telemetry
-- **Briefing board composer** — 1920 × 1080 collage with maps, approach tape strips, crew polaroids, grade stamp, and operation codename
-- **Weazel News debrief broadcast** — dynamic breaking news generator with approach-specific headlines, photos, ticker tapes, and stamps
-- **Image editor integration** via @unlayer/react-image-editor for drawing routes and adding final touches
-- **"Try a sample plan"** button on each planning stage for instant demo
-- **Persistence** — saves progress to localStorage (metadata) and IndexedDB (images) so you can resume
-- **Download PNG / Copy to clipboard** for the final briefing
-- **Accessibility** — skip link, focus-visible outlines, aria labels, `prefers-reduced-motion` support, narrow-screen overlay
-- **Zero backend** — fully client-side, Vercel-deployable as a static site
+- **9-Screen Tactical Mission Flow:** Title → Target Selection → Approach Selection (Subtle vs. Loud) → Crew Assembly → Infiltration Blueprint Planning → Getaway Navigation Planning → Telemetry Playback → Briefing Board → Weazel News Debrief & Live CCTV
+- **Tactical Approach Selection (GTA V / Movie Style):**
+  - **Plan A (The Subtle Route):** Silent ingress, air duct routing, keycard bypass, zero-alarm tolerance, Hacker/Safecracker synergy, and Ghost Operator scoring bonuses.
+  - **Plan B (The Loud Route):** Kinetic C4 structural breach points, thermite drills, SWAT intercept crossfire zones, Muscle/Driver blitz synergy, and Vault Blown Weazel News headlines.
+- **Deep React Image Editor Integration:**
+  - **Blueprint Route Drawing:** Brush strokes sketched by the player are extracted as mathematical trajectories that drive graph connectivity (BFS), hazard collision detection, and mission pass/fail grades.
+  - **Surveillance Recon (`TargetScreen`):** Mark up target reconnaissance photos with arrows, cropping, and tactical notes.
+  - **Crew Disguises (`CrewScreen`):** Customize specialist mugshots with masks, shades, and tactical gear.
+  - **1920×1080 Master Briefing Board (`BriefingScreen`):** Add classified watermarks, stamps, and codenames before exporting.
+- **Sky-Weazel 4 Live Police Pursuit CCTV:**
+  - Real-time animated canvas simulating a news helicopter tracking getaway cars through Vice City streets.
+  - Gyro-stabilized FLIR crosshair with cinematic camera shake and bank tilts.
+  - Dynamic getaway car drifting, acceleration physics, screeching tire smoke, and intercepting police cruisers.
+- **Synthesized GTA Audio & Randomized Siren Engine:**
+  - Zero static, studio-grade Web Audio synthesizers for menu hover blips, select chimes, heist stingers, and fanfare.
+  - 3 desynchronized police cruisers (Lead Wail, Flanker Yelp, Tactical Piercer) with continuous frequency drift and tactical police air horn bursts.
+  - Interactive neon sound control widget in the bottom-right corner with mute toggle and expandable volume slider.
+- **Authentic Rockstar Games Typography:**
+  - **Pricedown:** Official GTA franchise title font for mission headings, score stamps, cash values, and logos.
+  - **Chalet (London & New York 1960):** Official GTA 5 / GTA Online HUD, menu, telemetry, and button typography.
+- **Zero Backend:** 100% client-side, lightning-fast static build, deployable anywhere (Vercel, Netlify, Cloudflare Pages).
 
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
+|---|---|
 | Framework | React 19 + TypeScript 6 (strict mode) |
-| Build | Vite 8.3 |
-| Image Editor | @unlayer/react-image-editor v1.0.2 |
-| State | Zustand 5 |
-| Storage | idb-keyval (IndexedDB) + localStorage |
-| Rendering | Canvas 2D API (procedural blueprints, maps, briefing board) |
-| Fonts | @fontsource — Bebas Neue, Special Elite, Space Mono |
-| Testing | Vitest 5 |
+| Build Tool | Vite 8.3 |
+| Image Editor | **[@unlayer/react-image-editor](https://github.com/unlayer/react-image-editor)** v1.0.2 |
+| State Management | Zustand 5 |
+| Client Storage | idb-keyval (IndexedDB) + localStorage |
+| Rendering Engine | Canvas 2D API (procedural blueprints, maps, briefing board, CCTV pursuit) |
+| Audio Engine | Web Audio API (real-time synthesizers, dynamics compressor limiter, sirens) |
+| Typography | **Pricedown** & **Chalet London/New York 1960** (Rockstar Games Official GTA Fonts) |
+| Testing | Vitest 5 (12/12 unit tests passing) |
 | Linting | oxlint |
 
 ## Getting Started

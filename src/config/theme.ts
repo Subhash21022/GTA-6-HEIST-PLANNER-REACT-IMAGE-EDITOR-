@@ -48,9 +48,12 @@ export const PALETTE = {
 } as const;
 
 export const FONTS = {
-  heading: "'Bebas Neue', sans-serif",
+  gta: "'Pricedown', 'Chalet', sans-serif",
+  heading: "'Pricedown', 'Chalet', 'Bebas Neue', sans-serif",
+  subheading: "'Chalet', 'Bebas Neue', sans-serif",
+  body: "'Chalet', sans-serif",
   typewriter: "'Special Elite', monospace",
-  mono: "'Space Mono', monospace",
+  mono: "'Chalet', 'Space Mono', monospace",
   system: "system-ui, -apple-system, sans-serif",
 } as const;
 

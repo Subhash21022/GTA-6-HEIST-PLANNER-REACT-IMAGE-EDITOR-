@@ -24,7 +24,7 @@ export type SoundEffectName =
 class SoundManager {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
-  private volume: number = 0.8;
+  private volume: number = 1.0;
   private masterGain: GainNode | null = null;
   private compressor: DynamicsCompressorNode | null = null;
   private clarityFilter: BiquadFilterNode | null = null;
@@ -43,7 +43,7 @@ class SoundManager {
       if (storedVolume !== null) {
         const val = parseFloat(storedVolume);
         if (!isNaN(val) && val >= 0 && val <= 1) {
-          this.volume = val;
+          this.volume = val === 0 ? 0 : Math.max(val, 0.85);
         }
       }
 
@@ -69,7 +69,7 @@ class SoundManager {
             const now = performance.now();
             if (now - this.lastHoverTime > 55) {
               this.lastHoverTime = now;
-              this.playSfx('hover', 0.55);
+              this.playSfx('hover', 0.65);
             }
           }
         },
@@ -98,7 +98,7 @@ class SoundManager {
             }
 
             if (!customSfx) {
-              this.playSfx('select', 0.85);
+              this.playSfx('select', 0.95);
             }
           }
         },
@@ -136,13 +136,13 @@ class SoundManager {
         this.clarityFilter.frequency.setValueAtTime(3200, this.ctx.currentTime);
         this.clarityFilter.gain.setValueAtTime(2.2, this.ctx.currentTime);
 
-        // 3. Studio-Grade Master Dynamics Limiter (guarantees zero digital clipping and zero distortion)
+        // 3. Studio-Grade Master Dynamics Limiter (guarantees zero digital clipping and maximum punchy volume)
         this.compressor = this.ctx.createDynamicsCompressor();
-        this.compressor.threshold.setValueAtTime(-5, this.ctx.currentTime);
-        this.compressor.knee.setValueAtTime(10, this.ctx.currentTime);
-        this.compressor.ratio.setValueAtTime(8, this.ctx.currentTime);
-        this.compressor.attack.setValueAtTime(0.002, this.ctx.currentTime);
-        this.compressor.release.setValueAtTime(0.06, this.ctx.currentTime);
+        this.compressor.threshold.setValueAtTime(-4, this.ctx.currentTime);
+        this.compressor.knee.setValueAtTime(8, this.ctx.currentTime);
+        this.compressor.ratio.setValueAtTime(10, this.ctx.currentTime);
+        this.compressor.attack.setValueAtTime(0.001, this.ctx.currentTime);
+        this.compressor.release.setValueAtTime(0.05, this.ctx.currentTime);
 
         // Signal Chain: Synthesizers -> masterGain -> clarityFilter -> compressor -> speakers
         this.masterGain.connect(this.clarityFilter);
@@ -199,7 +199,7 @@ class SoundManager {
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
     if (!this.isMuted && this.volume === 0) {
-      this.volume = 0.75;
+      this.volume = 1.0;
       if (typeof window !== 'undefined') {
         localStorage.setItem('gta_sfx_volume', String(this.volume));
       }
@@ -213,7 +213,7 @@ class SoundManager {
     }
     this.notifyListeners();
     if (!this.isMuted) {
-      this.playSfx('select', 0.9);
+      this.playSfx('select', 1.0);
     }
     return this.isMuted;
   }
@@ -222,7 +222,7 @@ class SoundManager {
     if (this.isMuted === muted) return;
     this.isMuted = muted;
     if (!this.isMuted && this.volume === 0) {
-      this.volume = 0.75;
+      this.volume = 1.0;
       if (typeof window !== 'undefined') {
         localStorage.setItem('gta_sfx_volume', String(this.volume));
       }
@@ -320,9 +320,9 @@ class SoundManager {
     }
   }
 
-  // ── PURE & CRISP PROCEDURAL SYNTHESIZERS ───────────────────────────────────
+  // ── PURE & CRISP PROCEDURAL SYNTHESIZERS (BOOSTED VOLUME & HEADROOM) ────────
 
-  // 1. GTA 5 Menu Navigation Hover Blip (Glassy, ultra-crisp 24ms micro-tone, zero click)
+  // 1. GTA 5 Menu Navigation Hover Blip (Glassy, ultra-crisp 24ms micro-tone)
   private synthHover(ctx: AudioContext, vol: number): void {
     const t = ctx.currentTime;
     const osc = ctx.createOscillator();
@@ -333,7 +333,7 @@ class SoundManager {
     osc.frequency.exponentialRampToValueAtTime(1680, t + 0.024);
 
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.045 * vol, t + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.14 * vol, t + 0.003);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.024);
 
     osc.connect(gain);
@@ -353,7 +353,7 @@ class SoundManager {
     osc1.type = 'sine';
     osc1.frequency.setValueAtTime(1760, t);
     gain1.gain.setValueAtTime(0.0001, t);
-    gain1.gain.exponentialRampToValueAtTime(0.12 * vol, t + 0.003);
+    gain1.gain.exponentialRampToValueAtTime(0.28 * vol, t + 0.003);
     gain1.gain.exponentialRampToValueAtTime(0.0001, t + 0.065);
     osc1.connect(gain1);
     gain1.connect(this.masterGain || ctx.destination);
@@ -366,20 +366,20 @@ class SoundManager {
     osc2.type = 'sine';
     osc2.frequency.setValueAtTime(2640, t + 0.012);
     gain2.gain.setValueAtTime(0.0001, t + 0.012);
-    gain2.gain.exponentialRampToValueAtTime(0.08 * vol, t + 0.015);
+    gain2.gain.exponentialRampToValueAtTime(0.18 * vol, t + 0.015);
     gain2.gain.exponentialRampToValueAtTime(0.0001, t + 0.075);
     osc2.connect(gain2);
     gain2.connect(this.masterGain || ctx.destination);
     osc2.start(t + 0.012);
     osc2.stop(t + 0.08);
 
-    // Micro-transient click (pure sine impulse at 3520 Hz, zero harsh static)
+    // Micro-transient click (pure sine impulse at 3520 Hz)
     const tick = ctx.createOscillator();
     const tickGain = ctx.createGain();
     tick.type = 'triangle';
     tick.frequency.setValueAtTime(3520, t);
     tickGain.gain.setValueAtTime(0.0001, t);
-    tickGain.gain.exponentialRampToValueAtTime(0.06 * vol, t + 0.002);
+    tickGain.gain.exponentialRampToValueAtTime(0.14 * vol, t + 0.002);
     tickGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.008);
     tick.connect(tickGain);
     tickGain.connect(this.masterGain || ctx.destination);
@@ -398,7 +398,7 @@ class SoundManager {
     osc.frequency.exponentialRampToValueAtTime(360, t + 0.055);
 
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.11 * vol, t + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.26 * vol, t + 0.003);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
 
     osc.connect(gain);
@@ -420,7 +420,7 @@ class SoundManager {
     osc.frequency.exponentialRampToValueAtTime(880, t + 0.075);
 
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.10 * vol, t + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.24 * vol, t + 0.004);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
 
     osc.connect(gain);
@@ -441,7 +441,7 @@ class SoundManager {
     osc.frequency.setValueAtTime(180, t);
     osc.frequency.exponentialRampToValueAtTime(50, t + 0.045);
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.20 * vol, t + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.42 * vol, t + 0.003);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
     osc.connect(gain);
     gain.connect(this.masterGain || ctx.destination);
@@ -454,7 +454,7 @@ class SoundManager {
     tap.type = 'sine';
     tap.frequency.setValueAtTime(2400, t);
     tapGain.gain.setValueAtTime(0.0001, t);
-    tapGain.gain.exponentialRampToValueAtTime(0.10 * vol, t + 0.002);
+    tapGain.gain.exponentialRampToValueAtTime(0.22 * vol, t + 0.002);
     tapGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.012);
     tap.connect(tapGain);
     tapGain.connect(this.masterGain || ctx.destination);
@@ -473,7 +473,7 @@ class SoundManager {
     osc.frequency.exponentialRampToValueAtTime(440, t + 0.055); // A4
 
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.14 * vol, t + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.32 * vol, t + 0.003);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
 
     osc.connect(gain);
@@ -493,7 +493,7 @@ class SoundManager {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, start);
       gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.10 * vol, start + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.26 * vol, start + 0.003);
       gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.035);
       osc.connect(gain);
       gain.connect(this.masterGain || ctx.destination);
@@ -505,7 +505,7 @@ class SoundManager {
     playLockTone(2637.0, t + 0.038); // E7
 
     // Clean mechanical shutter click
-    this.synthCameraShutter(ctx, vol * 0.7);
+    this.synthCameraShutter(ctx, vol * 0.9);
   }
 
   // 8. Subtle Approach: Stealth Espionage Sonar Radar Ping
@@ -518,7 +518,7 @@ class SoundManager {
     ping.type = 'sine';
     ping.frequency.setValueAtTime(1480, t);
     pingGain.gain.setValueAtTime(0.0001, t);
-    pingGain.gain.exponentialRampToValueAtTime(0.18 * vol, t + 0.006);
+    pingGain.gain.exponentialRampToValueAtTime(0.40 * vol, t + 0.006);
     pingGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
     ping.connect(pingGain);
     pingGain.connect(this.masterGain || ctx.destination);
@@ -532,7 +532,7 @@ class SoundManager {
     sub.frequency.setValueAtTime(75, t);
     sub.frequency.exponentialRampToValueAtTime(45, t + 0.35);
     subGain.gain.setValueAtTime(0.0001, t);
-    subGain.gain.exponentialRampToValueAtTime(0.18 * vol, t + 0.01);
+    subGain.gain.exponentialRampToValueAtTime(0.36 * vol, t + 0.01);
     subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
     sub.connect(subGain);
     subGain.connect(this.masterGain || ctx.destination);
@@ -551,7 +551,7 @@ class SoundManager {
       bOsc.type = 'sine';
       bOsc.frequency.setValueAtTime(2500, startTime);
       bGain.gain.setValueAtTime(0.0001, startTime);
-      bGain.gain.exponentialRampToValueAtTime(0.12 * vol, startTime + 0.003);
+      bGain.gain.exponentialRampToValueAtTime(0.26 * vol, startTime + 0.003);
       bGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.035);
       bOsc.connect(bGain);
       bGain.connect(this.masterGain || ctx.destination);
@@ -570,7 +570,7 @@ class SoundManager {
     boom.frequency.exponentialRampToValueAtTime(32, boomT + 0.5);
 
     boomGain.gain.setValueAtTime(0.0001, boomT);
-    boomGain.gain.exponentialRampToValueAtTime(0.28 * vol, boomT + 0.015);
+    boomGain.gain.exponentialRampToValueAtTime(0.60 * vol, boomT + 0.015);
     boomGain.gain.exponentialRampToValueAtTime(0.0001, boomT + 0.55);
 
     boom.connect(boomGain);
@@ -591,7 +591,7 @@ class SoundManager {
     osc.frequency.setValueAtTime(1760.0, t + 0.035);
 
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.11 * vol, t + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.26 * vol, t + 0.003);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
 
     osc.connect(gain);
@@ -612,7 +612,7 @@ class SoundManager {
     sub.frequency.setValueAtTime(85, t);
     sub.frequency.exponentialRampToValueAtTime(35, t + 0.85);
     subGain.gain.setValueAtTime(0.0001, t);
-    subGain.gain.exponentialRampToValueAtTime(0.28 * vol, t + 0.012);
+    subGain.gain.exponentialRampToValueAtTime(0.58 * vol, t + 0.012);
     subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
     sub.connect(subGain);
     subGain.connect(this.masterGain || ctx.destination);
@@ -634,7 +634,7 @@ class SoundManager {
       filter.frequency.exponentialRampToValueAtTime(120, t + 0.95);
 
       gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.12 * vol, t + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.26 * vol, t + 0.015);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.0);
 
       osc.connect(filter);
@@ -671,7 +671,7 @@ class SoundManager {
         filter.frequency.exponentialRampToValueAtTime(350, chord.time + chord.dur);
 
         gain.gain.setValueAtTime(0.0001, chord.time);
-        gain.gain.exponentialRampToValueAtTime(0.10 * vol, chord.time + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.25 * vol, chord.time + 0.015);
         gain.gain.exponentialRampToValueAtTime(0.0001, chord.time + chord.dur);
 
         osc.connect(filter);
@@ -693,7 +693,7 @@ class SoundManager {
   private synthCashTally(ctx: AudioContext, vol: number): void {
     const t = ctx.currentTime;
 
-    // 8 fast, crisp clockwork ticks (alternating pristine sine pings)
+    // 8 fast, crisp clockwork ticks
     for (let i = 0; i < 8; i++) {
       const tickT = t + i * 0.032;
       const osc = ctx.createOscillator();
@@ -701,7 +701,7 @@ class SoundManager {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(2400 + (i % 2) * 500, tickT);
       gain.gain.setValueAtTime(0.0001, tickT);
-      gain.gain.exponentialRampToValueAtTime(0.06 * vol, tickT + 0.002);
+      gain.gain.exponentialRampToValueAtTime(0.15 * vol, tickT + 0.002);
       gain.gain.exponentialRampToValueAtTime(0.0001, tickT + 0.016);
       osc.connect(gain);
       gain.connect(this.masterGain || ctx.destination);
@@ -716,7 +716,7 @@ class SoundManager {
     bellOsc.type = 'sine';
     bellOsc.frequency.setValueAtTime(2349.3, bellT);
     bellGain.gain.setValueAtTime(0.0001, bellT);
-    bellGain.gain.exponentialRampToValueAtTime(0.20 * vol, bellT + 0.004);
+    bellGain.gain.exponentialRampToValueAtTime(0.45 * vol, bellT + 0.004);
     bellGain.gain.exponentialRampToValueAtTime(0.0001, bellT + 0.85);
 
     bellOsc.connect(bellGain);
@@ -736,7 +736,7 @@ class SoundManager {
     click.frequency.setValueAtTime(1400, t);
     click.frequency.exponentialRampToValueAtTime(300, t + 0.025);
     clickGain.gain.setValueAtTime(0.0001, t);
-    clickGain.gain.exponentialRampToValueAtTime(0.12 * vol, t + 0.002);
+    clickGain.gain.exponentialRampToValueAtTime(0.26 * vol, t + 0.002);
     clickGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.028);
     click.connect(clickGain);
     clickGain.connect(this.masterGain || ctx.destination);
@@ -749,7 +749,7 @@ class SoundManager {
     hum.type = 'sine';
     hum.frequency.setValueAtTime(60, t);
     humGain.gain.setValueAtTime(0.0001, t);
-    humGain.gain.exponentialRampToValueAtTime(0.10 * vol, t + 0.004);
+    humGain.gain.exponentialRampToValueAtTime(0.22 * vol, t + 0.004);
     humGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
     hum.connect(humGain);
     humGain.connect(this.masterGain || ctx.destination);
@@ -757,7 +757,7 @@ class SoundManager {
     hum.stop(t + 0.055);
   }
 
-  // 15. High-Speed Tire Drift Screech (Clean rubber tire friction squeal, zero fuzz)
+  // 15. High-Speed Tire Drift Screech (Clean rubber tire friction squeal)
   public synthDrift(ctx: AudioContext, vol: number): void {
     const now = performance.now();
     if (now - this.lastDriftTime < 280) return;
@@ -787,7 +787,7 @@ class SoundManager {
     osc2.frequency.linearRampToValueAtTime(1620, t + dur);
 
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.08 * vol, t + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.25 * vol, t + 0.015);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
     osc1.connect(filter);
@@ -812,7 +812,7 @@ class SoundManager {
       osc.frequency.exponentialRampToValueAtTime(40, t + delay + 0.035);
 
       gain.gain.setValueAtTime(0.0001, t + delay);
-      gain.gain.exponentialRampToValueAtTime(0.18 * vol, t + delay + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.40 * vol, t + delay + 0.003);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + delay + 0.038);
 
       osc.connect(gain);
@@ -835,7 +835,7 @@ class SoundManager {
       osc.frequency.setValueAtTime(freq, start);
       osc.frequency.exponentialRampToValueAtTime(400, start + 0.016);
       gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.12 * vol, start + 0.002);
+      gain.gain.exponentialRampToValueAtTime(0.26 * vol, start + 0.002);
       gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.018);
       osc.connect(gain);
       gain.connect(this.masterGain || ctx.destination);
@@ -861,7 +861,7 @@ class SoundManager {
     filter.frequency.setValueAtTime(600, t);
 
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.14 * vol, t + 0.006);
+    gain.gain.exponentialRampToValueAtTime(0.30 * vol, t + 0.006);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
 
     osc.connect(filter);

@@ -1,6 +1,6 @@
 .toast-container {
   position: fixed;
-  bottom: clamp(16px, 3vw, 24px);
+  bottom: clamp(68px, 9vw, 76px);
   right: clamp(16px, 3vw, 24px);
   left: clamp(16px, 3vw, 24px);
   z-index: 2000;

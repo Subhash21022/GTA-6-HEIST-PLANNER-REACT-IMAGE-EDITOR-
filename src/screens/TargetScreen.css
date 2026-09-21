@@ -66,7 +66,7 @@
 }
 
 .target-name {
-  font-family: var(--font-heading);
+  font-family: var(--font-gta);
   font-size: clamp(1.2rem, 3vw, 1.5rem);
   color: var(--color-white);
   margin: 0 0 8px;
@@ -90,7 +90,7 @@
 }
 
 .target-dossier {
-  font-family: var(--font-typewriter);
+  font-family: var(--font-body);
   font-size: clamp(0.72rem, 1.8vw, 0.8rem);
   color: var(--color-text-secondary);
   line-height: 1.6;
@@ -101,7 +101,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: clamp(0.6rem, 1.5vw, 0.7rem);
   color: var(--color-text-dim);
 }
@@ -134,7 +134,10 @@
 }
 
 .target-recon-btn {
+  font-family: var(--font-subheading);
   font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   padding: 8px 14px;
   color: var(--color-cyan);
   border: 1px solid rgba(0, 240, 255, 0.2);
@@ -152,7 +155,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-subheading);
   font-size: 0.55rem;
   font-weight: 700;
   color: var(--color-navy-deep);
