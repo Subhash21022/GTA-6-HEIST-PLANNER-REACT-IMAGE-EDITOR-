@@ -1,6 +1,5 @@
 export const COPY = {
   appTitle: 'HEIST PLANNER',
-  appSubtitle: 'A GTA VI fan concept',
   tagline: 'Draw the plan. Run the heist. Share the briefing.',
   planButton: 'Plan a heist',
   resumeButton: 'Resume last plan',

@@ -33,11 +33,6 @@ export function TitleScreen() {
         { y: 0, opacity: 1, scale: 1, duration: 1.2 },
         '-=0.7',
       );
-      tl.fromTo(ctx.querySelector('.title-subtitle'),
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        '-=0.6',
-      );
       tl.fromTo(ctx.querySelector('.title-tagline'),
         { y: 20, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.8 },
@@ -77,7 +72,6 @@ export function TitleScreen() {
       <header className="title-header">
         <img src="/images/logo.png" alt="" className="title-logo" />
         <h1 className="title-name">{COPY.appTitle}</h1>
-        <p className="title-subtitle">{COPY.appSubtitle}</p>
         <p className="title-tagline">{COPY.tagline}</p>
       </header>
 
@@ -113,6 +107,7 @@ export function TitleScreen() {
       <p className="title-desktop-note">{COPY.desktopNote}</p>
 
       <footer className="title-footer">
+        <p className="title-author">Created by Subhash</p>
         <p className="disclaimer">{COPY.disclaimer}</p>
       </footer>
     </div>
