@@ -8,6 +8,7 @@ export interface PersistedMeta {
   infiltrationScore: number | null;
   getawayScore: number | null;
   screen: string;
+  approach?: 'subtle' | 'loud';
 }
 
 export function saveMeta(meta: PersistedMeta): void {

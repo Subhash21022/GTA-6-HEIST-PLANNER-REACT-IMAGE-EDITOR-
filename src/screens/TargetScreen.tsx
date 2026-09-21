@@ -7,6 +7,7 @@ import { COPY } from '../config/copy';
 import { EditorModal } from '../editor/EditorModal';
 import { RECON_TOOLS } from '../editor/toolConfigs';
 import type { ImageEditorSaveResult } from '@unlayer/react-image-editor';
+import { playSfx } from '../audio/soundManager';
 import './TargetScreen.css';
 
 function StarRating({ count, max = 5 }: { count: number; max?: number }) {
@@ -54,8 +55,9 @@ export function TargetScreen() {
   }, { scope: containerRef });
 
   const handlePick = (idx: number) => {
+    playSfx('targetSelect');
     setTarget(TARGETS[idx]);
-    setScreen('crew');
+    setScreen('approach');
   };
 
   const handleReconSave = useCallback(
@@ -76,7 +78,14 @@ export function TargetScreen() {
   return (
     <div className="target-screen" ref={containerRef}>
       <header className="screen-header">
-        <button className="btn btn-ghost" onClick={goBack} type="button">
+        <button
+          className="btn btn-ghost"
+          onClick={() => {
+            playSfx('back');
+            goBack();
+          }}
+          type="button"
+        >
           {COPY.back}
         </button>
         <h2 className="screen-title">SELECT TARGET</h2>
@@ -116,6 +125,7 @@ export function TargetScreen() {
               className="btn btn-ghost target-recon-btn"
               onClick={(e) => {
                 e.stopPropagation();
+                playSfx('cameraShutter');
                 setReconTarget(t);
               }}
               type="button"

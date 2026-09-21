@@ -3,12 +3,13 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useStore } from '../store';
 import { COPY } from '../config/copy';
-import { renderBlueprint, drawSampleRoute } from '../render/blueprint';
+import { renderBlueprint, drawApproachOverlays, drawSampleRoute } from '../render/blueprint';
 import { renderGetawayMap, drawSampleGetawayRoute } from '../render/map';
 import { analyseInfiltration, analyseGetaway, type AnalysisResult } from '../analysis';
 import { EditorModal } from '../editor/EditorModal';
 import { PLANNING_TOOLS } from '../editor/toolConfigs';
 import { normaliseImageToSize, dataUrlToImageData, createCanvas, canvasToDataUrl, getImageData } from '../utils/canvas';
+import { playSfx } from '../audio/soundManager';
 import './PlanningScreen.css';
 
 interface PlanningScreenProps {
@@ -17,6 +18,7 @@ interface PlanningScreenProps {
 
 export function PlanningScreen({ stage }: PlanningScreenProps) {
   const target = useStore((s) => s.target);
+  const approach = useStore((s) => s.approach);
   const crew = useStore((s) => s.crew);
   const goBack = useStore((s) => s.goBack);
   const setScreen = useStore((s) => s.setScreen);
@@ -61,19 +63,20 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
         const h = target.layout.canvasHeight;
         const [canvas, ctx] = createCanvas(w, h);
         ctx.drawImage(img, 0, 0, w, h);
+        drawApproachOverlays(ctx, target.layout, approach);
         setBase({ dataUrl: canvasToDataUrl(canvas), imageData: getImageData(canvas, ctx) });
       };
       img.onerror = () => {
         if (cancelled) return;
-        const result = renderBlueprint(target.layout, target.name);
+        const result = renderBlueprint(target.layout, target.name, approach);
         setBase(result);
       };
       img.src = target.blueprintImage;
       return () => { cancelled = true; };
     }
 
-    setBase(renderBlueprint(target.layout, target.name));
-  }, [target, isInfiltration]);
+    setBase(renderBlueprint(target.layout, target.name, approach));
+  }, [target, isInfiltration, approach]);
 
   useGSAP(() => {
     const ctx = containerRef.current;
@@ -135,7 +138,7 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
 
         let result: AnalysisResult;
         if (isInfiltration) {
-          result = analyseInfiltration(baseData, editedData, target.layout, crewModifierIds);
+          result = analyseInfiltration(baseData, editedData, target.layout, crewModifierIds, approach);
           setInfiltrationImage(normalised);
           setInfiltrationResult(result);
         } else {
@@ -143,13 +146,14 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
           setGetawayImage(normalised);
           setGetawayResult(result);
         }
+        playSfx('pin');
         persistState();
         addToast(COPY.saved);
       } finally {
         setAnalysing(false);
       }
     },
-    [target, base, crew, isInfiltration, setInfiltrationImage, setInfiltrationResult, setGetawayImage, setGetawayResult, persistState, addToast],
+    [target, base, crew, isInfiltration, approach, setInfiltrationImage, setInfiltrationResult, setGetawayImage, setGetawayResult, persistState, addToast],
   );
 
   const handleEditorCancel = useCallback(() => {
@@ -157,6 +161,7 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
   }, []);
 
   const handleReset = useCallback(() => {
+    playSfx('back');
     if (isInfiltration) {
       setInfiltrationImage(null);
       setInfiltrationResult(null);
@@ -169,39 +174,34 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
 
   const handleSample = useCallback(async () => {
     if (!target || !base) return;
+    playSfx('string');
     const layout = isInfiltration ? target.layout : target.getaway;
     const route = isInfiltration ? target.layout.sampleRoute : target.getaway.sampleRoute;
-    const crewModifierIds = crew.map((c) => c.modifierId);
     let sampleDataUrl: string;
     if (isInfiltration) {
       sampleDataUrl = await drawSampleRoute(base.dataUrl, route, layout.canvasWidth, layout.canvasHeight);
     } else {
       sampleDataUrl = await drawSampleGetawayRoute(base.dataUrl, route, layout.canvasWidth, layout.canvasHeight);
     }
-    setAnalysing(true);
-    try {
-      const normalised = await normaliseImageToSize(sampleDataUrl, layout.canvasWidth, layout.canvasHeight);
-      const editedImageData = await dataUrlToImageData(normalised, layout.canvasWidth, layout.canvasHeight);
-      const baseData = base.imageData.data;
-      const editedData = editedImageData.data;
-      let result: AnalysisResult;
-      if (isInfiltration) {
-        result = analyseInfiltration(baseData, editedData, target.layout, crewModifierIds);
-        setInfiltrationImage(normalised);
-        setInfiltrationResult(result);
-      } else {
-        result = analyseGetaway(baseData, editedData, target.getaway, crewModifierIds);
-        setGetawayImage(normalised);
-        setGetawayResult(result);
-      }
-      persistState();
-      addToast(COPY.saved);
-    } finally {
-      setAnalysing(false);
+    const normalised = await normaliseImageToSize(sampleDataUrl, layout.canvasWidth, layout.canvasHeight);
+    const editedImageData = await dataUrlToImageData(normalised, layout.canvasWidth, layout.canvasHeight);
+    const crewModifierIds = crew.map((c) => c.modifierId);
+    let result: AnalysisResult;
+    if (isInfiltration) {
+      result = analyseInfiltration(base.imageData.data, editedImageData.data, target.layout, crewModifierIds, approach);
+      setInfiltrationImage(normalised);
+      setInfiltrationResult(result);
+    } else {
+      result = analyseGetaway(base.imageData.data, editedImageData.data, target.getaway, crewModifierIds);
+      setGetawayImage(normalised);
+      setGetawayResult(result);
     }
-  }, [target, base, crew, isInfiltration, setInfiltrationImage, setInfiltrationResult, setGetawayImage, setGetawayResult, persistState, addToast]);
+    playSfx('cashTally');
+    persistState();
+  }, [target, base, crew, isInfiltration, approach, setInfiltrationImage, setInfiltrationResult, setGetawayImage, setGetawayResult, persistState]);
 
   const handleContinue = useCallback(() => {
+    playSfx('select');
     if (isInfiltration) {
       setScreen('getaway');
     } else {
@@ -216,7 +216,14 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
   return (
     <div className="planning-screen" ref={containerRef}>
       <header className="screen-header">
-        <button className="btn btn-ghost" onClick={goBack} type="button">
+        <button
+          className="btn btn-ghost"
+          onClick={() => {
+            playSfx('back');
+            goBack();
+          }}
+          type="button"
+        >
           {COPY.back}
         </button>
         <h2 className="screen-title">
@@ -227,6 +234,19 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
 
       <div className="planning-layout">
         <div className="planning-preview">
+          {isInfiltration && (
+            <div className={`approach-indicator-banner ${approach}`}>
+              <span className="approach-indicator-tag">
+                {approach === 'subtle' ? '🤫 THE SUBTLE ROUTE' : '💣 THE LOUD ROUTE'}
+              </span>
+              <span className="approach-indicator-desc">
+                {approach === 'subtle'
+                  ? 'Silent Ingress • Bypass CCTV Cones • Use Service & Air Ducts'
+                  : 'C4 Kinetic Entry • Rapid Vault Detonation • SWAT Chokepoint Firefights'}
+              </span>
+            </div>
+          )}
+
           <div className="blueprint-frame hud-brackets">
             <img
               src={displayImage}
@@ -275,15 +295,17 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
               {isInfiltration ? (
                 <>
                   <li className={currentResult?.connectivity.entryReached ? 'done' : ''}>
-                    Enter via an entry point
+                    {approach === 'subtle' ? 'Enter via service/vent access' : 'Enter via C4 breach/door point'}
                   </li>
                   <li className={currentResult?.connectivity.vaultReached ? 'done' : ''}>
-                    Reach the vault
+                    {approach === 'subtle' ? 'Crack the vault lock silently' : 'Detonate & breach the vault'}
                   </li>
                   <li className={currentResult?.connectivity.exitReached ? 'done' : ''}>
-                    Escape through an exit
+                    Escape through an exit corridor
                   </li>
-                  <li>Avoid cameras and patrols</li>
+                  <li>
+                    {approach === 'subtle' ? 'Avoid CCTV cones & alert patrols' : 'Suppress SWAT chokepoints & exfiltrate fast'}
+                  </li>
                 </>
               ) : (
                 <>

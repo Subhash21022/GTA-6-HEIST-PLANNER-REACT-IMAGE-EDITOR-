@@ -9,6 +9,7 @@ import { generateCodename } from '../utils/seededRandom';
 import { EditorModal } from '../editor/EditorModal';
 import { DISGUISE_TOOLS } from '../editor/toolConfigs';
 import type { ImageEditorSaveResult } from '@unlayer/react-image-editor';
+import { playSfx } from '../audio/soundManager';
 import './CrewScreen.css';
 
 export function CrewScreen() {
@@ -55,8 +56,10 @@ export function CrewScreen() {
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
+        playSfx('back');
         next.delete(id);
       } else if (next.size < CREW_PICK_COUNT) {
+        playSfx('crewSelect');
         next.add(id);
       }
       return next;
@@ -72,6 +75,7 @@ export function CrewScreen() {
   }, [selected]);
 
   const handleContinue = () => {
+    playSfx('select');
     const crew = CREW_MEMBERS.filter((m) => selected.has(m.id));
     setCrew(crew);
     const seed = Array.from(selected).sort().join('').length + (target?.id.length ?? 0);

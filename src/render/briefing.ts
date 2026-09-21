@@ -154,6 +154,7 @@ export async function composeBriefingBoard(
   take: string,
   customPortraits: PortraitMap = {},
   reconImage: string | null = null,
+  approach: 'subtle' | 'loud' = 'subtle',
 ): Promise<string> {
   const [canvas, ctx] = createCanvas(BOARD_W, BOARD_H);
   drawBackground(ctx);
@@ -161,15 +162,18 @@ export async function composeBriefingBoard(
   ctx.fillStyle = PALETTE.cyan;
   ctx.font = `72px ${FONTS.heading}`;
   ctx.textAlign = 'left';
-  ctx.fillText(targetName.toUpperCase(), 60, 90);
+  ctx.fillText(targetName.toUpperCase(), 60, 85);
 
   ctx.fillStyle = PALETTE.hotPink;
-  ctx.font = `36px ${FONTS.heading}`;
-  ctx.fillText(`OPERATION: ${codename.toUpperCase()}`, 60, 135);
+  ctx.font = `34px ${FONTS.heading}`;
+  ctx.fillText(`OPERATION: ${codename.toUpperCase()}`, 60, 125);
+
+  const approachLabel = approach === 'subtle' ? 'PLAN A: THE SUBTLE ROUTE (SILENT)' : 'PLAN B: THE LOUD ROUTE (C4 BREACH)';
+  drawTapeStrip(ctx, 60, 140, 360, 28, 0, approachLabel);
 
   ctx.fillStyle = PALETTE.textSecondary;
-  ctx.font = `18px ${FONTS.mono}`;
-  ctx.fillText(COPY.location.toUpperCase(), 60, 165);
+  ctx.font = `15px ${FONTS.mono}`;
+  ctx.fillText(COPY.location.toUpperCase(), 440, 158);
 
   const loadImg = (src: string): Promise<HTMLImageElement> =>
     new Promise((resolve) => {

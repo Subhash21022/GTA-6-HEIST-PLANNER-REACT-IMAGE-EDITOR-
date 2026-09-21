@@ -1,0 +1,39 @@
+.screen-bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--color-navy-deep);
+}
+
+.screen-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.18) contrast(1.06);
+  animation: screenBgFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes screenBgFadeIn {
+  from {
+    opacity: 0 !important;
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.screen-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 35%,
+    rgba(4, 6, 13, 0.28) 0%,
+    rgba(4, 6, 13, 0.62) 60%,
+    rgba(4, 6, 13, 0.88) 100%
+  );
+}

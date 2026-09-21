@@ -63,3 +63,15 @@ export const NEWS_TOOLS: ToolsConfig = {
   stickers: true,
   frame: true,
 };
+
+export const CCTV_EVIDENCE_TOOLS: ToolsConfig = {
+  crop: true,
+  resize: false,
+  filter: true,
+  draw: true,
+  text: true,
+  shapes: true,
+  stickers: true,
+  frame: true,
+};
+

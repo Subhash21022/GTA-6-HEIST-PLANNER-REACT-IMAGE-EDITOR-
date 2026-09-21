@@ -16,7 +16,42 @@
 .planning-preview {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
+}
+
+.approach-indicator-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.approach-indicator-banner.subtle {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--color-cyan);
+}
+
+.approach-indicator-banner.loud {
+  background: rgba(255, 18, 117, 0.1);
+  border: 1px solid rgba(255, 18, 117, 0.3);
+  color: var(--color-hot-pink);
+}
+
+.approach-indicator-tag {
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.approach-indicator-desc {
+  color: var(--color-text-secondary);
+  font-size: 0.74rem;
 }
 
 .blueprint-frame {

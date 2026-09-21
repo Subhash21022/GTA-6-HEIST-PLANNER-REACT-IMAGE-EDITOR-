@@ -3,6 +3,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useStore } from '../store';
 import { COPY } from '../config/copy';
+import { playSfx } from '../audio/soundManager';
 import './TitleScreen.css';
 
 export function TitleScreen() {
@@ -24,7 +25,7 @@ export function TitleScreen() {
     mm.add('(prefers-reduced-motion: no-preference)', () => {
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-      tl.fromTo(ctx.querySelector('.title-logo'),
+      tl.fromTo(ctx.querySelector('.title-logo-container'),
         { y: 40, opacity: 0, scale: 1.1 },
         { y: 0, opacity: 1, scale: 1, duration: 1 },
       );
@@ -70,7 +71,10 @@ export function TitleScreen() {
         <div className="title-bg-overlay" />
       </div>
       <header className="title-header">
-        <img src="/images/logo.png" alt="" className="title-logo" />
+        <div className="title-logo-container">
+          <img src="/images/logo.png" alt="Heist Planner Logo" className="title-logo" />
+          <div className="title-logo-slant-shine" aria-hidden="true" />
+        </div>
         <h1 className="title-name">{COPY.appTitle}</h1>
         <p className="title-tagline">{COPY.tagline}</p>
       </header>
@@ -78,7 +82,10 @@ export function TitleScreen() {
       <div className="title-actions">
         <button
           className="btn btn-primary btn-large"
-          onClick={() => setScreen('target')}
+          onClick={() => {
+            playSfx('stinger');
+            setScreen('target');
+          }}
           type="button"
         >
           {COPY.planButton}

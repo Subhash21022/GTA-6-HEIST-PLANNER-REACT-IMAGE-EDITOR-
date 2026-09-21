@@ -5,7 +5,7 @@ import { useStore } from '../store';
 import { COPY } from '../config/copy';
 import { ANALYSIS } from '../config/scoring';
 import { PALETTE } from '../config/theme';
-import type { HazardCrossing } from '../analysis/hazards';
+import type { AnalysisResult } from '../analysis/scoring';
 import './PlaybackScreen.css';
 
 interface PlaybackEvent {
@@ -15,49 +15,68 @@ interface PlaybackEvent {
 }
 
 function buildEvents(
-  crossings: HazardCrossing[],
-  pathLen: number,
+  result: AnalysisResult | null,
   isGetaway: boolean,
-  entryReached: boolean,
-  vaultReached: boolean,
-  exitReached: boolean,
+  approach: 'subtle' | 'loud' = 'subtle',
 ): PlaybackEvent[] {
+  if (!result) return [];
   const events: PlaybackEvent[] = [];
+  const { crossings, connectivity } = result;
+  const pathLen = (result as any).path?.length || connectivity?.path?.length || 0;
 
-  if (entryReached) {
+  if (connectivity.entryReached) {
     events.push({
       time: 0,
-      message: isGetaway ? 'Leaving the target' : 'Entry breach',
+      message: isGetaway
+        ? 'Getaway: Leaving the target building'
+        : approach === 'subtle'
+        ? 'Silent Ingress: Service & vent access cleared'
+        : 'Kinetic Entry: C4 structural wall breach detonated!',
       type: 'info',
     });
   }
 
   for (const c of crossings) {
     const t = pathLen > 0 ? c.pathIndex / pathLen : 0;
-    events.push({
-      time: t,
-      message: `${c.hazardLabel}: exposure`,
-      type: 'hazard',
-    });
+    const isCam = c.hazardId.startsWith('C');
+    if (approach === 'loud' && !isGetaway && isCam) {
+      events.push({
+        time: t,
+        message: `${c.hazardLabel}: camera disregarded (loud breach)`,
+        type: 'info',
+      });
+    } else {
+      events.push({
+        time: t,
+        message: `${c.hazardLabel}: exposure detected`,
+        type: 'hazard',
+      });
+    }
   }
 
-  if (vaultReached) {
+  if (connectivity.vaultReached) {
     events.push({
       time: isGetaway ? 1 : 0.5,
-      message: isGetaway ? COPY.exitReached : COPY.vaultReached,
+      message: isGetaway
+        ? COPY.exitReached
+        : approach === 'subtle'
+        ? 'Vault: Biometric lock cracked silently'
+        : 'Vault: Heavy thermal lance blast through vault!',
       type: 'success',
     });
   }
 
-  if (exitReached && !isGetaway) {
+  if (connectivity.exitReached && !isGetaway) {
     events.push({
       time: 1,
-      message: COPY.exitReached,
+      message: approach === 'subtle'
+        ? 'Exit reached — clean ghost exfiltration!'
+        : 'Exit reached — perimeter breached into getaway vehicle!',
       type: 'success',
     });
   }
 
-  if (!vaultReached && !exitReached) {
+  if (!connectivity.vaultReached && !connectivity.exitReached) {
     events.push({
       time: 1,
       message: COPY.planIncomplete,
@@ -119,6 +138,8 @@ export function PlaybackScreen() {
     }
   }, []);
 
+  const approach = useStore((s) => s.approach);
+
   const drawPlayback = useCallback(
     (
       bgImage: string,
@@ -156,7 +177,8 @@ export function PlaybackScreen() {
           const idx = Math.floor(progress * (path.length - 1));
 
           if (path.length > 1) {
-            ctx.strokeStyle = PALETTE.routeTrail;
+            const isSubtleInfil = phase === 'infiltration' && approach === 'subtle';
+            ctx.strokeStyle = isSubtleInfil ? 'rgba(0, 240, 255, 0.75)' : PALETTE.routeTrail;
             ctx.lineWidth = 4;
             ctx.lineCap = 'round';
             ctx.beginPath();
@@ -175,9 +197,10 @@ export function PlaybackScreen() {
             const cx = path[idx][0] * ANALYSIS.cellSize + ANALYSIS.cellSize / 2;
             const cy = path[idx][1] * ANALYSIS.cellSize + ANALYSIS.cellSize / 2;
 
-            ctx.shadowColor = PALETTE.hotPink;
+            const glowColor = isSubtleInfil ? PALETTE.cyan : PALETTE.hotPink;
+            ctx.shadowColor = glowColor;
             ctx.shadowBlur = 20;
-            ctx.fillStyle = PALETTE.hotPink;
+            ctx.fillStyle = glowColor;
             ctx.beginPath();
             ctx.arc(cx, cy, 7, 0, Math.PI * 2);
             ctx.fill();
@@ -212,7 +235,7 @@ export function PlaybackScreen() {
       };
       img.src = bgImage;
     },
-    [skipped, shakeCanvas],
+    [skipped, shakeCanvas, phase, approach],
   );
 
   useEffect(() => {
@@ -221,47 +244,57 @@ export function PlaybackScreen() {
 
   useEffect(() => {
     if (phase === 'infiltration' && infiltrationImage && infiltrationResult) {
-      const events = buildEvents(
-        infiltrationResult.crossings,
-        infiltrationResult.path.length,
-        false,
-        infiltrationResult.connectivity.entryReached,
-        infiltrationResult.connectivity.vaultReached,
-        infiltrationResult.connectivity.exitReached,
-      );
+      const events = buildEvents(infiltrationResult, false, approach);
       drawPlayback(infiltrationImage, infiltrationResult.path, events, () => {
         setTimeout(() => setPhase('getaway'), 800);
       });
     } else if (phase === 'infiltration') {
       setTimeout(() => setPhase('getaway'), 0);
     }
-  }, [phase, infiltrationImage, infiltrationResult, drawPlayback]);
+  }, [phase, infiltrationImage, infiltrationResult, approach, drawPlayback]);
 
   useEffect(() => {
     if (phase === 'getaway' && getawayImage && getawayResult) {
-      const events = buildEvents(
-        getawayResult.crossings,
-        getawayResult.path.length,
-        true,
-        getawayResult.connectivity.entryReached,
-        getawayResult.connectivity.vaultReached,
-        getawayResult.connectivity.exitReached,
-      );
+      const events = buildEvents(getawayResult, true, approach);
       drawPlayback(getawayImage, getawayResult.path, events, () => {
         setTimeout(() => setPhase('done'), 800);
       });
     } else if (phase === 'getaway') {
       setTimeout(() => setPhase('done'), 0);
     }
-  }, [phase, getawayImage, getawayResult, drawPlayback]);
+  }, [phase, getawayImage, getawayResult, approach, drawPlayback]);
 
   const handleSkip = () => {
-    cancelAnimationFrame(animRef.current);
     setSkipped(true);
+    cancelAnimationFrame(animRef.current);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const currentImgSrc = phase === 'infiltration' ? infiltrationImage : getawayImage;
+    const currentPath = phase === 'infiltration' ? infiltrationResult?.path : getawayResult?.path;
+    const currentResult = phase === 'infiltration' ? infiltrationResult : getawayResult;
+
+    if (currentImgSrc && currentPath && currentResult) {
+      const img = new Image();
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        drawFullPath(ctx, currentPath);
+        const events = buildEvents(currentResult, phase === 'getaway', approach);
+        setLogEntries((prev) => [...prev, ...events]);
+      };
+      img.src = currentImgSrc;
+    }
+
     setPhase('done');
   };
 
-  const handleContinue = () => setScreen('briefing');
+  const handleContinue = () => {
+    setScreen('briefing');
+  };
 
   return (
     <div className="playback-screen" ref={containerRef}>
@@ -269,7 +302,11 @@ export function PlaybackScreen() {
         <button className="btn btn-ghost" onClick={goBack} type="button">
           {COPY.back}
         </button>
-        <h2 className="screen-title">RUN THE PLAN</h2>
+        <h2 className="screen-title">
+          {phase === 'infiltration'
+            ? (approach === 'subtle' ? 'STEALTH INFILTRATION' : 'KINETIC BREACH')
+            : 'HEIST PLAYBACK'}
+        </h2>
         <div />
       </header>
 
@@ -277,8 +314,8 @@ export function PlaybackScreen() {
         <div className="playback-canvas-wrap hud-brackets" ref={canvasWrapRef}>
           <canvas ref={canvasRef} className="playback-canvas" aria-label="Plan playback animation" role="img" />
           <div className="playback-phase-label">
-            {phase === 'infiltration' && 'INFILTRATION'}
-            {phase === 'getaway' && 'GETAWAY'}
+            {phase === 'infiltration' && (approach === 'subtle' ? 'INFILTRATION (SUBTLE)' : 'INFILTRATION (LOUD)')}
+            {phase === 'getaway' && 'GETAWAY ROUTE'}
             {phase === 'done' && 'COMPLETE'}
           </div>
         </div>

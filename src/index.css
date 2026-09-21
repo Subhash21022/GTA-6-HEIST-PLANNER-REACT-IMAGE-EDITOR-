@@ -93,6 +93,7 @@ body {
   min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
+  z-index: 1;
 }
 
 /* Scanline texture overlay */

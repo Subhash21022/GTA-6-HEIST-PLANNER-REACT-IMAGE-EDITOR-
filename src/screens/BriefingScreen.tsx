@@ -7,6 +7,7 @@ import { composeBriefingBoard } from '../render/briefing';
 import { EditorModal } from '../editor/EditorModal';
 import { BRIEFING_TOOLS } from '../editor/toolConfigs';
 import { normaliseImageToSize } from '../utils/canvas';
+import { playSfx } from '../audio/soundManager';
 import './BriefingScreen.css';
 
 const BOARD_W = 1920;
@@ -27,6 +28,7 @@ export function BriefingScreen() {
   const addToast = useStore((s) => s.addToast);
   const customCrewPortraits = useStore((s) => s.customCrewPortraits);
   const reconImages = useStore((s) => s.reconImages);
+  const approach = useStore((s) => s.approach);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [boardImage, setBoardImage] = useState<string | null>(null);
@@ -68,6 +70,7 @@ export function BriefingScreen() {
         take,
         customCrewPortraits,
         reconImg,
+        approach,
       );
       if (!cancelled) {
         setBoardImage(board);
@@ -77,7 +80,7 @@ export function BriefingScreen() {
     })();
 
     return () => { cancelled = true; };
-  }, [target, codename, infiltrationImage, getawayImage, crew, grade, approved, take, setBriefingImage, customCrewPortraits, reconImages]);
+  }, [target, codename, infiltrationImage, getawayImage, crew, grade, approved, take, setBriefingImage, customCrewPortraits, reconImages, approach]);
 
   useEffect(() => {
     if (!composing && boardImage && containerRef.current) {
@@ -104,6 +107,7 @@ export function BriefingScreen() {
       setEditorOpen(false);
       const normalised = await normaliseImageToSize(dataUrl, BOARD_W, BOARD_H);
       setFinalImage(normalised);
+      playSfx('stinger');
       addToast(COPY.saved);
       setScreen('result');
     },
@@ -117,6 +121,7 @@ export function BriefingScreen() {
   const handleSkipEditor = () => {
     if (boardImage) {
       setFinalImage(boardImage);
+      playSfx('stinger');
       setScreen('result');
     }
   };
@@ -126,7 +131,14 @@ export function BriefingScreen() {
   return (
     <div className="briefing-screen" ref={containerRef}>
       <header className="screen-header">
-        <button className="btn btn-ghost" onClick={goBack} type="button">
+        <button
+          className="btn btn-ghost"
+          onClick={() => {
+            playSfx('back');
+            goBack();
+          }}
+          type="button"
+        >
           {COPY.back}
         </button>
         <h2 className="screen-title">MISSION BRIEFING</h2>

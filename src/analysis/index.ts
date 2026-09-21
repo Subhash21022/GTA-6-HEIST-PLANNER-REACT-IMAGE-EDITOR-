@@ -14,6 +14,7 @@ export function analyseInfiltration(
   editedData: Uint8ClampedArray,
   layout: TargetLayout,
   crewModifierIds: CrewModifierId[],
+  approach: 'subtle' | 'loud' = 'subtle',
 ): AnalysisResult {
   const inkGrid = detectInk(baseData, editedData, layout.canvasWidth, layout.canvasHeight);
   const dilated = dilate(inkGrid);
@@ -46,6 +47,7 @@ export function analyseInfiltration(
     layout.parLength,
     0,
     false,
+    approach,
   );
 }
 

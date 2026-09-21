@@ -1,0 +1,183 @@
+/* ── SLEEK GTA SOUND SYMBOL & VOLUME CONTROL ───────────────────────────── */
+
+.sound-widget {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  height: 38px;
+  width: 38px;
+  background: rgba(10, 15, 26, 0.88);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: 19px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 240, 255, 0.15);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: width 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease,
+              box-shadow 0.2s ease,
+              background 0.2s ease;
+  user-select: none;
+}
+
+.sound-widget:hover,
+.sound-widget.expanded {
+  width: 175px;
+  background: rgba(14, 20, 32, 0.96);
+  border-color: #00f0ff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.75), 0 0 16px rgba(0, 240, 255, 0.35);
+}
+
+.sound-widget.muted {
+  border-color: rgba(255, 45, 120, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 45, 120, 0.2);
+}
+
+.sound-widget.muted:hover,
+.sound-widget.muted.expanded {
+  border-color: #ff2d78;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.75), 0 0 16px rgba(255, 45, 120, 0.35);
+}
+
+/* Sound Symbol Button */
+.sound-symbol-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #00f0ff;
+  outline: none;
+  transition: transform 0.15s ease, color 0.2s ease;
+}
+
+.sound-symbol-btn:hover {
+  transform: scale(1.12);
+  color: #ffffff;
+}
+
+.sound-widget.muted .sound-symbol-btn {
+  color: #ff2d78;
+}
+
+.sound-icon {
+  display: block;
+  transition: all 0.2s ease;
+}
+
+/* Expandable Volume Slider & Label */
+.sound-slider-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 12px;
+  padding-right: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(12px);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.sound-widget.expanded .sound-slider-wrapper {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* Custom Styled Range Slider */
+.sound-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 78px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  transition: background 0.2s ease;
+}
+
+.sound-slider:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Slider Thumb (Webkit) */
+.sound-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.9);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.sound-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 1);
+}
+
+/* Slider Thumb (Firefox) */
+.sound-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.9);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.sound-slider::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 1);
+}
+
+/* Muted slider thumb */
+.sound-widget.muted .sound-slider::-webkit-slider-thumb {
+  background: #ff2d78;
+  box-shadow: 0 0 8px rgba(255, 45, 120, 0.9);
+}
+
+.sound-widget.muted .sound-slider::-moz-range-thumb {
+  background: #ff2d78;
+  box-shadow: 0 0 8px rgba(255, 45, 120, 0.9);
+}
+
+/* Volume Percentage Label */
+.sound-percent-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: #00f0ff;
+  min-width: 32px;
+  text-align: right;
+  letter-spacing: 0.5px;
+}
+
+.sound-widget.muted .sound-percent-label {
+  color: #ff2d78;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .sound-widget {
+    top: 10px;
+    right: 10px;
+  }
+}

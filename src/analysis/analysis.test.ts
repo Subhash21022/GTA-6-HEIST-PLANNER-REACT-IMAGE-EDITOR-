@@ -255,4 +255,28 @@ describe('scoring', () => {
     expect(a.score).toBe(b.score);
     expect(a.grade).toBe(b.grade);
   });
+
+  it('handles subtle vs loud approach differently regarding cameras', () => {
+    const connectivity = {
+      entryReached: true,
+      entryId: 'E1',
+      vaultReached: true,
+      exitReached: true,
+      exitId: 'X1',
+      path: Array.from({ length: 50 }, (_, i): [number, number] => [i, 5]),
+      reason: 'Complete',
+    };
+
+    const cameraCrossings = [
+      { hazardId: 'C1', hazardLabel: 'Camera C1', pathIndex: 10 },
+      { hazardId: 'C2', hazardLabel: 'Camera C2', pathIndex: 20 },
+    ];
+
+    const subtleScore = computeScore(connectivity, cameraCrossings, [], 50, 1000000, false, 'subtle');
+    const loudScore = computeScore(connectivity, cameraCrossings, [], 50, 1000000, false, 'loud');
+
+    // In Loud, cameras are ignored during infiltration, so stealth penalty for cameras is 0
+    expect(loudScore.score).toBeGreaterThan(subtleScore.score);
+    expect(loudScore.findings.some((f) => f.message.includes('camera ignored'))).toBe(true);
+  });
 });

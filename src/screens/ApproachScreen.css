@@ -1,0 +1,237 @@
+.approach-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 0 clamp(16px, 4vw, 40px) clamp(30px, 5vw, 60px);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.approach-subtitle {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: -16px;
+  margin-bottom: clamp(24px, 4vw, 36px);
+  letter-spacing: 1px;
+}
+
+.approach-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  gap: clamp(20px, 3.5vw, 36px);
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.approach-card {
+  position: relative;
+  background: var(--color-navy-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.12);
+  border-radius: var(--radius-xl);
+  padding: clamp(20px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.approach-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.approach-card.subtle {
+  border-color: rgba(0, 240, 255, 0.25);
+}
+
+.approach-card.subtle:hover {
+  border-color: var(--color-cyan);
+  box-shadow: var(--shadow-cyan-glow), 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.approach-card.loud {
+  border-color: rgba(255, 18, 117, 0.25);
+}
+
+.approach-card.loud:hover {
+  border-color: var(--color-hot-pink);
+  box-shadow: var(--shadow-glow), 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.approach-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.approach-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.approach-badge.subtle {
+  color: var(--color-cyan);
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.approach-badge.loud {
+  color: var(--color-hot-pink);
+  background: rgba(255, 18, 117, 0.12);
+  border: 1px solid rgba(255, 18, 117, 0.3);
+}
+
+.approach-code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+}
+
+.approach-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.7rem);
+  letter-spacing: 2px;
+  margin: 0 0 6px 0;
+  line-height: 1.1;
+}
+
+.approach-card.subtle .approach-title {
+  color: var(--color-cyan);
+}
+
+.approach-card.loud .approach-title {
+  color: var(--color-hot-pink);
+}
+
+.approach-tagline {
+  font-family: var(--font-typewriter);
+  font-size: 0.95rem;
+  color: var(--color-sand);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.approach-tactical-preview {
+  height: 140px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.approach-card.subtle .approach-tactical-preview {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.08) 0%, rgba(13, 27, 42, 0.95) 100%);
+}
+
+.approach-card.loud .approach-tactical-preview {
+  background: linear-gradient(135deg, rgba(255, 18, 117, 0.08) 0%, rgba(30, 10, 20, 0.95) 100%);
+}
+
+.approach-preview-graphic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.approach-icon-large {
+  font-size: 2.8rem;
+  filter: drop-shadow(0 0 12px currentColor);
+}
+
+.approach-card.subtle .approach-icon-large {
+  color: var(--color-cyan);
+}
+
+.approach-card.loud .approach-icon-large {
+  color: var(--color-hot-pink);
+}
+
+.approach-preview-caption {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: var(--color-text-secondary);
+}
+
+.approach-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.approach-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+}
+
+.approach-feature-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.approach-feature-text strong {
+  color: #fff;
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 2px;
+}
+
+.approach-synergy {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 24px;
+}
+
+.approach-synergy-title {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.approach-synergy-desc {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+.approach-select-btn {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}

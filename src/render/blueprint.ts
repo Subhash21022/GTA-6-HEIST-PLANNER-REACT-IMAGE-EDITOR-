@@ -53,29 +53,106 @@ function drawTitleBlock(
   targetName: string,
   w: number,
   h: number,
+  approach: 'subtle' | 'loud' = 'subtle',
 ): void {
-  const bx = w - 320;
-  const by = h - 100;
-  const bw = 300;
-  const bh = 80;
+  const bx = w - 340;
+  const by = h - 110;
+  const bw = 320;
+  const bh = 95;
 
-  ctx.strokeStyle = PALETTE.cyanMuted;
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = approach === 'subtle' ? PALETTE.cyanMuted : PALETTE.hotPink;
+  ctx.lineWidth = 1.5;
   ctx.strokeRect(bx, by, bw, bh);
 
-  ctx.fillStyle = PALETTE.cyan;
+  ctx.fillStyle = approach === 'subtle' ? PALETTE.cyan : PALETTE.hotPink;
   ctx.font = `bold 16px ${FONTS.mono}`;
   ctx.textAlign = 'left';
   ctx.fillText(targetName.toUpperCase(), bx + 10, by + 22);
 
   ctx.fillStyle = PALETTE.blueprintLabel;
   ctx.font = `12px ${FONTS.mono}`;
-  ctx.fillText(COPY.location.toUpperCase(), bx + 10, by + 42);
-  ctx.fillText('SCALE: 1:200', bx + 10, by + 58);
+  ctx.fillText(COPY.location.toUpperCase(), bx + 10, by + 40);
+  ctx.fillText('SCALE: 1:200', bx + 10, by + 56);
 
-  ctx.fillStyle = PALETTE.hotPink;
-  ctx.font = `bold 11px ${FONTS.mono}`;
-  ctx.fillText(COPY.confidential, bx + 10, by + 74);
+  ctx.fillStyle = approach === 'subtle' ? PALETTE.teal : PALETTE.hotPink;
+  ctx.font = `bold 12px ${FONTS.mono}`;
+  ctx.fillText(`APPROACH: ${approach.toUpperCase()} ROUTE`, bx + 10, by + 74);
+
+  ctx.fillStyle = PALETTE.gold;
+  ctx.font = `bold 10px ${FONTS.mono}`;
+  ctx.fillText(COPY.confidential, bx + 10, by + 90);
+}
+
+export function drawApproachOverlays(
+  ctx: CanvasRenderingContext2D,
+  layout: TargetLayout,
+  approach: 'subtle' | 'loud',
+): void {
+  ctx.save();
+  const v = layout.vault;
+  if (approach === 'subtle') {
+    // Ventilation and stealth markers
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.7)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(v.x - 120, v.y - 70, 100, 36);
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+    ctx.fillRect(v.x - 120, v.y - 70, 100, 36);
+    ctx.fillStyle = PALETTE.cyan;
+    ctx.font = `bold 10px ${FONTS.mono}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('VENT ACCESS', v.x - 70, v.y - 48);
+
+    // Keycard hack station
+    ctx.fillStyle = PALETTE.gold;
+    ctx.font = `bold 10px ${FONTS.mono}`;
+    ctx.fillText('⚡ KEYCARD BYPASS', v.x + v.w / 2, v.y - 10);
+  } else {
+    // Loud assault: C4 breach and SWAT intercept
+    const breachX = v.x + v.w + 10;
+    const breachY = v.y + v.h / 2 - 25;
+    ctx.strokeStyle = PALETTE.danger;
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([4, 4]);
+    ctx.strokeRect(breachX, breachY, 70, 50);
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(255, 42, 68, 0.2)';
+    ctx.fillRect(breachX, breachY, 70, 50);
+
+    ctx.fillStyle = '#ff2a44';
+    ctx.font = `bold 10px ${FONTS.mono}`;
+    ctx.textAlign = 'center';
+    ctx.fillText('💣 C4 BREACH', breachX + 35, breachY + 20);
+    ctx.fillText('WEAK POINT', breachX + 35, breachY + 34);
+
+    // Blast radius arc
+    ctx.strokeStyle = 'rgba(255, 100, 0, 0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.arc(breachX + 35, breachY + 25, 55, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // SWAT intercept warning in lobby
+    const lobby = layout.rooms[0]?.rect;
+    if (lobby) {
+      ctx.strokeStyle = 'rgba(255, 42, 68, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 6]);
+      ctx.strokeRect(lobby.x + 15, lobby.y + 15, lobby.w - 30, lobby.h - 30);
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(255, 42, 68, 0.08)';
+      ctx.fillRect(lobby.x + 15, lobby.y + 15, lobby.w - 30, lobby.h - 30);
+
+      ctx.fillStyle = PALETTE.danger;
+      ctx.font = `bold 11px ${FONTS.mono}`;
+      ctx.textAlign = 'center';
+      ctx.fillText('🚨 SWAT INTERCEPT CHOKEPOINT', lobby.x + lobby.w / 2, lobby.y + 35);
+    }
+  }
+  ctx.restore();
 }
 
 function drawGrain(ctx: CanvasRenderingContext2D, w: number, h: number): void {
@@ -95,7 +172,11 @@ export interface RenderedBlueprint {
   imageData: ImageData;
 }
 
-export function renderBlueprint(layout: TargetLayout, targetName: string): RenderedBlueprint {
+export function renderBlueprint(
+  layout: TargetLayout,
+  targetName: string,
+  approach: 'subtle' | 'loud' = 'subtle',
+): RenderedBlueprint {
   const { canvasWidth: w, canvasHeight: h } = layout;
   const [canvas, ctx] = createCanvas(w, h);
 
@@ -156,7 +237,8 @@ export function renderBlueprint(layout: TargetLayout, targetName: string): Rende
     );
   }
 
-  drawTitleBlock(ctx, targetName, w, h);
+  drawApproachOverlays(ctx, layout, approach);
+  drawTitleBlock(ctx, targetName, w, h, approach);
   drawGrain(ctx, w, h);
 
   const imageData = getImageData(canvas, ctx);

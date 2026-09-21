@@ -27,6 +27,7 @@ export function computeScore(
   parLength: number,
   baseTake: number,
   isGetaway: boolean,
+  approach: 'subtle' | 'loud' = 'subtle',
 ): AnalysisResult {
   const findings: Finding[] = [];
 
@@ -98,10 +99,19 @@ export function computeScore(
   const effectivePatrols = modCtx.patrolCrossings;
   const effectiveRoadblocks = modCtx.roadblockCrossings;
 
-  let totalHazardPenalty =
-    effectiveCameras * HAZARD_PENALTY.camera +
-    effectivePatrols * HAZARD_PENALTY.patrol +
-    effectiveRoadblocks * HAZARD_PENALTY.roadblock;
+  let totalHazardPenalty = 0;
+
+  if (approach === 'loud' && !isGetaway) {
+    // In Loud Infiltration, cameras are disregarded (alarms triggered by breach)
+    // Patrol / SWAT chokepoint confrontations are the primary hazard
+    totalHazardPenalty = effectivePatrols * (HAZARD_PENALTY.patrol * 1.5);
+  } else {
+    // Subtle Infiltration or Getaway: cameras and patrols strictly enforced
+    totalHazardPenalty =
+      effectiveCameras * HAZARD_PENALTY.camera +
+      effectivePatrols * HAZARD_PENALTY.patrol +
+      effectiveRoadblocks * HAZARD_PENALTY.roadblock;
+  }
 
   if (modCtx.hazardPenaltyReduction > 0) {
     const penalties = [
@@ -120,8 +130,17 @@ export function computeScore(
   const stealthScore = Math.max(0, 100 - totalHazardPenalty);
 
   for (const c of crossings) {
+    const isCam = c.hazardId.startsWith('C');
+    if (approach === 'loud' && !isGetaway && isCam) {
+      findings.push({
+        message: `${c.hazardLabel}: camera ignored during loud breach assault`,
+        type: 'warning',
+      });
+      continue;
+    }
+
     const reduced =
-      (c.hazardId.startsWith('C') && effectiveCameras < cameraCrossings) ||
+      (isCam && effectiveCameras < cameraCrossings) ||
       (c.hazardId.startsWith('P') && effectivePatrols < patrolCrossings) ||
       (c.hazardId.startsWith('RB') && effectiveRoadblocks < roadblockCrossings);
     findings.push({
@@ -130,14 +149,38 @@ export function computeScore(
     });
   }
 
+  // Bonus findings for approach execution
+  if (approach === 'subtle' && !isGetaway && cameraCrossings === 0 && patrolCrossings === 0 && connectivity.vaultReached) {
+    findings.unshift({
+      message: '★ GHOST OPERATOR: Zero alarms or surveillance exposures tripped!',
+      type: 'success',
+    });
+  } else if (approach === 'loud' && !isGetaway && connectivity.vaultReached && connectivity.exitReached) {
+    findings.unshift({
+      message: '★ KINETIC BREACH: Explosive penetration and rapid vault extraction!',
+      type: 'success',
+    });
+  }
+
   const routeLength = connectivity.path.length;
   const efficiencyRatio = parLength > 0 ? Math.min(1, parLength / Math.max(routeLength, 1)) : 1;
   const efficiencyScore = efficiencyRatio * 100;
 
-  const rawScore =
-    (completenessScore / 100) * SCORING_WEIGHTS.completeness +
-    (stealthScore / 100) * SCORING_WEIGHTS.stealth +
-    (efficiencyScore / 100) * SCORING_WEIGHTS.efficiency;
+  // Approach-weighted composite score
+  let rawScore = 0;
+  if (approach === 'loud' && !isGetaway) {
+    // Loud: 55% Completeness, 20% SWAT Suppression, 25% Speed/Efficiency
+    rawScore =
+      (completenessScore / 100) * 55 +
+      (stealthScore / 100) * 20 +
+      (efficiencyScore / 100) * 25;
+  } else {
+    // Subtle: 60% Completeness, 30% Stealth, 10% Efficiency
+    rawScore =
+      (completenessScore / 100) * SCORING_WEIGHTS.completeness +
+      (stealthScore / 100) * SCORING_WEIGHTS.stealth +
+      (efficiencyScore / 100) * SCORING_WEIGHTS.efficiency;
+  }
 
   const score = Math.round(Math.max(0, Math.min(100, rawScore)));
   const grade = letterGrade(score);

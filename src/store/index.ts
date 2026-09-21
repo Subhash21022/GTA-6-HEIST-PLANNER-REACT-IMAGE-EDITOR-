@@ -7,6 +7,7 @@ import { saveMeta, loadMeta, clearMeta, saveImage, loadImage, clearAllImages } f
 export type Screen =
   | 'title'
   | 'target'
+  | 'approach'
   | 'crew'
   | 'infiltration'
   | 'getaway'
@@ -15,7 +16,7 @@ export type Screen =
   | 'result';
 
 const SCREEN_ORDER: Screen[] = [
-  'title', 'target', 'crew', 'infiltration', 'getaway', 'playback', 'briefing', 'result',
+  'title', 'target', 'approach', 'crew', 'infiltration', 'getaway', 'playback', 'briefing', 'result',
 ];
 
 export interface Toast {
@@ -26,6 +27,7 @@ export interface Toast {
 interface AppState {
   screen: Screen;
   target: Target | null;
+  approach: 'subtle' | 'loud';
   crew: CrewMember[];
   infiltrationImage: string | null;
   infiltrationResult: AnalysisResult | null;
@@ -44,6 +46,7 @@ interface AppState {
   setScreen: (s: Screen) => void;
   goBack: () => void;
   setTarget: (t: Target) => void;
+  setApproach: (a: 'subtle' | 'loud') => void;
   setCrew: (c: CrewMember[]) => void;
   setInfiltrationImage: (img: string | null) => void;
   setInfiltrationResult: (r: AnalysisResult | null) => void;
@@ -69,6 +72,7 @@ let toastId = 0;
 export const useStore = create<AppState>((set, get) => ({
   screen: 'title',
   target: null,
+  approach: 'subtle',
   crew: [],
   infiltrationImage: null,
   infiltrationResult: null,
@@ -95,6 +99,7 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   setTarget: (t) => set({ target: t }),
+  setApproach: (a) => set({ approach: a }),
   setCrew: (c) => set({ crew: c }),
 
   setInfiltrationImage: (img) => {
@@ -162,6 +167,7 @@ export const useStore = create<AppState>((set, get) => ({
     set({
       screen: 'title',
       target: null,
+      approach: 'subtle',
       crew: [],
       infiltrationImage: null,
       infiltrationResult: null,
@@ -178,10 +184,11 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   persistState: () => {
-    const { target, crew, infiltrationResult, getawayResult, screen } = get();
+    const { target, approach, crew, infiltrationResult, getawayResult, screen } = get();
     if (!target) return;
     saveMeta({
       targetId: target.id,
+      approach,
       crewIds: crew.map((c) => c.id),
       infiltrationScore: infiltrationResult?.score ?? null,
       getawayScore: getawayResult?.score ?? null,
@@ -194,6 +201,7 @@ export const useStore = create<AppState>((set, get) => ({
     if (!meta) return;
 
     const target = TARGETS.find((t) => t.id === meta.targetId) ?? null;
+    const approach = meta.approach ?? 'subtle';
     const crew = meta.crewIds
       .map((id) => CREW_MEMBERS.find((c) => c.id === id))
       .filter((c): c is CrewMember => c !== undefined);
@@ -221,6 +229,7 @@ export const useStore = create<AppState>((set, get) => ({
 
     set({
       target,
+      approach,
       crew,
       infiltrationImage,
       getawayImage,

@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useStore, type Screen } from './store';
 import { TitleScreen } from './screens/TitleScreen';
 import { TargetScreen } from './screens/TargetScreen';
+import { ApproachScreen } from './screens/ApproachScreen';
 import { CrewScreen } from './screens/CrewScreen';
 import { PlanningScreen } from './screens/PlanningScreen';
 import { PlaybackScreen } from './screens/PlaybackScreen';
@@ -11,12 +12,15 @@ import { BriefingScreen } from './screens/BriefingScreen';
 import { ResultScreen } from './screens/ResultScreen';
 import { ToastContainer } from './ui/Toast';
 import { NarrowScreen } from './ui/NarrowScreen';
+import { ScreenBackground } from './ui/ScreenBackground';
+import { AudioToggle } from './ui/AudioToggle';
 
 gsap.registerPlugin();
 
 const SCREENS: Record<Screen, () => React.JSX.Element> = {
   title: () => <TitleScreen />,
   target: () => <TargetScreen />,
+  approach: () => <ApproachScreen />,
   crew: () => <CrewScreen />,
   infiltration: () => <PlanningScreen stage="infiltration" />,
   getaway: () => <PlanningScreen stage="getaway" />,
@@ -59,6 +63,8 @@ function App() {
     <>
       <a href="#main-content" className="skip-link">Skip to content</a>
       <NarrowScreen />
+      <ScreenBackground screen={screen} />
+      <AudioToggle />
       <main id="main-content" className="app" ref={containerRef}>
         <ScreenComponent />
       </main>
