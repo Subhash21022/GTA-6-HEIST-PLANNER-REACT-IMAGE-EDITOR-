@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { useStore } from '../store';
@@ -6,6 +6,8 @@ import { COPY } from '../config/copy';
 import { ANALYSIS } from '../config/scoring';
 import { PALETTE } from '../config/theme';
 import type { AnalysisResult } from '../analysis/scoring';
+import { calculateWantedLevel } from '../config/wantedLevel';
+import { WantedStars } from '../ui/WantedStars';
 import './PlaybackScreen.css';
 
 interface PlaybackEvent {
@@ -139,6 +141,11 @@ export function PlaybackScreen() {
   }, []);
 
   const approach = useStore((s) => s.approach);
+  const crew = useStore((s) => s.crew);
+
+  const wantedInfo = useMemo(() => {
+    return calculateWantedLevel(approach, infiltrationResult, getawayResult, crew);
+  }, [approach, infiltrationResult, getawayResult, crew]);
 
   const drawPlayback = useCallback(
     (
@@ -174,9 +181,9 @@ export function PlaybackScreen() {
 
           ctx.drawImage(img, 0, 0);
 
-          const idx = Math.floor(progress * (path.length - 1));
+          const idx = Math.max(0, Math.min(path.length - 1, Math.floor(progress * (path.length - 1))));
 
-          if (path.length > 1) {
+          if (path.length > 1 && path[idx] && path[0]) {
             const isSubtleInfil = phase === 'infiltration' && approach === 'subtle';
             ctx.strokeStyle = isSubtleInfil ? 'rgba(0, 240, 255, 0.75)' : PALETTE.routeTrail;
             ctx.lineWidth = 4;
@@ -187,10 +194,12 @@ export function PlaybackScreen() {
               path[0][1] * ANALYSIS.cellSize + ANALYSIS.cellSize / 2,
             );
             for (let i = 1; i <= idx; i++) {
-              ctx.lineTo(
-                path[i][0] * ANALYSIS.cellSize + ANALYSIS.cellSize / 2,
-                path[i][1] * ANALYSIS.cellSize + ANALYSIS.cellSize / 2,
-              );
+              if (path[i]) {
+                ctx.lineTo(
+                  path[i][0] * ANALYSIS.cellSize + ANALYSIS.cellSize / 2,
+                  path[i][1] * ANALYSIS.cellSize + ANALYSIS.cellSize / 2,
+                );
+              }
             }
             ctx.stroke();
 
@@ -302,11 +311,14 @@ export function PlaybackScreen() {
         <button className="btn btn-ghost" onClick={goBack} type="button">
           {COPY.back}
         </button>
-        <h2 className="screen-title">
-          {phase === 'infiltration'
-            ? (approach === 'subtle' ? 'STEALTH INFILTRATION' : 'KINETIC BREACH')
-            : 'HEIST PLAYBACK'}
-        </h2>
+        <div className="playback-header-center">
+          <h2 className="screen-title">
+            {phase === 'infiltration'
+              ? (approach === 'subtle' ? 'STEALTH INFILTRATION' : 'KINETIC BREACH')
+              : 'HEIST PLAYBACK'}
+          </h2>
+          <WantedStars wantedInfo={wantedInfo} size="sm" showDetails={false} />
+        </div>
         <div />
       </header>
 

@@ -1,0 +1,173 @@
+/* ── VCPD POLICE RADIO SCANNER WIDGET ─────────────────────────────────── */
+
+.police-scanner {
+  background: rgba(8, 14, 26, 0.92);
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.police-scanner.transmitting {
+  border-color: #00f0ff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7), 0 0 18px rgba(0, 240, 255, 0.35);
+}
+
+.scanner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 6px;
+}
+
+.scanner-channel-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scanner-rec-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ffa3;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.8);
+  animation: scannerDotBlink 1.2s infinite ease-in-out;
+}
+
+@keyframes scannerDotBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
+}
+
+.police-scanner.transmitting .scanner-rec-dot {
+  background: #ff1275;
+  box-shadow: 0 0 10px rgba(255, 18, 117, 0.9);
+}
+
+.scanner-channel-text {
+  font-family: var(--font-subheading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-cyan);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Radio Waveform Equalizer Bars */
+.scanner-waveforms {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 14px;
+}
+
+.wave-bar {
+  width: 3px;
+  height: 4px;
+  background: rgba(0, 240, 255, 0.35);
+  border-radius: 1px;
+  transition: height 0.15s ease, background 0.15s ease;
+}
+
+.wave-bar.animating {
+  background: #00f0ff;
+  box-shadow: 0 0 6px rgba(0, 240, 255, 0.7);
+  animation: waveBarBounce 0.45s infinite alternate ease-in-out;
+}
+
+@keyframes waveBarBounce {
+  0% { height: 4px; }
+  50% { height: 14px; }
+  100% { height: 7px; }
+}
+
+/* Interactive Controls */
+.scanner-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scanner-btn {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  color: var(--color-cyan);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  font-family: var(--font-subheading);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.scanner-btn:hover {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.scanner-btn:active {
+  transform: scale(0.95);
+}
+
+/* Body & Transcript */
+.scanner-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.scanner-callsign {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.callsign-tag {
+  font-family: var(--font-gta);
+  font-size: 0.82rem;
+  color: #ffc83b;
+  letter-spacing: 1px;
+}
+
+.unit-tag {
+  font-family: var(--font-subheading);
+  font-size: 0.65rem;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.scanner-transcript {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #e8e0f0;
+  font-style: italic;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 640px) {
+  .scanner-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .scanner-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

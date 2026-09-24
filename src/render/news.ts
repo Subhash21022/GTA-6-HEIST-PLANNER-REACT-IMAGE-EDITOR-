@@ -3,6 +3,7 @@ import { PALETTE, FONTS } from '../config/theme';
 import { createCanvas, canvasToDataUrl } from '../utils/canvas';
 import { renderPortrait } from './portrait';
 import { renderCCTVFrame } from './cctv';
+import type { WantedLevelInfo, PoliceDispatchMessage } from '../config/wantedLevel';
 
 const W = 1920;
 const H = 1080;
@@ -257,6 +258,8 @@ export interface LiveNewsRenderOptions {
   crew: CrewMember[];
   rightPanelCanvas?: HTMLCanvasElement | null;
   annotatedFrameImg?: HTMLImageElement | null;
+  wantedInfo?: WantedLevelInfo;
+  dispatchMsg?: PoliceDispatchMessage | null;
 }
 
 /**
@@ -346,6 +349,8 @@ export function renderLiveNewsFrame(
     crew,
     rightPanelCanvas,
     annotatedFrameImg,
+    wantedInfo,
+    dispatchMsg,
   } = opts;
 
   const contentTop = BANNER_H + 3;
@@ -370,6 +375,8 @@ export function renderLiveNewsFrame(
     crew,
     targetName,
     annotatedFrameImg,
+    wantedInfo,
+    dispatchMsg,
   });
   ctx.restore();
 
@@ -422,6 +429,46 @@ export function renderLiveNewsFrame(
   ctx.fillStyle = PALETTE.hotPink;
   ctx.textAlign = 'center';
   ctx.fillText(breakingText, W - breakW / 2 - 20, 42);
+
+  // GTA Wanted Stars in News Banner
+  if (wantedInfo) {
+    const starsBoxW = 200;
+    const starsBoxX = W - breakW - 40 - starsBoxW;
+    const isFlashing = Math.floor(timeMs / 260) % 2 === 0;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(6, 10, 20, 0.65)';
+    ctx.fillRect(starsBoxX - 10, 16, starsBoxW, 48);
+    ctx.strokeStyle = wantedInfo.color;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(starsBoxX - 10, 16, starsBoxW, 48);
+
+    for (let i = 0; i < 5; i++) {
+      const starCx = starsBoxX + 16 + i * 36;
+      const isActive = i < wantedInfo.stars;
+      ctx.save();
+      ctx.font = '28px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (isActive) {
+        ctx.fillStyle = isFlashing ? wantedInfo.color : '#ffffff';
+        ctx.shadowColor = wantedInfo.glowColor;
+        ctx.shadowBlur = isFlashing ? 14 : 5;
+      } else {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.shadowBlur = 0;
+      }
+      ctx.fillText('★', starCx, 36);
+      ctx.restore();
+    }
+
+    ctx.fillStyle = wantedInfo.color;
+    ctx.font = `bold 10px ${FONTS.gta}`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`WANTED: ${wantedInfo.threatLevel}`, starsBoxX + starsBoxW / 2 - 10, 56);
+    ctx.restore();
+  }
 
   // 5. Render Bottom Ticker Bar
   ctx.fillStyle = '#060a14';

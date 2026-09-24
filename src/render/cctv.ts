@@ -1,5 +1,6 @@
 import type { CrewMember } from '../config/crew';
 import { FONTS } from '../config/theme';
+import type { WantedLevelInfo, PoliceDispatchMessage } from '../config/wantedLevel';
 
 export interface CCTVOptions {
   timeMs: number;
@@ -8,6 +9,8 @@ export interface CCTVOptions {
   crew: CrewMember[];
   targetName: string;
   annotatedFrameImg?: HTMLImageElement | null;
+  wantedInfo?: WantedLevelInfo;
+  dispatchMsg?: PoliceDispatchMessage | null;
 }
 
 export const CCTV_CAMERAS = [
@@ -25,7 +28,7 @@ export function renderCCTVFrame(
   h: number,
   opts: CCTVOptions,
 ): void {
-  const { timeMs, cameraIndex, approach, crew, targetName, annotatedFrameImg } = opts;
+  const { timeMs, cameraIndex, approach, crew, targetName, annotatedFrameImg, wantedInfo, dispatchMsg } = opts;
   const t = timeMs / 1000;
 
   // If user has saved an annotated freeze-frame from the React Image Editor, display it with CCTV HUD
@@ -33,7 +36,7 @@ export function renderCCTVFrame(
     ctx.drawImage(annotatedFrameImg, 0, 0, w, h);
     drawScanlines(ctx, w, h);
     drawVignette(ctx, w, h);
-    drawCCTVHUD(ctx, w, h, timeMs, cameraIndex, approach, targetName, crew, true);
+    drawCCTVHUD(ctx, w, h, timeMs, cameraIndex, approach, targetName, crew, true, wantedInfo, dispatchMsg);
     return;
   }
 
@@ -57,7 +60,7 @@ export function renderCCTVFrame(
   drawVignette(ctx, w, h);
 
   // HUD & Telemetry Overlays
-  drawCCTVHUD(ctx, w, h, timeMs, cameraIndex, approach, targetName, crew, false);
+  drawCCTVHUD(ctx, w, h, timeMs, cameraIndex, approach, targetName, crew, false, wantedInfo, dispatchMsg);
 }
 
 // ── ROAD CURVE & PERSPECTIVE HELPERS ─────────────────────────────────────────
@@ -1360,6 +1363,37 @@ function drawExplosionSparks(
   ctx.restore();
 }
 
+// ── STAR HELPER ────────────────────────────────────────────────────────────
+function drawStar(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  spikes: number,
+  outerRadius: number,
+  innerRadius: number,
+): void {
+  let rot = (Math.PI / 2) * 3;
+  let x = cx;
+  let y = cy;
+  const step = Math.PI / spikes;
+
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - outerRadius);
+  for (let i = 0; i < spikes; i++) {
+    x = cx + Math.cos(rot) * outerRadius;
+    y = cy + Math.sin(rot) * outerRadius;
+    ctx.lineTo(x, y);
+    rot += step;
+
+    x = cx + Math.cos(rot) * innerRadius;
+    y = cy + Math.sin(rot) * innerRadius;
+    ctx.lineTo(x, y);
+    rot += step;
+  }
+  ctx.lineTo(cx, cy - outerRadius);
+  ctx.closePath();
+}
+
 // ── CCTV / NEWS BROADCAST HUD ───────────────────────────────────────────────
 function drawCCTVHUD(
   ctx: CanvasRenderingContext2D,
@@ -1371,6 +1405,8 @@ function drawCCTVHUD(
   targetName: string,
   _crew: CrewMember[],
   isFreezeFrame: boolean,
+  wantedInfo?: WantedLevelInfo,
+  dispatchMsg?: PoliceDispatchMessage | null,
 ): void {
   ctx.save();
 
@@ -1406,6 +1442,46 @@ function drawCCTVHUD(
   ctx.font = `bold 13px ${FONTS.mono}`;
   ctx.textAlign = 'right';
   ctx.fillText(fullTimestamp, w - 24, 33);
+
+  // ── GTA 5-STAR WANTED LEVEL HUD (TOP-RIGHT) ──
+  if (wantedInfo) {
+    const numStars = 5;
+    const starOuter = 8.5;
+    const starInner = 4.0;
+    const starSpacing = 22;
+    const starsStartX = w - 24 - (numStars - 1) * starSpacing;
+    const starsY = 56;
+    const isFlashing = Math.floor(timeMs / 260) % 2 === 0;
+
+    for (let i = 0; i < numStars; i++) {
+      const starX = starsStartX + i * starSpacing;
+      const isActive = i < wantedInfo.stars;
+      ctx.save();
+      drawStar(ctx, starX, starsY, 5, starOuter, starInner);
+      if (isActive) {
+        ctx.fillStyle = isFlashing ? wantedInfo.color : '#ffffff';
+        ctx.shadowColor = wantedInfo.glowColor;
+        ctx.shadowBlur = isFlashing ? 12 : 5;
+        ctx.fill();
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Threat subtitle under the stars
+    ctx.fillStyle = wantedInfo.color;
+    ctx.font = `bold 10px ${FONTS.gta}`;
+    ctx.textAlign = 'right';
+    ctx.fillText(`${wantedInfo.title} // ${wantedInfo.threatLevel}`, w - 24, 76);
+  }
 
   // Center crosshair / gyro gimbal
   if (cameraIndex === 0) {
@@ -1445,6 +1521,60 @@ function drawCCTVHUD(
     ctx.fillText('FLIR HD 36X GIMBAL', cx + 55, cy - 35);
     ctx.fillText('ALT: 1,180 FT // GYRO-STAB', cx + 55, cy - 20);
     ctx.fillText(`AZ: ${Math.round(180 + Math.sin(t * 0.8) * 12)}° // TRACKING`, cx + 55, cy - 5);
+  }
+
+  // ── LIVE VCPD POLICE RADIO DISPATCH BANNER (LOWER CHYRON) ──
+  if (dispatchMsg) {
+    ctx.save();
+    const bannerY = h - 68;
+    const bannerH = 24;
+    const bannerW = Math.min(w - 48, 880);
+
+    // Dark tactical background with cyan glowing border
+    ctx.fillStyle = 'rgba(4, 9, 18, 0.88)';
+    ctx.fillRect(24, bannerY, bannerW, bannerH);
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(24, bannerY, bannerW, bannerH);
+
+    // Tactical left accent notch
+    ctx.fillStyle = '#00f0ff';
+    ctx.fillRect(24, bannerY, 4, bannerH);
+
+    // Blinking radio transmit LED
+    const txBlink = Math.floor(timeMs / 300) % 2 === 0;
+    ctx.fillStyle = txBlink ? '#ff2d78' : '#ffe600';
+    ctx.beginPath();
+    ctx.arc(38, bannerY + bannerH / 2, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Callsign and channel
+    ctx.fillStyle = '#00f0ff';
+    ctx.font = `bold 10px ${FONTS.mono}`;
+    ctx.textAlign = 'left';
+    const prefix = `[📻 ${dispatchMsg.callsign} // ${dispatchMsg.channel}]: `;
+    ctx.fillText(prefix, 48, bannerY + 16);
+
+    const prefixWidth = ctx.measureText(prefix).width;
+
+    // Dispatch speech transcript
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `11px ${FONTS.mono}`;
+    let dispText = `"${dispatchMsg.message}"`;
+    const maxTextW = bannerW - 65 - prefixWidth;
+    if (ctx.measureText(dispText).width > maxTextW) {
+      dispText = dispText.slice(0, 72) + '..."';
+    }
+    ctx.fillText(dispText, 48 + prefixWidth, bannerY + 16);
+
+    // Animated radio equalizer bars on right edge
+    const eqX = 24 + bannerW - 44;
+    for (let bar = 0; bar < 4; bar++) {
+      const barH = 5 + Math.abs(Math.sin(timeMs / 140 + bar * 1.3)) * 8;
+      ctx.fillStyle = '#00f0ff';
+      ctx.fillRect(eqX + bar * 6, bannerY + (bannerH - barH) / 2, 3, barH);
+    }
+    ctx.restore();
   }
 
   // Bottom-left info

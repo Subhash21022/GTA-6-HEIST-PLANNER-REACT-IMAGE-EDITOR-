@@ -1,0 +1,119 @@
+/* ── GTA 5-STAR WANTED LEVEL HUD ────────────────────────────────────────── */
+
+.wanted-stars-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+  cursor: pointer;
+  padding: 6px 14px;
+  background: rgba(4, 6, 14, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.2s ease,
+              border-color 0.2s ease;
+}
+
+.wanted-stars-container:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 200, 59, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 200, 59, 0.2);
+}
+
+.wanted-stars-container:active {
+  transform: scale(0.97);
+}
+
+.wanted-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Individual GTA Star */
+.gta-star {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.wanted-sm .gta-star {
+  font-size: 1.1rem;
+}
+
+.wanted-md .gta-star {
+  font-size: 1.55rem;
+}
+
+.wanted-lg .gta-star {
+  font-size: 2.2rem;
+}
+
+/* Iconic GTA flashing/blinking rhythm */
+.gta-star.active.flashing {
+  animation: gtaWantedFlash 0.75s infinite ease-in-out alternate;
+}
+
+@keyframes gtaWantedFlash {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1.2);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.35;
+    transform: scale(0.94);
+    filter: brightness(0.85);
+  }
+}
+
+.gta-star.inactive {
+  opacity: 0.28;
+}
+
+/* Details and Text Readouts */
+.wanted-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.wanted-title {
+  font-family: var(--font-gta);
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.wanted-status {
+  font-family: var(--font-subheading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .wanted-md .gta-star {
+    font-size: 1.25rem;
+  }
+  .wanted-title {
+    font-size: 0.8rem;
+  }
+  .wanted-status {
+    font-size: 0.58rem;
+  }
+}

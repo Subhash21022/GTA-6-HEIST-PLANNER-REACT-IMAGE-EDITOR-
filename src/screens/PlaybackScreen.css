@@ -7,6 +7,14 @@
   width: 100%;
 }
 
+.playback-header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .playback-layout {
   display: grid;
   grid-template-columns: 1fr 260px;

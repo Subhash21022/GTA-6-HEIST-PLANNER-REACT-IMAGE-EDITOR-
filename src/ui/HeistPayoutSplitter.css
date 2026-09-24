@@ -1,0 +1,373 @@
+/* ── THE CUT: HEIST PAYOUT & CREW SPLITTER ── */
+.payout-splitter-container {
+  width: 100%;
+  max-width: 960px;
+  background: rgba(10, 15, 26, 0.92);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: var(--radius-md);
+  padding: clamp(16px, 3vw, 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* ── Top Header Stats Card ── */
+.payout-header-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  background: rgba(16, 24, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+}
+
+.payout-header-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.payout-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+}
+
+.payout-value {
+  font-family: var(--font-gta);
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.text-gold {
+  color: #ffe600;
+  text-shadow: 0 0 12px rgba(255, 230, 0, 0.4);
+}
+
+.payout-badge {
+  display: inline-block;
+  font-family: var(--font-gta);
+  font-size: 0.95rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+  border: 1px solid;
+}
+
+.payout-badge.grade-s { color: #10b981; border-color: #10b981; background: rgba(16, 185, 129, 0.15); }
+.payout-badge.grade-a { color: #22c55e; border-color: #22c55e; background: rgba(34, 197, 94, 0.15); }
+.payout-badge.grade-b { color: #00f0ff; border-color: #00f0ff; background: rgba(0, 240, 255, 0.15); }
+.payout-badge.grade-c { color: #f59e0b; border-color: #f59e0b; background: rgba(245, 158, 11, 0.15); }
+.payout-badge.grade-d { color: #f97316; border-color: #f97316; background: rgba(249, 115, 22, 0.15); }
+.payout-badge.grade-f { color: #ef4444; border-color: #ef4444; background: rgba(239, 68, 68, 0.15); }
+
+/* ── Player Take Hero Card ── */
+.player-take-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 78, 59, 0.35));
+  border: 2px solid #10b981;
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+}
+
+.player-take-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-take-tag {
+  font-family: var(--font-gta);
+  font-size: 1.15rem;
+  color: #10b981;
+  letter-spacing: 1px;
+}
+
+.player-take-sub {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.player-take-number {
+  font-family: var(--font-gta);
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: #ffffff;
+  text-shadow: 0 0 20px #10b981, 0 0 40px rgba(16, 185, 129, 0.5);
+  letter-spacing: 1px;
+}
+
+/* ── Loot Distribution List ── */
+.payout-split-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payout-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-subheading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-cyan);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.cut-row {
+  display: grid;
+  grid-template-columns: 220px 1fr 140px;
+  align-items: center;
+  gap: 16px;
+  background: rgba(14, 20, 36, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  transition: all 0.2s ease;
+}
+
+.cut-row:hover {
+  background: rgba(20, 30, 50, 0.9);
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.cut-row.fixed-cut {
+  background: rgba(30, 20, 25, 0.6);
+  border-color: rgba(255, 18, 117, 0.2);
+}
+
+.cut-member-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cut-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.cut-avatar.fence-avatar {
+  background: #2d1222;
+  font-size: 1.1rem;
+}
+
+.cut-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cut-name {
+  display: block;
+  font-family: var(--font-subheading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.cut-role {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.cut-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cut-range-input {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+}
+
+.cut-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 10px #00f0ff;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.cut-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #ff007f;
+  box-shadow: 0 0 14px #ff007f;
+}
+
+.cut-pct-badge {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #00f0ff;
+  min-width: 42px;
+  text-align: right;
+}
+
+.cut-amount-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cut-pct {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.cut-dollars {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.text-danger {
+  color: #f87171;
+}
+
+.no-crew-note {
+  padding: 12px;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px dashed rgba(0, 240, 255, 0.2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* ── Actions Bar ── */
+.payout-actions-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-stamp-receipt {
+  background: linear-gradient(135deg, #059669, #10b981);
+  border: none;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-stamp-receipt:hover {
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.7);
+  transform: translateY(-1px);
+}
+
+/* ── Receipt Modal Popup ── */
+.receipt-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.receipt-modal-card {
+  background: #0f1523;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: var(--radius-md);
+  max-width: 620px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 240, 255, 0.2);
+}
+
+.receipt-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.receipt-modal-header h3 {
+  font-family: var(--font-gta);
+  font-size: 1.1rem;
+  color: #fff;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.receipt-modal-img-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  background: #090c14;
+}
+
+.receipt-slip-img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.receipt-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0c111c;
+}
+
+@media (max-width: 768px) {
+  .cut-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .cut-amount-col {
+    align-items: flex-start;
+  }
+}

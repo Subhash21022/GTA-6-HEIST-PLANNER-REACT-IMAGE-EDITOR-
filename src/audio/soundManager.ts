@@ -19,7 +19,12 @@ export type SoundEffectName =
   | 'drift'
   | 'backfire'
   | 'cameraShutter'
-  | 'error';
+  | 'error'
+  | 'wantedStar'
+  | 'radioSquelch'
+  | 'policeRadioChirp'
+  | 'reelLike'
+  | 'reelCommentPop';
 
 class SoundManager {
   private ctx: AudioContext | null = null;
@@ -313,6 +318,21 @@ class SoundManager {
           break;
         case 'error':
           this.synthError(ctx, volumeScale);
+          break;
+        case 'wantedStar':
+          this.synthWantedStar(ctx, volumeScale);
+          break;
+        case 'radioSquelch':
+          this.synthRadioSquelch(ctx, volumeScale);
+          break;
+        case 'policeRadioChirp':
+          this.synthPoliceRadioChirp(ctx, volumeScale);
+          break;
+        case 'reelLike':
+          this.synthReelLike(ctx, volumeScale);
+          break;
+        case 'reelCommentPop':
+          this.synthReelCommentPop(ctx, volumeScale);
           break;
       }
     } catch {
@@ -870,6 +890,177 @@ class SoundManager {
 
     osc.start(t);
     osc.stop(t + 0.17);
+  }
+
+  // 19. GTA Wanted Level Star Notification (Ominous brass strike + sub-bass hit + high-register bell)
+  private synthWantedStar(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Sub-bass heavy impact (80 Hz down to 36 Hz)
+    const subOsc = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(80, t);
+    subOsc.frequency.exponentialRampToValueAtTime(36, t + 0.65);
+    subGain.gain.setValueAtTime(0.0001, t);
+    subGain.gain.exponentialRampToValueAtTime(0.48 * vol, t + 0.008);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+    subOsc.connect(subGain);
+    subGain.connect(this.masterGain || ctx.destination);
+    subOsc.start(t);
+    subOsc.stop(t + 0.72);
+
+    // Ominous resonant brass strike (G2 = 98Hz, D3 = 146.8Hz, F#3 = 185Hz)
+    const freqs = [98, 146.8, 185];
+    freqs.forEach((freq) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(380, t);
+      filter.frequency.exponentialRampToValueAtTime(140, t + 0.8);
+
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.24 * vol, t + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.85);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.87);
+    });
+
+    // Metallic chime sheen (G6 = 1567.98Hz + D7 = 2349.3Hz)
+    const chimeOsc = ctx.createOscillator();
+    const chimeGain = ctx.createGain();
+    chimeOsc.type = 'sine';
+    chimeOsc.frequency.setValueAtTime(2349.3, t);
+    chimeGain.gain.setValueAtTime(0.0001, t);
+    chimeGain.gain.exponentialRampToValueAtTime(0.2 * vol, t + 0.004);
+    chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+    chimeOsc.connect(chimeGain);
+    chimeGain.connect(this.masterGain || ctx.destination);
+    chimeOsc.start(t);
+    chimeOsc.stop(t + 0.4);
+  }
+
+  // 20. Police Radio Squelch & Mic Key Burst (Bandpass noise burst + CTCSS dual-tone signaling chirp)
+  private synthRadioSquelch(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Filtered static noise burst (45ms)
+    const bufferSize = Math.floor(ctx.sampleRate * 0.045);
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const whiteNoise = ctx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+
+    const bandpass = ctx.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.setValueAtTime(1750, t);
+    bandpass.Q.setValueAtTime(3.0, t);
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.0001, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.28 * vol, t + 0.003);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+
+    whiteNoise.connect(bandpass);
+    bandpass.connect(noiseGain);
+    noiseGain.connect(this.masterGain || ctx.destination);
+
+    whiteNoise.start(t);
+
+    // Motorola radio CTCSS signaling double-chirp (1209 Hz for 28ms)
+    const chirpOsc = ctx.createOscillator();
+    const chirpGain = ctx.createGain();
+    chirpOsc.type = 'sine';
+    chirpOsc.frequency.setValueAtTime(1209, t + 0.012);
+    chirpGain.gain.setValueAtTime(0.0001, t + 0.012);
+    chirpGain.gain.exponentialRampToValueAtTime(0.22 * vol, t + 0.015);
+    chirpGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.042);
+    chirpOsc.connect(chirpGain);
+    chirpGain.connect(this.masterGain || ctx.destination);
+    chirpOsc.start(t + 0.012);
+    chirpOsc.stop(t + 0.045);
+  }
+
+  // 21. Police Scanner Alert Beep (Two rapid tactical scanner pings)
+  private synthPoliceRadioChirp(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const ping = (freq: number, start: number) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.2 * vol, start + 0.002);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.028);
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.03);
+    };
+
+    ping(1540, t);
+    ping(1180, t + 0.038);
+  }
+
+  // 22. ViceGram Heart Like (Bubbly rising harmonic double pop)
+  private synthReelLike(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(540, t);
+    osc1.frequency.exponentialRampToValueAtTime(880, t + 0.08);
+    gain1.gain.setValueAtTime(0.0001, t);
+    gain1.gain.exponentialRampToValueAtTime(0.28 * vol, t + 0.015);
+    gain1.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    osc1.connect(gain1);
+    gain1.connect(this.masterGain || ctx.destination);
+    osc1.start(t);
+    osc1.stop(t + 0.13);
+
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(780, t + 0.06);
+    osc2.frequency.exponentialRampToValueAtTime(1320, t + 0.14);
+    gain2.gain.setValueAtTime(0.0001, t + 0.06);
+    gain2.gain.exponentialRampToValueAtTime(0.22 * vol, t + 0.075);
+    gain2.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+    osc2.connect(gain2);
+    gain2.connect(this.masterGain || ctx.destination);
+    osc2.start(t + 0.06);
+    osc2.stop(t + 0.19);
+  }
+
+  // 23. ViceGram Comment Pop (Playful notification bubble)
+  private synthReelCommentPop(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(420, t);
+    osc.frequency.exponentialRampToValueAtTime(980, t + 0.05);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.25 * vol, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
+    osc.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.11);
   }
 }
 
