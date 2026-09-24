@@ -24,7 +24,8 @@ export type SoundEffectName =
   | 'radioSquelch'
   | 'policeRadioChirp'
   | 'reelLike'
-  | 'reelCommentPop';
+  | 'reelCommentPop'
+  | 'newsStinger';
 
 class SoundManager {
   private ctx: AudioContext | null = null;
@@ -333,6 +334,9 @@ class SoundManager {
           break;
         case 'reelCommentPop':
           this.synthReelCommentPop(ctx, volumeScale);
+          break;
+        case 'newsStinger':
+          this.synthNewsStinger(ctx, volumeScale);
           break;
       }
     } catch {
@@ -1061,6 +1065,50 @@ class SoundManager {
     gain.connect(this.masterGain || ctx.destination);
     osc.start(t);
     osc.stop(t + 0.11);
+  }
+
+  // 24. Weazel News TV Breaking News Stinger (Iconic television news broadcast motif)
+  private synthNewsStinger(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Dramatic 3-tone electronic news fanfare (C5, G5, C6)
+    const notes = [
+      { freq: 523.25, time: 0.00, dur: 0.12 },
+      { freq: 783.99, time: 0.10, dur: 0.14 },
+      { freq: 1046.50, time: 0.22, dur: 0.45 },
+    ];
+
+    notes.forEach(({ freq, time, dur }) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t + time);
+
+      gain.gain.setValueAtTime(0.0001, t + time);
+      gain.gain.exponentialRampToValueAtTime(0.35 * vol, t + time + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + time + dur);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+
+      osc.start(t + time);
+      osc.stop(t + time + dur + 0.02);
+    });
+
+    // Sub-bass broadcast impact
+    const subOsc = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(95, t);
+    subOsc.frequency.exponentialRampToValueAtTime(42, t + 0.4);
+    subGain.gain.setValueAtTime(0.0001, t);
+    subGain.gain.exponentialRampToValueAtTime(0.4 * vol, t + 0.015);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    subOsc.connect(subGain);
+    subGain.connect(this.masterGain || ctx.destination);
+    subOsc.start(t);
+    subOsc.stop(t + 0.48);
   }
 }
 

@@ -63,6 +63,38 @@
   text-transform: uppercase;
 }
 
+/* Voice Persona Pill */
+.scanner-voice-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  transition: all 0.25s ease;
+}
+
+.scanner-voice-pill.pulse-speaking {
+  animation: voicePillPulse 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes voicePillPulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  100% { transform: scale(1.04); filter: brightness(1.3); }
+}
+
+.scanner-voice-icon {
+  font-size: 0.85rem;
+}
+
+.scanner-voice-name {
+  font-family: var(--font-subheading);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
 /* Radio Waveform Equalizer Bars */
 .scanner-waveforms {
   display: flex;
@@ -124,6 +156,19 @@
   transform: scale(0.95);
 }
 
+.scanner-btn-anchor {
+  background: rgba(255, 45, 120, 0.12);
+  border-color: rgba(255, 45, 120, 0.4);
+  color: #ff2d78;
+}
+
+.scanner-btn-anchor:hover {
+  background: rgba(255, 45, 120, 0.3);
+  border-color: #ff2d78;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 45, 120, 0.4);
+}
+
 /* Body & Transcript */
 .scanner-body {
   display: flex;
@@ -135,6 +180,10 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.scanner-speaker-icon {
+  font-size: 0.9rem;
 }
 
 .callsign-tag {
