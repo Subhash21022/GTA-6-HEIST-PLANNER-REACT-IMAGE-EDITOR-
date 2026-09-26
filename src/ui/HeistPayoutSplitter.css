@@ -98,6 +98,21 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+.payout-safe-bonus-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f5c518;
+  background: rgba(245, 197, 24, 0.15);
+  border: 1px solid rgba(245, 197, 24, 0.4);
+  padding: 4px 10px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 4px;
+  text-shadow: 0 0 10px rgba(245, 197, 24, 0.4);
+  box-shadow: 0 0 12px rgba(245, 197, 24, 0.15);
+}
+
 .player-take-number {
   font-family: var(--font-gta);
   font-size: clamp(2rem, 5vw, 3rem);

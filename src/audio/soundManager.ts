@@ -28,7 +28,11 @@ export type SoundEffectName =
   | 'newsStinger'
   | 'loadingSwell'
   | 'loadingTick'
-  | 'neonShutter';
+  | 'neonShutter'
+  | 'safeDialTick'
+  | 'tumblerLockClank'
+  | 'vaultSteamHiss'
+  | 'safeAlarmKlaxon';
 
 class SoundManager {
   private ctx: AudioContext | null = null;
@@ -349,6 +353,18 @@ class SoundManager {
           break;
         case 'neonShutter':
           this.synthNeonShutter(ctx, volumeScale);
+          break;
+        case 'safeDialTick':
+          this.synthSafeDialTick(ctx, volumeScale);
+          break;
+        case 'tumblerLockClank':
+          this.synthTumblerLockClank(ctx, volumeScale);
+          break;
+        case 'vaultSteamHiss':
+          this.synthVaultSteamHiss(ctx, volumeScale);
+          break;
+        case 'safeAlarmKlaxon':
+          this.synthSafeAlarmKlaxon(ctx, volumeScale);
           break;
       }
     } catch {
@@ -1239,6 +1255,127 @@ class SoundManager {
       osc.start(t);
       osc.stop(t + 0.43);
     });
+  }
+
+  // 28. Vault Combination Dial Mechanical Ratchet Tick
+  private synthSafeDialTick(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(2400, t);
+    osc.frequency.exponentialRampToValueAtTime(800, t + 0.008);
+
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(1400, t);
+
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.22 * vol, t + 0.001);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.009);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.01);
+  }
+
+  // 29. Vault Tumbler Gate Pin Drop (Heavy Metal Bolt Clank)
+  private synthTumblerLockClank(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Sub thud
+    const subOsc = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(95, t);
+    subOsc.frequency.exponentialRampToValueAtTime(45, t + 0.15);
+    subGain.gain.setValueAtTime(0.0001, t);
+    subGain.gain.exponentialRampToValueAtTime(0.6 * vol, t + 0.005);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    subOsc.connect(subGain);
+    subGain.connect(this.masterGain || ctx.destination);
+    subOsc.start(t);
+    subOsc.stop(t + 0.23);
+
+    // Metallic latch ping
+    const pingOsc = ctx.createOscillator();
+    const pingGain = ctx.createGain();
+    pingOsc.type = 'square';
+    pingOsc.frequency.setValueAtTime(480, t);
+    pingOsc.frequency.exponentialRampToValueAtTime(160, t + 0.12);
+    pingGain.gain.setValueAtTime(0.0001, t);
+    pingGain.gain.exponentialRampToValueAtTime(0.35 * vol, t + 0.003);
+    pingGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+    pingOsc.connect(pingGain);
+    pingGain.connect(this.masterGain || ctx.destination);
+    pingOsc.start(t);
+    pingOsc.stop(t + 0.16);
+  }
+
+  // 30. Vault Door Pneumatic Steam Hiss & Heavy Hinge Release
+  private synthVaultSteamHiss(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Pneumatic steam noise burst
+    const bufferSize = Math.floor(ctx.sampleRate * 0.9);
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    const noiseSrc = ctx.createBufferSource();
+    noiseSrc.buffer = noiseBuffer;
+
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.setValueAtTime(3200, t);
+    noiseFilter.frequency.exponentialRampToValueAtTime(950, t + 0.85);
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.0001, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.4 * vol, t + 0.05);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.88);
+
+    noiseSrc.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.masterGain || ctx.destination);
+    noiseSrc.start(t);
+
+    // Deep hydraulic hinge groan
+    const groanOsc = ctx.createOscillator();
+    const groanGain = ctx.createGain();
+    groanOsc.type = 'sawtooth';
+    groanOsc.frequency.setValueAtTime(80, t + 0.1);
+    groanOsc.frequency.linearRampToValueAtTime(65, t + 0.9);
+    groanGain.gain.setValueAtTime(0.0001, t + 0.1);
+    groanGain.gain.exponentialRampToValueAtTime(0.25 * vol, t + 0.25);
+    groanGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.95);
+    groanOsc.connect(groanGain);
+    groanGain.connect(this.masterGain || ctx.destination);
+    groanOsc.start(t + 0.1);
+    groanOsc.stop(t + 0.96);
+  }
+
+  // 31. Safe Silent Alarm Klaxon
+  private synthSafeAlarmKlaxon(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    for (let i = 0; i < 2; i++) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(i % 2 === 0 ? 880 : 440, t + i * 0.18);
+      gain.gain.setValueAtTime(0.0001, t + i * 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.35 * vol, t + i * 0.18 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.18 + 0.15);
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+      osc.start(t + i * 0.18);
+      osc.stop(t + i * 0.18 + 0.16);
+    }
   }
 }
 

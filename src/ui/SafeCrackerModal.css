@@ -1,0 +1,541 @@
+/* Rotary Tumbler Vault Safe-Cracking Modal Styles */
+
+.safe-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 15, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.safe-modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  background: radial-gradient(circle at 50% 40%, #1e2638 0%, #0d121d 70%, #07090f 100%);
+  border: 2px solid rgba(0, 240, 255, 0.35);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(0, 240, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 30px;
+  color: #ffffff;
+  user-select: none;
+}
+
+/* Header */
+.safe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  padding-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.safe-header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.safe-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  color: var(--color-cyan, #00f0ff);
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.safe-vault-title {
+  font-family: var(--font-gta, sans-serif);
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1.5px;
+}
+
+.safe-vault-subtitle {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #94a3b8);
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.safe-timer-hud {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.safe-timer-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  color: #ff2255;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+.safe-timer-display {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #00f0ff;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+  letter-spacing: 2px;
+}
+
+.safe-timer-display.critical {
+  color: #ff2255;
+  text-shadow: 0 0 18px rgba(255, 34, 85, 0.8);
+}
+
+.blinking {
+  animation: blink 0.8s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.safe-close-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.safe-close-btn:hover {
+  background: rgba(255, 34, 85, 0.3);
+  border-color: #ff2255;
+}
+
+/* Nora's Safecracker Perk Banner */
+.safecracker-perk-banner {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: var(--radius-md, 8px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  color: #e2e8f0;
+}
+
+.perk-icon {
+  font-size: 1.2rem;
+}
+
+/* Stage Layout Grid */
+.safe-stage-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 280px;
+  gap: 24px;
+  align-items: center;
+}
+
+@media (max-width: 950px) {
+  .safe-stage-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Column: Tension Meter & Tumbler Gates */
+.safe-meter-column {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.meter-title {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--color-cyan, #00f0ff);
+  margin: 0;
+  text-align: center;
+}
+
+.analog-meter-dial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.meter-svg {
+  width: 100%;
+  max-width: 180px;
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.2));
+}
+
+.meter-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.contact-vibe-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vibe-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  color: #94a3b8;
+  letter-spacing: 1.5px;
+}
+
+.vibe-meter-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vibe-meter-fill {
+  height: 100%;
+  transition: width 0.08s ease, background-color 0.2s ease;
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* Tumbler Gates Status Box */
+.tumblers-status-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 12px;
+}
+
+.tumbler-gate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: #64748b;
+  transition: all 0.3s ease;
+}
+
+.tumbler-gate.active {
+  border-color: #00f0ff;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+}
+
+.tumbler-gate.unlocked {
+  border-color: #00ffaa;
+  color: #00ffaa;
+  background: rgba(0, 255, 170, 0.1);
+}
+
+.gate-state {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Center: Rotary Dial */
+.safe-dial-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  position: relative;
+}
+
+.dial-index-needle {
+  font-size: 1.8rem;
+  color: #ff2255;
+  text-shadow: 0 0 12px rgba(255, 34, 85, 0.8);
+  margin-bottom: -18px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.safe-rotary-dial {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+  transition: box-shadow 0.2s ease;
+}
+
+.safe-rotary-dial:active {
+  cursor: grabbing;
+}
+
+.safe-rotary-dial.vibrating {
+  animation: dialVibe 0.06s infinite alternate;
+  box-shadow: 0 0 35px rgba(0, 255, 170, 0.4);
+}
+
+@keyframes dialVibe {
+  from { transform: rotate(var(--rot, 0deg)) translate(-1px, 0); }
+  to { transform: rotate(var(--rot, 0deg)) translate(1px, 0); }
+}
+
+/* Outer Brass Bezel Rim */
+.dial-brass-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #ffd700 0%, #b8860b 45%, #725006 75%, #3d2b02 100%);
+  border: 4px solid #f5c518;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+/* Dial Face */
+.dial-face {
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #1e2430 0%, #0e121a 75%, #05070a 100%);
+  border: 2px solid #555;
+  overflow: hidden;
+}
+
+.dial-number-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  margin-top: -12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #f1f5f9;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.dial-tick-mark {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1.5px;
+  height: 12px;
+  background: #cbd5e1;
+  transform-origin: bottom center;
+  margin-left: -0.75px;
+  pointer-events: none;
+}
+
+/* Center Knob Boss */
+.dial-center-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  margin-left: -50px;
+  margin-top: -50px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #475569 0%, #1e293b 60%, #0f172a 100%);
+  border: 3px solid #64748b;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dial-readout-digital {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #00f0ff;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+}
+
+.dial-instruction-banner {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  color: var(--color-cyan, #00f0ff);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.dial-instruction-banner strong {
+  color: #ffffff;
+}
+
+.success-text {
+  color: #00ffaa !important;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(0, 255, 170, 0.6);
+}
+
+.alarm-text {
+  color: #ff2255 !important;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(255, 34, 85, 0.6);
+}
+
+/* Step controls */
+.dial-step-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.dial-step-btn {
+  font-size: 0.75rem !important;
+  padding: 8px 16px !important;
+  letter-spacing: 1px !important;
+}
+
+/* Right Column: Vault Loot & Perks */
+.safe-loot-column {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loot-header {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--color-cyan, #00f0ff);
+  margin: 0;
+  text-align: center;
+}
+
+.loot-target-card {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 16px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid rgba(245, 197, 24, 0.3);
+  text-align: center;
+}
+
+.loot-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: #f5c518;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.loot-value {
+  font-family: var(--font-gta, sans-serif);
+  font-size: 1.9rem;
+  color: #f5c518;
+  text-shadow: 0 0 15px rgba(245, 197, 24, 0.5);
+  margin: 4px 0;
+}
+
+.loot-desc {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  color: var(--color-text-secondary, #94a3b8);
+  margin: 0;
+}
+
+.perk-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+}
+
+.perk-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.text-gold { color: #f5c518; }
+.text-cyan { color: #00f0ff; }
+.text-green { color: #00ffaa; }
+
+.safe-success-banner {
+  background: rgba(0, 255, 170, 0.15);
+  border: 1px solid #00ffaa;
+  padding: 14px;
+  border-radius: var(--radius-md, 8px);
+  text-align: center;
+}
+
+.safe-success-banner h4 {
+  margin: 0 0 6px;
+  color: #00ffaa;
+  font-family: var(--font-gta, sans-serif);
+  font-size: 1.1rem;
+}
+
+.safe-success-banner p {
+  margin: 0;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.75rem;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.safe-failed-banner {
+  background: rgba(255, 34, 85, 0.15);
+  border: 1px solid #ff2255;
+  padding: 14px;
+  border-radius: var(--radius-md, 8px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.safe-failed-banner h4 {
+  margin: 0;
+  color: #ff2255;
+  font-family: var(--font-gta, sans-serif);
+  font-size: 1.1rem;
+}
+
+.safe-failed-banner p {
+  margin: 0;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}

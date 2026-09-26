@@ -42,8 +42,10 @@ interface AppState {
   hasSavedState: boolean;
   customCrewPortraits: Record<string, string>;
   reconImages: Record<string, string>;
+  safeCracked: boolean;
 
   setScreen: (s: Screen) => void;
+  setSafeCracked: (cracked: boolean) => void;
   goBack: () => void;
   setTarget: (t: Target) => void;
   setApproach: (a: 'subtle' | 'loud') => void;
@@ -87,8 +89,10 @@ export const useStore = create<AppState>((set, get) => ({
   hasSavedState: false,
   customCrewPortraits: {},
   reconImages: {},
+  safeCracked: false,
 
   setScreen: (s) => set({ screen: s }),
+  setSafeCracked: (cracked) => set({ safeCracked: cracked }),
 
   goBack: () => {
     const { screen } = get();
@@ -180,6 +184,7 @@ export const useStore = create<AppState>((set, get) => ({
       hasSavedState: false,
       customCrewPortraits: {},
       reconImages: {},
+      safeCracked: false,
     });
   },
 

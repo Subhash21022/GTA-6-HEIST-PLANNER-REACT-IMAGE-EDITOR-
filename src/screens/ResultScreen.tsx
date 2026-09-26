@@ -38,6 +38,7 @@ export function ResultScreen() {
   const getawayResult = useStore((s) => s.getawayResult);
   const customCrewPortraits = useStore((s) => s.customCrewPortraits);
   const approach = useStore((s) => s.approach);
+  const safeCracked = useStore((s) => s.safeCracked);
   const setNewsHeadlineImage = useStore((s) => s.setNewsHeadlineImage);
   const startOver = useStore((s) => s.startOver);
   const addToast = useStore((s) => s.addToast);
@@ -65,8 +66,8 @@ export function ResultScreen() {
   const [isStampingReceipt, setIsStampingReceipt] = useState(false);
 
   const payoutBreakdown = useMemo(() => {
-    return calculatePayout(target, grade, crew, customCrewCuts);
-  }, [target, grade, crew, customCrewCuts]);
+    return calculatePayout(target, grade, crew, customCrewCuts, safeCracked);
+  }, [target, grade, crew, customCrewCuts, safeCracked]);
 
   // VCPD & FBI Most Wanted Dossier Profile
   const wantedDossier = useMemo(() => {

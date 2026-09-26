@@ -89,6 +89,27 @@
   flex-wrap: wrap;
 }
 
+.safe-cracker-trigger-btn {
+  background: linear-gradient(135deg, #ffd700, #b8860b) !important;
+  border-color: #ffd700 !important;
+  color: #11151c !important;
+  font-weight: 900 !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important;
+  animation: pulseGold 2s infinite ease-in-out;
+}
+
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.7); }
+}
+
+.safe-cracked-btn {
+  border-color: #00ffaa !important;
+  color: #00ffaa !important;
+  background: rgba(0, 255, 170, 0.15) !important;
+  box-shadow: 0 0 18px rgba(0, 255, 170, 0.3) !important;
+}
+
 .planning-sidebar {
   display: flex;
   flex-direction: column;

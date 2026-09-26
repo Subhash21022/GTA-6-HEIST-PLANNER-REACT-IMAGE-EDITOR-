@@ -35,6 +35,7 @@ export interface HeistPayoutBreakdown {
   totalCrewAmount: number;
   playerCutPercent: number;
   playerNetTake: number;
+  safeCrackedBonus?: number;
 }
 
 export function getGradeMultiplier(grade: string): number {
@@ -67,12 +68,17 @@ export function calculatePayout(
   grade: string,
   crew: CrewMember[] = [],
   customCuts: Record<string, number> = {},
+  safeCracked: boolean = false,
 ): HeistPayoutBreakdown {
   const targetName = target?.name || 'TARGET FACILITY';
   const potentialVaultTake = target?.baseTake || 2_500_000;
-  const gradeMultiplier = getGradeMultiplier(grade);
+  
+  // If safe was cracked, guarantees S-Rank recovery efficiency and adds $450,000 diamonds & bonds
+  const effectiveGrade = safeCracked ? 'S' : grade;
+  const gradeMultiplier = getGradeMultiplier(effectiveGrade);
   const gradeEfficiencyPct = Math.round(gradeMultiplier * 100);
-  const actualGrossTake = Math.round(potentialVaultTake * gradeMultiplier);
+  const safeCrackedBonus = safeCracked ? 450_000 : 0;
+  const actualGrossTake = Math.round(potentialVaultTake * gradeMultiplier) + safeCrackedBonus;
 
   // Syndicate fence cut
   const syndicatePercent = SYNDICATE_CUT_PERCENT;
@@ -104,7 +110,7 @@ export function calculatePayout(
   return {
     targetName,
     potentialVaultTake,
-    grade,
+    grade: effectiveGrade,
     gradeMultiplier,
     gradeEfficiencyPct,
     actualGrossTake,
@@ -115,5 +121,6 @@ export function calculatePayout(
     totalCrewAmount,
     playerCutPercent,
     playerNetTake,
+    safeCrackedBonus,
   };
 }

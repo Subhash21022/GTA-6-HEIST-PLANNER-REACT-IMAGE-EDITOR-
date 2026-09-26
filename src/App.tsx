@@ -13,6 +13,7 @@ import { NarrowScreen } from './ui/NarrowScreen';
 import { ScreenBackground } from './ui/ScreenBackground';
 import { AudioToggle } from './ui/AudioToggle';
 import { NeonShutterTransition } from './ui/NeonShutterTransition';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const SCREENS: Record<Screen, () => React.JSX.Element> = {
   title: () => <TitleScreen />,
@@ -45,6 +46,7 @@ function App() {
         />
       </main>
       <ToastContainer />
+      <SpeedInsights />
     </>
   );
 }

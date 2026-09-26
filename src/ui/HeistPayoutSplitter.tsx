@@ -58,6 +58,11 @@ export function HeistPayoutSplitter({
           <span className="player-take-sub">
             {breakdown.playerCutPercent}% of gross loot wired directly to Caymans offshore account
           </span>
+          {Boolean(breakdown.safeCrackedBonus) && (
+            <div className="payout-safe-bonus-badge">
+              💎 VAULT SAFE CRACKED: +{formatCurrency(breakdown.safeCrackedBonus!)} BEARER BONDS & DIAMONDS
+            </div>
+          )}
         </div>
         <div className="player-take-amount">
           <span className="player-take-number">{formatCurrency(breakdown.playerNetTake)}</span>
