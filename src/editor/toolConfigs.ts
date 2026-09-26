@@ -86,3 +86,15 @@ export const REEL_TOOLS: ToolsConfig = {
   frame: true,
 };
 
+export const WANTED_EVIDENCE_TOOLS: ToolsConfig = {
+  crop: true,
+  resize: false,
+  filter: true,
+  draw: true,
+  text: true,
+  shapes: true,
+  stickers: true,
+  frame: true,
+};
+
+

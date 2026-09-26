@@ -1,0 +1,168 @@
+/* Vice City Sunset Neon Shutter & Cinematic Blur Transition */
+
+.neon-transition-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+.neon-screen-stage {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  transform-origin: center center;
+  will-change: transform, filter, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Neon Shutter & Lens Flare Overlay */
+.neon-shutter-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9995;
+  overflow: hidden;
+  display: none;
+}
+
+/* Full-height angled anamorphic lens flare beam */
+.neon-shutter-beam {
+  position: absolute;
+  top: -25vh;
+  left: 50%;
+  width: clamp(280px, 42vw, 620px);
+  height: 150vh;
+  transform: translateX(-50%) rotate(-7deg);
+  transform-origin: center center;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Dual-Tone Ocean Drive Cyan & Sunset Pink Gradient Ribbon */
+.neon-glow-ribbon {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 240, 255, 0.04) 12%,
+    rgba(0, 240, 255, 0.28) 32%,
+    rgba(0, 240, 255, 0.78) 46%,
+    #ffffff 50%,
+    rgba(255, 45, 120, 0.82) 54%,
+    rgba(255, 45, 120, 0.32) 68%,
+    rgba(255, 45, 120, 0.04) 88%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  filter: blur(8px);
+}
+
+/* Central Ultra-Bright Razor Laser Slit */
+.neon-center-laser {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3.5px;
+  transform: translateX(-50%);
+  background: #ffffff;
+  box-shadow:
+    0 0 10px #ffffff,
+    0 0 25px #00f0ff,
+    0 0 45px #ff2d78,
+    0 0 85px #00f0ff,
+    0 0 130px #ff2d78;
+}
+
+/* Anamorphic Horizontal Lens Flare Streaks */
+.neon-anamorphic-streak-cyan {
+  position: absolute;
+  top: 48%;
+  left: -45vw;
+  width: 100vw;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.3) 30%, #00f0ff 70%, #ffffff 100%);
+  box-shadow:
+    0 0 16px #00f0ff,
+    0 0 32px #00f0ff,
+    0 0 60px rgba(0, 240, 255, 0.4);
+  transform: rotate(7deg);
+  mix-blend-mode: screen;
+}
+
+.neon-anamorphic-streak-pink {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  width: 100vw;
+  height: 2.5px;
+  background: linear-gradient(90deg, #ffffff 0%, #ff2d78 30%, rgba(255, 45, 120, 0.3) 70%, transparent 100%);
+  box-shadow:
+    0 0 16px #ff2d78,
+    0 0 32px #ff2d78,
+    0 0 60px rgba(255, 45, 120, 0.4);
+  transform: rotate(7deg);
+  mix-blend-mode: screen;
+}
+
+/* Cinematic Shutter HUD Watermarks */
+.neon-shutter-hud {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.top-hud {
+  top: 26vh;
+  color: #00f0ff;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+.bottom-hud {
+  bottom: 26vh;
+  color: #ff2d78;
+  text-shadow: 0 0 10px rgba(255, 45, 120, 0.8), 0 0 20px rgba(255, 45, 120, 0.4);
+}
+
+/* Screen Border Letterbox Flares */
+.neon-letterbox-rim {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent 5%, #00f0ff 35%, #ffffff 50%, #ff2d78 65%, transparent 95%);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.7), 0 0 12px rgba(255, 45, 120, 0.7);
+  mix-blend-mode: screen;
+}
+
+.top-rim {
+  top: 0;
+}
+
+.bottom-rim {
+  bottom: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neon-shutter-overlay {
+    display: none !important;
+  }
+
+  .neon-screen-stage {
+    filter: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

@@ -25,7 +25,10 @@ export type SoundEffectName =
   | 'policeRadioChirp'
   | 'reelLike'
   | 'reelCommentPop'
-  | 'newsStinger';
+  | 'newsStinger'
+  | 'loadingSwell'
+  | 'loadingTick'
+  | 'neonShutter';
 
 class SoundManager {
   private ctx: AudioContext | null = null;
@@ -337,6 +340,15 @@ class SoundManager {
           break;
         case 'newsStinger':
           this.synthNewsStinger(ctx, volumeScale);
+          break;
+        case 'loadingSwell':
+          this.synthLoadingSwell(ctx, volumeScale);
+          break;
+        case 'loadingTick':
+          this.synthLoadingTick(ctx, volumeScale);
+          break;
+        case 'neonShutter':
+          this.synthNeonShutter(ctx, volumeScale);
           break;
       }
     } catch {
@@ -1109,6 +1121,124 @@ class SoundManager {
     subGain.connect(this.masterGain || ctx.destination);
     subOsc.start(t);
     subOsc.stop(t + 0.48);
+  }
+
+  // 25. GTA Cinematic Loading Swell (Atmospheric sub-bass drone + minor chord swell)
+  private synthLoadingSwell(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Sub-bass root drone (D1 = 36.7Hz -> D2 = 73.4Hz)
+    const subOsc = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(36.7, t);
+    subOsc.frequency.exponentialRampToValueAtTime(73.4, t + 1.2);
+    subGain.gain.setValueAtTime(0.0001, t);
+    subGain.gain.exponentialRampToValueAtTime(0.42 * vol, t + 0.6);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, t + 2.8);
+    subOsc.connect(subGain);
+    subGain.connect(this.masterGain || ctx.destination);
+    subOsc.start(t);
+    subOsc.stop(t + 2.9);
+
+    // Minor 9th cinematic pad swell (D3, F3, A3, C4, E4)
+    const freqs = [146.83, 174.61, 220.0, 261.63, 329.63];
+    freqs.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(280, t);
+      filter.frequency.exponentialRampToValueAtTime(950, t + 0.8 + i * 0.1);
+      filter.frequency.exponentialRampToValueAtTime(180, t + 2.6);
+
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime((0.12 / (i + 1)) * vol, t + 0.5 + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 2.7);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 2.8);
+    });
+  }
+
+  // 26. Loading HUD Step Micro-Tick
+  private synthLoadingTick(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1800, t);
+    osc.frequency.exponentialRampToValueAtTime(800, t + 0.012);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.08 * vol, t + 0.002);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.012);
+    osc.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.014);
+  }
+
+  // 27. Vice City Sunset Neon Shutter Whoosh
+  private synthNeonShutter(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Filtered sweeping pink/white noise air burst
+    const bufferSize = Math.floor(ctx.sampleRate * 0.45);
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    let lastOut = 0.0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      output[i] = (lastOut + 0.02 * white) / 1.02;
+      lastOut = output[i];
+    }
+    const noiseSrc = ctx.createBufferSource();
+    noiseSrc.buffer = noiseBuffer;
+
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.Q.setValueAtTime(2.2, t);
+    noiseFilter.frequency.setValueAtTime(650, t);
+    noiseFilter.frequency.exponentialRampToValueAtTime(2800, t + 0.18);
+    noiseFilter.frequency.exponentialRampToValueAtTime(320, t + 0.42);
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.0001, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.35 * vol, t + 0.15);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.44);
+
+    noiseSrc.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.masterGain || ctx.destination);
+    noiseSrc.start(t);
+
+    // Dual-tone neon pitch sweep (Cyan & Sunset Pink harmonics)
+    const tones = [220, 330];
+    tones.forEach((baseFreq, i) => {
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = i === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(baseFreq, t);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 2.8, t + 0.18);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.8, t + 0.4);
+
+      oscGain.gain.setValueAtTime(0.0001, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.18 * vol, t + 0.16);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+
+      osc.connect(oscGain);
+      oscGain.connect(this.masterGain || ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.43);
+    });
   }
 }
 

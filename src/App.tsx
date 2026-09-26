@@ -1,6 +1,4 @@
-import React, { useRef } from 'react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
+import React from 'react';
 import { useStore, type Screen } from './store';
 import { TitleScreen } from './screens/TitleScreen';
 import { TargetScreen } from './screens/TargetScreen';
@@ -14,8 +12,7 @@ import { ToastContainer } from './ui/Toast';
 import { NarrowScreen } from './ui/NarrowScreen';
 import { ScreenBackground } from './ui/ScreenBackground';
 import { AudioToggle } from './ui/AudioToggle';
-
-gsap.registerPlugin();
+import { NeonShutterTransition } from './ui/NeonShutterTransition';
 
 const SCREENS: Record<Screen, () => React.JSX.Element> = {
   title: () => <TitleScreen />,
@@ -31,33 +28,6 @@ const SCREENS: Record<Screen, () => React.JSX.Element> = {
 
 function App() {
   const screen = useStore((s) => s.screen);
-  const ScreenComponent = SCREENS[screen];
-  const containerRef = useRef<HTMLElement>(null);
-
-  useGSAP(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const mm = gsap.matchMedia();
-    mm.add('(prefers-reduced-motion: no-preference)', () => {
-      gsap.fromTo(
-        el,
-        {
-          opacity: 0,
-          clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)',
-        },
-        {
-          opacity: 1,
-          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-          duration: 0.6,
-          ease: 'power4.out',
-        },
-      );
-    });
-    mm.add('(prefers-reduced-motion: reduce)', () => {
-      gsap.set(el, { opacity: 1, clipPath: 'none' });
-    });
-  }, { dependencies: [screen], revertOnUpdate: true });
 
   return (
     <>
@@ -65,8 +35,14 @@ function App() {
       <NarrowScreen />
       <ScreenBackground screen={screen} />
       <AudioToggle />
-      <main id="main-content" className="app" ref={containerRef}>
-        <ScreenComponent />
+      <main id="main-content" className="app">
+        <NeonShutterTransition
+          screen={screen}
+          renderScreen={(s) => {
+            const ScreenComponent = SCREENS[s];
+            return <ScreenComponent />;
+          }}
+        />
       </main>
       <ToastContainer />
     </>

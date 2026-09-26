@@ -1,0 +1,412 @@
+/* VCPD / FBI Most Wanted Evidence Board Styles */
+
+.wanted-evidence-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Top Controls Bar */
+.wanted-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(13, 20, 36, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: var(--radius-md, 8px);
+  position: relative;
+}
+
+.wanted-style-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.wanted-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--color-cyan, #00f0ff);
+  font-weight: 700;
+}
+
+.wanted-style-toggle .btn.active {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--color-cyan, #00f0ff);
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
+}
+
+.wanted-action-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.wanted-editor-btn {
+  background: #cc1133 !important;
+  border-color: #ff2255 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(255, 34, 85, 0.4) !important;
+  letter-spacing: 1.5px;
+  transition: all 0.25s ease;
+}
+
+.wanted-editor-btn:hover:not(:disabled) {
+  background: #e61944 !important;
+  box-shadow: 0 0 30px rgba(255, 34, 85, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+/* Main Board Stage */
+.wanted-board-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #11151c;
+  border: 1px solid rgba(255, 34, 85, 0.3);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+.wanted-poster-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wanted-poster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.wanted-custom-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(204, 17, 51, 0.9);
+  color: #ffffff;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #ff4466;
+  box-shadow: 0 0 15px rgba(255, 34, 85, 0.5);
+  pointer-events: none;
+}
+
+.wanted-loading-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  color: var(--color-text-secondary, #94a3b8);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+}
+
+.wanted-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(255, 34, 85, 0.2);
+  border-top-color: #ff2255;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dossier Details Cards Grid */
+.wanted-dossier-details {
+  display: grid;
+  grid-template-columns: 320px 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 1100px) {
+  .wanted-dossier-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Bounty Card */
+.wanted-bounty-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-left: 4px solid #ff2255;
+}
+
+.wanted-badge-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vcpd-badge-icon {
+  font-size: 2rem;
+  color: #f5c518;
+  filter: drop-shadow(0 0 8px rgba(245, 197, 24, 0.5));
+}
+
+.wanted-badge-header h3 {
+  font-family: var(--font-gta, sans-serif);
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1.5px;
+}
+
+.wanted-badge-header p {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--color-cyan, #00f0ff);
+  margin: 2px 0 0;
+}
+
+.wanted-bounty-amount {
+  font-family: var(--font-gta, sans-serif);
+  font-size: 2.4rem;
+  color: #f5c518;
+  text-shadow: 0 0 20px rgba(245, 197, 24, 0.4);
+  line-height: 1.1;
+  margin: 6px 0;
+}
+
+.wanted-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  color: var(--color-text-secondary, #94a3b8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+}
+
+.wanted-status-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.threat-tag {
+  color: #ff2255;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.stars-tag {
+  color: #f5c518;
+  letter-spacing: 2px;
+  font-size: 1.1rem;
+}
+
+/* Suspects Card */
+.wanted-suspects-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wanted-suspects-card h3 {
+  font-family: var(--font-gta, sans-serif);
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1.5px;
+}
+
+.suspect-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.suspect-tab-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-text-secondary, #94a3b8);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suspect-tab-btn.active {
+  background: rgba(255, 34, 85, 0.25);
+  border-color: #ff2255;
+  color: #ffffff;
+}
+
+.suspect-active-dossier {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.suspect-mini-mugshot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.suspect-mini-mugshot img {
+  width: 90px;
+  height: 110px;
+  object-fit: cover;
+  border: 2px solid #334155;
+  border-radius: 4px;
+}
+
+.suspect-booking-tag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: var(--color-text-dim, #64748b);
+  letter-spacing: 1px;
+}
+
+.suspect-mini-info h4 {
+  margin: 0 0 6px;
+  font-family: var(--font-gta, sans-serif);
+  font-size: 1.15rem;
+  color: #ffffff;
+}
+
+.suspect-alias {
+  color: #ff2255;
+  font-size: 0.85rem;
+  font-family: var(--font-mono, monospace);
+}
+
+.suspect-mini-info p {
+  margin: 4px 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #94a3b8);
+}
+
+.status-highlight {
+  color: #f5c518;
+  font-weight: 700;
+}
+
+.suspect-warning {
+  color: #cbd5e1 !important;
+  margin-top: 8px !important;
+  font-style: italic;
+  font-size: 0.72rem !important;
+  line-height: 1.4;
+}
+
+/* Charges Card */
+.wanted-charges-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wanted-charges-card h3 {
+  font-family: var(--font-gta, sans-serif);
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1.5px;
+}
+
+.charges-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.charge-item {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px 12px;
+  border-radius: 4px;
+  border-left: 3px solid #cc1133;
+}
+
+.charge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.charge-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.7rem;
+  color: var(--color-cyan, #00f0ff);
+  font-weight: 700;
+}
+
+.charge-severity {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: #ff2255;
+  font-weight: 700;
+}
+
+.charge-title {
+  font-family: var(--font-gta, sans-serif);
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.charge-desc {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #94a3b8);
+  line-height: 1.35;
+}
+
+.investigator-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.65rem;
+  color: var(--color-text-dim, #64748b);
+  letter-spacing: 1px;
+}

@@ -13,7 +13,7 @@ import { renderWireTransferReceipt, stampReceiptOnBriefingBoard } from '../rende
 import { HeistPayoutSplitter } from '../ui/HeistPayoutSplitter';
 import { recordCanvasVideo, downloadVideoBlob, isVideoRecordingSupported } from '../utils/videoRecorder';
 import { EditorModal } from '../editor/EditorModal';
-import { NEWS_TOOLS, CCTV_EVIDENCE_TOOLS, REEL_TOOLS, BRIEFING_TOOLS, type ToolsConfig } from '../editor/toolConfigs';
+import { NEWS_TOOLS, CCTV_EVIDENCE_TOOLS, REEL_TOOLS, BRIEFING_TOOLS, WANTED_EVIDENCE_TOOLS, type ToolsConfig } from '../editor/toolConfigs';
 import type { ImageEditorSaveResult } from '@unlayer/react-image-editor';
 import { playSfx } from '../audio/soundManager';
 import { pursuitAudio } from '../audio/pursuitAudio';
@@ -21,6 +21,8 @@ import { calculateWantedLevel } from '../config/wantedLevel';
 import { radioDispatch } from '../audio/radioDispatch';
 import { WantedStars } from '../ui/WantedStars';
 import { PoliceScanner } from '../ui/PoliceScanner';
+import { generateWantedDossier } from '../config/wantedDossier';
+import { WantedEvidenceBoard } from '../ui/WantedEvidenceBoard';
 import './ResultScreen.css';
 
 const NEWS_W = 1920;
@@ -50,11 +52,12 @@ export function ResultScreen() {
     return calculateWantedLevel(approach, infiltrationResult, getawayResult, crew);
   }, [approach, infiltrationResult, getawayResult, crew]);
 
-  const [activeTab, setActiveTab] = useState<'briefing' | 'cut' | 'news' | 'reel'>('briefing');
+  const [activeTab, setActiveTab] = useState<'briefing' | 'cut' | 'wanted' | 'news' | 'reel'>('briefing');
   const [cameraIndex, setCameraIndex] = useState(0); // Default to CAM 01 Sky-Weazel Live Pursuit
   const [isLivePlaying, setIsLivePlaying] = useState(true);
   const [isRecordingVideo, setIsRecordingVideo] = useState(false);
   const [recordProgress, setRecordProgress] = useState(0);
+  const [customEditedWantedPoster, setCustomEditedWantedPoster] = useState<string | null>(null);
 
   // The Cut: Heist Payout & Crew Splitter State
   const [customCrewCuts, setCustomCrewCuts] = useState<Record<string, number>>({});
@@ -64,6 +67,21 @@ export function ResultScreen() {
   const payoutBreakdown = useMemo(() => {
     return calculatePayout(target, grade, crew, customCrewCuts);
   }, [target, grade, crew, customCrewCuts]);
+
+  // VCPD & FBI Most Wanted Dossier Profile
+  const wantedDossier = useMemo(() => {
+    return generateWantedDossier({
+      codename,
+      target,
+      approach,
+      crew,
+      customCrewPortraits,
+      score,
+      grade,
+      wantedInfo,
+      payoutBreakdown,
+    });
+  }, [codename, target, approach, crew, customCrewPortraits, score, grade, wantedInfo, payoutBreakdown]);
 
   useEffect(() => {
     let cancelled = false;
@@ -100,7 +118,7 @@ export function ResultScreen() {
 
   // React Image Editor integration state
   const [editorOpen, setEditorOpen] = useState(false);
-  const [editorTarget, setEditorTarget] = useState<'cctv' | 'fullNews' | 'reel' | 'briefing'>('cctv');
+  const [editorTarget, setEditorTarget] = useState<'cctv' | 'fullNews' | 'reel' | 'briefing' | 'wanted'>('cctv');
   const [editorImage, setEditorImage] = useState<string | null>(null);
   const [editorTitle, setEditorTitle] = useState('');
   const [editorTools, setEditorTools] = useState<ToolsConfig>(CCTV_EVIDENCE_TOOLS);
@@ -144,17 +162,23 @@ export function ResultScreen() {
         '-=0.3',
       );
 
-      tl.fromTo(ctx.querySelector('.result-image-wrap'),
-        { opacity: 0, scale: 0.97, filter: 'blur(4px)' },
-        { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8 },
-        '-=0.3',
-      );
+      const imgWrap = ctx.querySelector('.result-image-wrap');
+      if (imgWrap) {
+        tl.fromTo(imgWrap,
+          { opacity: 0, scale: 0.97, filter: 'blur(4px)' },
+          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8 },
+          '-=0.3',
+        );
+      }
 
-      tl.fromTo(ctx.querySelector('.result-actions'),
-        { y: 16, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5 },
-        '-=0.3',
-      );
+      const actionsEl = ctx.querySelector('.result-actions');
+      if (actionsEl) {
+        tl.fromTo(actionsEl,
+          { y: 16, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.5 },
+          '-=0.3',
+        );
+      }
 
       const scoreEl = ctx.querySelector('.result-score');
       if (scoreEl) {
@@ -379,6 +403,9 @@ export function ResultScreen() {
         };
         img.src = dataUrl;
         addToast('Viral social reel customized with stickers & captions!');
+      } else if (editorTarget === 'wanted') {
+        setCustomEditedWantedPoster(dataUrl);
+        addToast('VCPD Classified Evidence Dossier updated and stamped!');
       } else if (editorTarget === 'briefing') {
         setFinalImage(dataUrl);
         addToast('Mission briefing with stamped wire transfer receipt saved!');
@@ -390,6 +417,16 @@ export function ResultScreen() {
     },
     [editorTarget, setFinalImage, setNewsHeadlineImage, addToast],
   );
+
+  const handleOpenWantedEditor = useCallback((imageDataUrl: string, posterStyle: string) => {
+    setIsLivePlaying(false);
+    playSfx('cameraShutter');
+    setEditorTarget('wanted');
+    setEditorImage(imageDataUrl);
+    setEditorTools(WANTED_EVIDENCE_TOOLS);
+    setEditorTitle(`VCPD Most Wanted Dossier — ${posterStyle === 'evidence' ? 'FBI Case File Corkboard' : 'Retro Wanted Poster'}`);
+    setEditorOpen(true);
+  }, []);
 
   const handleEditorCancel = useCallback(() => {
     setEditorOpen(false);
@@ -556,6 +593,13 @@ export function ResultScreen() {
       if (!receiptDataUrl) return;
       const filename = `${codename.toLowerCase().replace(/\s+/g, '-')}-wire-transfer-receipt.png`;
       downloadDataUrl(receiptDataUrl, filename);
+    } else if (activeTab === 'wanted') {
+      if (customEditedWantedPoster) {
+        const filename = `${codename.toLowerCase().replace(/\s+/g, '-')}-vcpd-evidence-dossier.png`;
+        downloadDataUrl(customEditedWantedPoster, filename);
+      } else {
+        addToast('Use the "Download Poster" button on the evidence board.');
+      }
     } else if (activeTab === 'news') {
       if (!liveNewsCanvasRef.current) return;
       const dataUrl = liveNewsCanvasRef.current.toDataURL('image/png');
@@ -577,6 +621,8 @@ export function ResultScreen() {
     let imgToCopy = finalImage;
     if (activeTab === 'cut' && receiptDataUrl) {
       imgToCopy = receiptDataUrl;
+    } else if (activeTab === 'wanted' && customEditedWantedPoster) {
+      imgToCopy = customEditedWantedPoster;
     } else if (activeTab === 'news' && liveNewsCanvasRef.current) {
       imgToCopy = liveNewsCanvasRef.current.toDataURL('image/png');
     } else if (activeTab === 'reel' && liveReelCanvasRef.current) {
@@ -635,6 +681,16 @@ export function ResultScreen() {
           💰 The Cut (Payout)
         </button>
         <button
+          className={`result-tab ${activeTab === 'wanted' ? 'active' : ''}`}
+          onClick={() => {
+            playSfx('wantedStar', 0.9);
+            setActiveTab('wanted');
+          }}
+          type="button"
+        >
+          🚨 VCPD Most Wanted
+        </button>
+        <button
           className={`result-tab ${activeTab === 'news' ? 'active' : ''}`}
           onClick={() => {
             playSfx('tab');
@@ -665,6 +721,13 @@ export function ResultScreen() {
           onDownloadReceipt={handleDownloadReceipt}
           receiptDataUrl={receiptDataUrl}
           isStamping={isStampingReceipt}
+        />
+      ) : activeTab === 'wanted' ? (
+        <WantedEvidenceBoard
+          dossier={wantedDossier}
+          onOpenEditor={handleOpenWantedEditor}
+          customEditedPoster={customEditedWantedPoster}
+          onToast={addToast}
         />
       ) : (
         <div className={`result-image-wrap hud-brackets ${activeTab === 'reel' ? 'reel-wrap-mode' : ''}`}>
@@ -919,13 +982,15 @@ export function ResultScreen() {
       )}
 
       <div className="editor-powered-badge">
-        Surveillance, Social Reels & Wire Transfer Receipts Powered by React Image Editor
+        Wanted Mugshots, CCTV Feeds, Viral Reels & Wire Transfer Receipts Powered by React Image Editor
       </div>
 
       <div className="result-actions">
         <button className="btn btn-primary btn-large" onClick={handleDownload} type="button">
           {activeTab === 'cut'
             ? 'Download Wire Transfer Slip (PNG)'
+            : activeTab === 'wanted'
+            ? 'Download Wanted Dossier (PNG)'
             : activeTab === 'news'
             ? 'Download Broadcast (PNG)'
             : activeTab === 'reel'

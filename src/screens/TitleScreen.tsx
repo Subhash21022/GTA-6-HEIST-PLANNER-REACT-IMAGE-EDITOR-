@@ -61,7 +61,13 @@ export function TitleScreen() {
   }, { scope: containerRef });
 
   const handleResume = async () => {
+    playSfx('select');
     await restoreState();
+  };
+
+  const handleStartPlanning = () => {
+    playSfx('stinger');
+    setScreen('target');
   };
 
   return (
@@ -82,10 +88,7 @@ export function TitleScreen() {
       <div className="title-actions">
         <button
           className="btn btn-primary btn-large"
-          onClick={() => {
-            playSfx('stinger');
-            setScreen('target');
-          }}
+          onClick={handleStartPlanning}
           type="button"
         >
           {COPY.planButton}
