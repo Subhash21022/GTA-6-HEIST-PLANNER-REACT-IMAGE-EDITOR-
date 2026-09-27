@@ -5,10 +5,12 @@ import { useStore } from '../store';
 import { COPY } from '../config/copy';
 import { renderBlueprint, drawApproachOverlays, drawSampleRoute } from '../render/blueprint';
 import { renderGetawayMap, drawSampleGetawayRoute } from '../render/map';
+import { renderSatelliteOrthophoto } from '../render/satellite';
 import { analyseInfiltration, analyseGetaway, type AnalysisResult } from '../analysis';
 import { EditorModal } from '../editor/EditorModal';
 import { SafeCrackerModal } from '../ui/SafeCrackerModal';
 import { ThermalDrillModal } from '../ui/ThermalDrillModal';
+import { SatelliteReconModal } from '../ui/SatelliteReconModal';
 import { PLANNING_TOOLS } from '../editor/toolConfigs';
 import { normaliseImageToSize, dataUrlToImageData, createCanvas, canvasToDataUrl, getImageData } from '../utils/canvas';
 import { playSfx } from '../audio/soundManager';
@@ -26,6 +28,7 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
   const setScreen = useStore((s) => s.setScreen);
   const safeCracked = useStore((s) => s.safeCracked);
   const thermalDrilled = useStore((s) => s.thermalDrilled);
+  const satelliteReconCompleted = useStore((s) => s.satelliteReconCompleted);
   const addToast = useStore((s) => s.addToast);
   const persistState = useStore((s) => s.persistState);
 
@@ -44,6 +47,8 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
   const [editorOpen, setEditorOpen] = useState(false);
   const [safeModalOpen, setSafeModalOpen] = useState(false);
   const [drillModalOpen, setDrillModalOpen] = useState(false);
+  const [satelliteModalOpen, setSatelliteModalOpen] = useState(false);
+  const [intelViewMode, setIntelViewMode] = useState<'blueprint' | 'optical' | 'flir'>('blueprint');
   const [analysing, setAnalysing] = useState(false);
   const [base, setBase] = useState<{ dataUrl: string; imageData: ImageData } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,6 +62,18 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
     if (!isInfiltration) {
       const result = renderGetawayMap(target.getaway, target.name);
       setBase({ dataUrl: result.dataUrl, imageData: result.imageData });
+      return;
+    }
+
+    if (intelViewMode === 'optical') {
+      const sat = renderSatelliteOrthophoto(target, 'optical');
+      setBase(sat);
+      return;
+    }
+
+    if (intelViewMode === 'flir') {
+      const sat = renderSatelliteOrthophoto(target, 'flir');
+      setBase(sat);
       return;
     }
 
@@ -82,7 +99,7 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
     }
 
     setBase(renderBlueprint(target.layout, target.name, approach));
-  }, [target, isInfiltration, approach]);
+  }, [target, isInfiltration, approach, intelViewMode]);
 
   useGSAP(() => {
     const ctx = containerRef.current;
@@ -253,6 +270,52 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
             </div>
           )}
 
+          {isInfiltration && (
+            <div className="blueprint-intel-switcher hud-brackets">
+              <span className="intel-switcher-title">TACTICAL VIEW:</span>
+              <div className="intel-switcher-btns">
+                <button
+                  type="button"
+                  className={`btn btn-xs ${intelViewMode === 'blueprint' ? 'btn-primary' : 'btn-ghost'}`}
+                  onClick={() => {
+                    playSfx('tab');
+                    setIntelViewMode('blueprint');
+                  }}
+                >
+                  📄 CAD BLUEPRINT
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-xs ${intelViewMode === 'optical' ? 'btn-primary' : 'btn-ghost'}`}
+                  onClick={() => {
+                    playSfx('satelliteSpectrumSwitch', 0.9);
+                    setIntelViewMode('optical');
+                  }}
+                  style={{
+                    color: intelViewMode === 'optical' ? '#000' : '#38bdf8',
+                    borderColor: '#38bdf8',
+                  }}
+                >
+                  🛰️ OPTICAL SPECTRUM
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-xs ${intelViewMode === 'flir' ? 'btn-primary' : 'btn-ghost'}`}
+                  onClick={() => {
+                    playSfx('satelliteSpectrumSwitch', 0.9);
+                    setIntelViewMode('flir');
+                  }}
+                  style={{
+                    color: intelViewMode === 'flir' ? '#000' : '#f43f5e',
+                    borderColor: '#f43f5e',
+                  }}
+                >
+                  🔥 THERMAL FLIR
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="blueprint-frame hud-brackets">
             <img
               src={displayImage}
@@ -310,6 +373,22 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
                 >
                   {thermalDrilled ? '🔥 DEPOSIT BOXES MELTED (+$350K)' : '🔥 THERMAL LANCE DRILL (+ $350K & +15%)'}
                 </button>
+                <button
+                  className={`btn ${satelliteReconCompleted ? 'btn-secondary safe-cracked-btn' : 'btn-secondary'}`}
+                  onClick={() => {
+                    playSfx('satelliteDownlinkChime');
+                    setSatelliteModalOpen(true);
+                  }}
+                  type="button"
+                  style={{
+                    borderColor: '#00f0ff',
+                    color: '#00f0ff',
+                    boxShadow: satelliteReconCompleted ? undefined : '0 0 12px rgba(0, 240, 255, 0.25)',
+                  }}
+                  title="Launch military orbital KH-12 spy satellite multi-spectral feed in React Image Editor"
+                >
+                  {satelliteReconCompleted ? '🛰️ SATELLITE INTEL LOCKED (+$250K)' : '🛰️ SATELLITE FLIR (+ $250K)'}
+                </button>
               </>
             )}
             {currentImage && (
@@ -341,6 +420,9 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
                   </li>
                   <li className={thermalDrilled ? 'done' : ''}>
                     {thermalDrilled ? 'Deposit boxes melted: +$350K & +15% Score' : 'Optional: Thermal lance deposit drill (+ $350K)'}
+                  </li>
+                  <li className={satelliteReconCompleted ? 'done' : ''}>
+                    {satelliteReconCompleted ? 'Orbital satellite reconnaissance: Locked (+$250K)' : 'Optional: Orbital satellite FLIR recon (+ $250K)'}
                   </li>
                   <li className={currentResult?.connectivity.exitReached ? 'done' : ''}>
                     Escape through an exit corridor
@@ -418,6 +500,11 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
         isOpen={drillModalOpen}
         onClose={() => setDrillModalOpen(false)}
         onSuccess={() => setDrillModalOpen(false)}
+      />
+
+      <SatelliteReconModal
+        isOpen={satelliteModalOpen}
+        onClose={() => setSatelliteModalOpen(false)}
       />
     </div>
   );

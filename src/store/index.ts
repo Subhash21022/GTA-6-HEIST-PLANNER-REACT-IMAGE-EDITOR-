@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { TARGETS, type Target } from '../config/targets';
 import { CREW_MEMBERS, type CrewMember } from '../config/crew';
 import type { AnalysisResult } from '../analysis/scoring';
+import type { SatelliteSpectrum } from '../render/satellite';
 import { saveMeta, loadMeta, clearMeta, saveImage, loadImage, clearAllImages } from '../utils/storage';
 
 export type Screen =
@@ -44,10 +45,20 @@ interface AppState {
   reconImages: Record<string, string>;
   safeCracked: boolean;
   thermalDrilled: boolean;
+  satelliteImage: string | null;
+  satelliteReconCompleted: boolean;
+  satelliteSpectrum: SatelliteSpectrum;
+  satelliteJammersPlaced: number;
+  satelliteSniperPings: number;
 
   setScreen: (s: Screen) => void;
   setSafeCracked: (cracked: boolean) => void;
   setThermalDrilled: (drilled: boolean) => void;
+  setSatelliteImage: (img: string | null) => void;
+  setSatelliteReconCompleted: (completed: boolean) => void;
+  setSatelliteSpectrum: (spectrum: SatelliteSpectrum) => void;
+  setSatelliteJammersPlaced: (count: number) => void;
+  setSatelliteSniperPings: (count: number) => void;
   goBack: () => void;
   setTarget: (t: Target) => void;
   setApproach: (a: 'subtle' | 'loud') => void;
@@ -93,10 +104,23 @@ export const useStore = create<AppState>((set, get) => ({
   reconImages: {},
   safeCracked: false,
   thermalDrilled: false,
+  satelliteImage: null,
+  satelliteReconCompleted: false,
+  satelliteSpectrum: 'flir',
+  satelliteJammersPlaced: 0,
+  satelliteSniperPings: 0,
 
   setScreen: (s) => set({ screen: s }),
   setSafeCracked: (cracked) => set({ safeCracked: cracked }),
   setThermalDrilled: (drilled) => set({ thermalDrilled: drilled }),
+  setSatelliteImage: (img) => {
+    set({ satelliteImage: img });
+    if (img) saveImage('satellite-orthophoto', img);
+  },
+  setSatelliteReconCompleted: (completed) => set({ satelliteReconCompleted: completed }),
+  setSatelliteSpectrum: (spectrum) => set({ satelliteSpectrum: spectrum }),
+  setSatelliteJammersPlaced: (count) => set({ satelliteJammersPlaced: count }),
+  setSatelliteSniperPings: (count) => set({ satelliteSniperPings: count }),
 
   goBack: () => {
     const { screen } = get();
@@ -190,6 +214,11 @@ export const useStore = create<AppState>((set, get) => ({
       reconImages: {},
       safeCracked: false,
       thermalDrilled: false,
+      satelliteImage: null,
+      satelliteReconCompleted: false,
+      satelliteSpectrum: 'flir',
+      satelliteJammersPlaced: 0,
+      satelliteSniperPings: 0,
     });
   },
 
@@ -221,6 +250,7 @@ export const useStore = create<AppState>((set, get) => ({
     const briefingImage = await loadImage('briefing-board');
     const finalImage = await loadImage('briefing-final');
     const newsHeadlineImage = await loadImage('news-headline');
+    const satelliteImage = await loadImage('satellite-orthophoto');
 
     const customCrewPortraits: Record<string, string> = {};
     for (const c of crew) {
@@ -246,6 +276,8 @@ export const useStore = create<AppState>((set, get) => ({
       briefingImage,
       finalImage,
       newsHeadlineImage,
+      satelliteImage,
+      satelliteReconCompleted: satelliteImage !== null,
       screen,
       customCrewPortraits,
       reconImages,

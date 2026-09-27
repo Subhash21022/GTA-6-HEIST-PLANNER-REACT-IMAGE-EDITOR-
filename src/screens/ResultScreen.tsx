@@ -23,6 +23,7 @@ import { WantedStars } from '../ui/WantedStars';
 import { PoliceScanner } from '../ui/PoliceScanner';
 import { generateWantedDossier } from '../config/wantedDossier';
 import { WantedEvidenceBoard } from '../ui/WantedEvidenceBoard';
+import { SatelliteReconModal } from '../ui/SatelliteReconModal';
 import './ResultScreen.css';
 
 const NEWS_W = 1920;
@@ -40,6 +41,9 @@ export function ResultScreen() {
   const approach = useStore((s) => s.approach);
   const safeCracked = useStore((s) => s.safeCracked);
   const thermalDrilled = useStore((s) => s.thermalDrilled);
+  const satelliteReconCompleted = useStore((s) => s.satelliteReconCompleted);
+  const satelliteImage = useStore((s) => s.satelliteImage);
+  const satelliteSpectrum = useStore((s) => s.satelliteSpectrum);
   const setNewsHeadlineImage = useStore((s) => s.setNewsHeadlineImage);
   const startOver = useStore((s) => s.startOver);
   const addToast = useStore((s) => s.addToast);
@@ -54,7 +58,8 @@ export function ResultScreen() {
     return calculateWantedLevel(approach, infiltrationResult, getawayResult, crew);
   }, [approach, infiltrationResult, getawayResult, crew]);
 
-  const [activeTab, setActiveTab] = useState<'briefing' | 'cut' | 'wanted' | 'news' | 'reel'>('briefing');
+  const [activeTab, setActiveTab] = useState<'briefing' | 'cut' | 'wanted' | 'satellite' | 'news' | 'reel'>('briefing');
+  const [satelliteModalOpen, setSatelliteModalOpen] = useState(false);
   const [cameraIndex, setCameraIndex] = useState(0); // Default to CAM 01 Sky-Weazel Live Pursuit
   const [isLivePlaying, setIsLivePlaying] = useState(true);
   const [isRecordingVideo, setIsRecordingVideo] = useState(false);
@@ -67,8 +72,16 @@ export function ResultScreen() {
   const [isStampingReceipt, setIsStampingReceipt] = useState(false);
 
   const payoutBreakdown = useMemo(() => {
-    return calculatePayout(target, grade, crew, customCrewCuts, safeCracked, thermalDrilled);
-  }, [target, grade, crew, customCrewCuts, safeCracked, thermalDrilled]);
+    return calculatePayout(
+      target,
+      grade,
+      crew,
+      customCrewCuts,
+      safeCracked,
+      thermalDrilled,
+      satelliteReconCompleted,
+    );
+  }, [target, grade, crew, customCrewCuts, safeCracked, thermalDrilled, satelliteReconCompleted]);
 
   // VCPD & FBI Most Wanted Dossier Profile
   const wantedDossier = useMemo(() => {
@@ -602,6 +615,14 @@ export function ResultScreen() {
       } else {
         addToast('Use the "Download Poster" button on the evidence board.');
       }
+    } else if (activeTab === 'satellite') {
+      if (satelliteImage) {
+        const filename = `${codename.toLowerCase().replace(/\s+/g, '-')}-satellite-flir.png`;
+        downloadDataUrl(satelliteImage, filename);
+        addToast('Orbital satellite reconnaissance image downloaded!');
+      } else {
+        addToast('Launch the orbital satellite ground-station to generate recon intel first.');
+      }
     } else if (activeTab === 'news') {
       if (!liveNewsCanvasRef.current) return;
       const dataUrl = liveNewsCanvasRef.current.toDataURL('image/png');
@@ -625,6 +646,8 @@ export function ResultScreen() {
       imgToCopy = receiptDataUrl;
     } else if (activeTab === 'wanted' && customEditedWantedPoster) {
       imgToCopy = customEditedWantedPoster;
+    } else if (activeTab === 'satellite' && satelliteImage) {
+      imgToCopy = satelliteImage;
     } else if (activeTab === 'news' && liveNewsCanvasRef.current) {
       imgToCopy = liveNewsCanvasRef.current.toDataURL('image/png');
     } else if (activeTab === 'reel' && liveReelCanvasRef.current) {
@@ -712,6 +735,16 @@ export function ResultScreen() {
         >
           📱 ViceGram Viral Reel
         </button>
+        <button
+          className={`result-tab ${activeTab === 'satellite' ? 'active' : ''}`}
+          onClick={() => {
+            playSfx('satelliteDownlinkChime', 0.9);
+            setActiveTab('satellite');
+          }}
+          type="button"
+        >
+          🛰️ KH-12 Satellite FLIR
+        </button>
       </div>
 
       {activeTab === 'cut' ? (
@@ -731,6 +764,61 @@ export function ResultScreen() {
           customEditedPoster={customEditedWantedPoster}
           onToast={addToast}
         />
+      ) : activeTab === 'satellite' ? (
+        <div className="satellite-result-panel hud-brackets">
+          <div className="satellite-result-header">
+            <div className="satellite-header-titles">
+              <span className="sat-sub-badge">LEONIDA AEROSPACE COMMAND // KH-12 OLYMPUS</span>
+              <h3 className="sat-main-title">
+                {target?.name ? `${target.name.toUpperCase()} - ORBITAL RECON DEBRIEF` : 'ORBITAL SURVEILLANCE FEED'}
+              </h3>
+            </div>
+            <div className="satellite-status-pill">
+              <span className="sat-indicator-dot blinking" />
+              <span>{satelliteReconCompleted ? 'DOWNLINK ARCHIVED (INTEL VERIFIED)' : 'STANDBY - SATELLITE ON-ORBIT'}</span>
+            </div>
+          </div>
+
+          <div className="satellite-result-body">
+            {satelliteImage ? (
+              <div className="satellite-preview-frame">
+                <img
+                  src={satelliteImage}
+                  alt="KH-12 Orbital Satellite Reconnaissance"
+                  className="satellite-result-img"
+                />
+                <div className="satellite-img-tag">
+                  MODE: {satelliteSpectrum.toUpperCase()} // RESOLUTION: 1920x1080 // KH-12 USA-245
+                </div>
+              </div>
+            ) : (
+              <div className="satellite-result-empty">
+                <div className="sat-empty-icon">🛰️</div>
+                <div className="sat-empty-title">NO ORBITAL DOWNLINK STORED PRIOR TO OPERATION</div>
+                <p className="sat-empty-desc">
+                  Acquire live orbital pass over {target?.name || 'the target'} now. View multispectral infrared (FLIR), night vision, or wireframe telemetry and annotate tactical countermeasures in React Image Editor.
+                </p>
+              </div>
+            )}
+
+            <div className="satellite-result-controls">
+              <div className="satellite-intel-stat">
+                <span className="stat-label">RECON INTEL BONUS:</span>
+                <span className="stat-val">+$250,000 CASHOUT</span>
+              </div>
+              <button
+                type="button"
+                className="btn btn-primary sat-launch-btn"
+                onClick={() => {
+                  playSfx('satelliteDownlinkChime', 1.0);
+                  setSatelliteModalOpen(true);
+                }}
+              >
+                🛰️ {satelliteImage ? 'OPEN SATELLITE RECON GROUND-STATION & EDITOR' : 'ACQUIRE ORBITAL SATELLITE PASS'}
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
         <div className={`result-image-wrap hud-brackets ${activeTab === 'reel' ? 'reel-wrap-mode' : ''}`}>
           {activeTab === 'briefing' ? (
@@ -984,7 +1072,7 @@ export function ResultScreen() {
       )}
 
       <div className="editor-powered-badge">
-        Wanted Mugshots, CCTV Feeds, Viral Reels & Wire Transfer Receipts Powered by React Image Editor
+        Satellite FLIR, Wanted Mugshots, CCTV Feeds, Viral Reels & Wire Transfer Receipts Powered by React Image Editor
       </div>
 
       <div className="result-actions">
@@ -993,6 +1081,8 @@ export function ResultScreen() {
             ? 'Download Wire Transfer Slip (PNG)'
             : activeTab === 'wanted'
             ? 'Download Wanted Dossier (PNG)'
+            : activeTab === 'satellite'
+            ? 'Download Satellite Recon (PNG)'
             : activeTab === 'news'
             ? 'Download Broadcast (PNG)'
             : activeTab === 'reel'
@@ -1016,6 +1106,11 @@ export function ResultScreen() {
           onCancel={handleEditorCancel}
         />
       )}
+
+      <SatelliteReconModal
+        isOpen={satelliteModalOpen}
+        onClose={() => setSatelliteModalOpen(false)}
+      />
     </div>
   );
 }

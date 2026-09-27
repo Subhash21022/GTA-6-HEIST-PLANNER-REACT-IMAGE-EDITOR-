@@ -130,6 +130,25 @@ describe('Payout Calculation Engine', () => {
       expect(breakdown.thermalDrillBonus).toBe(350_000);
     });
 
+    it('calculates bonus payout for satelliteReconCompleted (+$250K)', () => {
+      const breakdown = calculatePayout(mockTarget, 'B', mockCrew, {}, false, false, true);
+
+      // B-rank multiplier = 0.75 * 2,400,000 = 1,800,000 + 250,000 = 2,050,000
+      expect(breakdown.actualGrossTake).toBe(2_050_000);
+      expect(breakdown.satelliteBonus).toBe(250_000);
+    });
+
+    it('stacks all three: safeCracked (+$450K), thermalDrilled (+$350K), and satelliteReconCompleted (+$250K)', () => {
+      const breakdown = calculatePayout(mockTarget, 'B', mockCrew, {}, true, true, true);
+
+      // S-rank forced: 1.0 * 2,400,000 = 2,400,000 + 450,000 + 350,000 + 250,000 = 3,450,000
+      expect(breakdown.grade).toBe('S');
+      expect(breakdown.actualGrossTake).toBe(3_450_000);
+      expect(breakdown.safeCrackedBonus).toBe(450_000);
+      expect(breakdown.thermalDrillBonus).toBe(350_000);
+      expect(breakdown.satelliteBonus).toBe(250_000);
+    });
+
     it('handles fallback when target is null', () => {
       const breakdown = calculatePayout(null, 'S', []);
 
