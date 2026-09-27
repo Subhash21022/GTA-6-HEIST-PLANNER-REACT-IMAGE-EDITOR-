@@ -63,6 +63,11 @@ export function HeistPayoutSplitter({
               💎 VAULT SAFE CRACKED: +{formatCurrency(breakdown.safeCrackedBonus!)} BEARER BONDS & DIAMONDS
             </div>
           )}
+          {Boolean(breakdown.thermalDrillBonus) && (
+            <div className="payout-drill-bonus-badge">
+              🔥 THERMAL LANCE: +{formatCurrency(breakdown.thermalDrillBonus!)} ANTIQUE JEWELRY (+15% SCORE)
+            </div>
+          )}
         </div>
         <div className="player-take-amount">
           <span className="player-take-number">{formatCurrency(breakdown.playerNetTake)}</span>

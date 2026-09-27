@@ -111,6 +111,25 @@ describe('Payout Calculation Engine', () => {
       expect(breakdown.playerNetTake).toBe(1_680_000);
     });
 
+    it('calculates bonus payout for thermalDrilled (+$350K)', () => {
+      const breakdown = calculatePayout(mockTarget, 'A', mockCrew, {}, false, true);
+
+      // A-rank multiplier = 0.9 * 2,400,000 = 2,160,000 + 350,000 = 2,510,000
+      expect(breakdown.actualGrossTake).toBe(2_510_000);
+      expect(breakdown.thermalDrillBonus).toBe(350_000);
+      expect(breakdown.safeCrackedBonus).toBe(0);
+    });
+
+    it('stacks both safeCracked (+$450K & S-Rank) and thermalDrilled (+$350K)', () => {
+      const breakdown = calculatePayout(mockTarget, 'C', mockCrew, {}, true, true);
+
+      // S-rank forced: 1.0 * 2,400,000 = 2,400,000 + 450,000 + 350,000 = 3,200,000
+      expect(breakdown.grade).toBe('S');
+      expect(breakdown.actualGrossTake).toBe(3_200_000);
+      expect(breakdown.safeCrackedBonus).toBe(450_000);
+      expect(breakdown.thermalDrillBonus).toBe(350_000);
+    });
+
     it('handles fallback when target is null', () => {
       const breakdown = calculatePayout(null, 'S', []);
 

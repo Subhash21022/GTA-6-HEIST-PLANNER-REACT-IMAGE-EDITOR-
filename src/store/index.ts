@@ -43,9 +43,11 @@ interface AppState {
   customCrewPortraits: Record<string, string>;
   reconImages: Record<string, string>;
   safeCracked: boolean;
+  thermalDrilled: boolean;
 
   setScreen: (s: Screen) => void;
   setSafeCracked: (cracked: boolean) => void;
+  setThermalDrilled: (drilled: boolean) => void;
   goBack: () => void;
   setTarget: (t: Target) => void;
   setApproach: (a: 'subtle' | 'loud') => void;
@@ -90,9 +92,11 @@ export const useStore = create<AppState>((set, get) => ({
   customCrewPortraits: {},
   reconImages: {},
   safeCracked: false,
+  thermalDrilled: false,
 
   setScreen: (s) => set({ screen: s }),
   setSafeCracked: (cracked) => set({ safeCracked: cracked }),
+  setThermalDrilled: (drilled) => set({ thermalDrilled: drilled }),
 
   goBack: () => {
     const { screen } = get();
@@ -185,6 +189,7 @@ export const useStore = create<AppState>((set, get) => ({
       customCrewPortraits: {},
       reconImages: {},
       safeCracked: false,
+      thermalDrilled: false,
     });
   },
 
