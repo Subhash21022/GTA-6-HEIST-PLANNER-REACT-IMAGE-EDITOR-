@@ -1,84 +1,87 @@
 # The Vice Syndicate: GTA VI Heist Board & Tactical Command
 
-An interactive GTA VI-inspired web experience where you plan high-stakes heists across Vice City: recon targets, select tactical approaches (**Subtle** vs. **Loud**), assemble specialist crews, draw architectural infiltration & high-speed getaway routes on procedural blueprints using **[@unlayer/react-image-editor](https://github.com/unlayer/react-image-editor)**, simulate the heist with interactive telemetry, and witness the getaway via an animated **Sky-Weazel 4 CCTV Police Pursuit** with dynamic sirens and authentic GTA soundscapes.
+An interactive GTA VI-inspired web experience where you plan high-stakes heists across Vice City: recon targets, select tactical approaches (**Subtle** vs. **Loud**), crack bank vault tumblers in an authentic **Safe-Cracking Mini-Game**, assemble specialist crews, draw architectural infiltration & high-speed getaway routes on procedural blueprints using **[@unlayer/react-image-editor](https://github.com/unlayer/react-image-editor)**, simulate the heist with interactive telemetry, witness the getaway via an animated **Sky-Weazel 4 CCTV Police Pursuit** with dynamic sirens and multi-voice news broadcasts, split the loot in **The Cut**, and generate procedural **VCPD & FBI Most Wanted Evidence Dossiers**.
 
 Built for the **Build with React Image Editor Challenge** by [Unlayer](https://unlayer.com/).
 
 > **Disclaimer:** This is an unofficial, non-commercial fan concept. Grand Theft Auto and GTA VI are trademarks of Take-Two Interactive / Rockstar Games. This project is not affiliated with, endorsed by, or sponsored by them. All artwork is original or user-supplied.
 
-## Key Features
+---
 
-- **9-Screen Tactical Mission Flow:** Title → Target Selection → Approach Selection (Subtle vs. Loud) → Crew Assembly → Infiltration Blueprint Planning → Getaway Navigation Planning → Telemetry Playback → Briefing Board → Weazel News Debrief & Live CCTV
-- **Tactical Approach Selection (GTA V / Movie Style):**
-  - **Plan A (The Subtle Route):** Silent ingress, air duct routing, keycard bypass, zero-alarm tolerance, Hacker/Safecracker synergy, and Ghost Operator scoring bonuses.
-  - **Plan B (The Loud Route):** Kinetic C4 structural breach points, thermite drills, SWAT intercept crossfire zones, Muscle/Driver blitz synergy, and Vault Blown Weazel News headlines.
-- **Deep React Image Editor Integration:**
-  - **Blueprint Route Drawing:** Brush strokes sketched by the player are extracted as mathematical trajectories that drive graph connectivity (BFS), hazard collision detection, and mission pass/fail grades.
-  - **Surveillance Recon (`TargetScreen`):** Mark up target reconnaissance photos with arrows, cropping, and tactical notes.
-  - **Crew Disguises (`CrewScreen`):** Customize specialist mugshots with masks, shades, and tactical gear.
-  - **1920×1080 Master Briefing Board (`BriefingScreen`):** Add classified watermarks, stamps, and codenames before exporting.
-- **Sky-Weazel 4 Live Police Pursuit CCTV:**
-  - Real-time animated canvas simulating a news helicopter tracking getaway cars through Vice City streets.
-  - Gyro-stabilized FLIR crosshair with cinematic camera shake and bank tilts.
-  - Dynamic getaway car drifting, acceleration physics, screeching tire smoke, and intercepting police cruisers.
-- **Synthesized GTA Audio & Randomized Siren Engine:**
-  - Zero static, studio-grade Web Audio synthesizers for menu hover blips, select chimes, heist stingers, and fanfare.
-  - 3 desynchronized police cruisers (Lead Wail, Flanker Yelp, Tactical Piercer) with continuous frequency drift and tactical police air horn bursts.
-  - Interactive neon sound control widget in the bottom-right corner with mute toggle and expandable volume slider.
-- **Authentic Rockstar Games Typography:**
-  - **Pricedown:** Official GTA franchise title font for mission headings, score stamps, cash values, and logos.
-  - **Chalet (London & New York 1960):** Official GTA 5 / GTA Online HUD, menu, telemetry, and button typography.
-- **Zero Backend:** 100% client-side, lightning-fast static build, deployable anywhere (Vercel, Netlify, Cloudflare Pages).
+## ⚡ Recent Updates & Major Features
 
-## Tech Stack
+### 1. 🔐 Rotary Tumbler Vault Safe-Cracking Mini-Game
+- **Authentic Heavy Vault Door:** Photorealistic heavy brushed-steel vault door with high-specular brass tumbler combination dial (0–99), tension needle, and locking pin indicators.
+- **Precision Controls:** Turn the dial smoothly using **mouse drag / touch swipe**, **keyboard arrow keys (`[←]` / `[→]`)**, or **mouse scroll wheel**.
+- **Procedural Web Audio Synthesizers:**
+  - *Proximity Dial Clicks:* Mechanical tumbler clicks increase in frequency and sharpen as the dial nears the secret combination gate ($\le 3^\circ$).
+  - *Heavy Metallic Clank:* A resonant pin-locking sound fires when each of the 3 gates is cracked.
+  - *Pneumatic Steam Hiss:* High-pressure release sound effect plays upon unsealing all 3 locks.
+  - *Silent Alarm Klaxon:* High-tension pulsing alarm if the 30-second countdown expires.
+- **Crew Specialist Synergy:** Equipping **Nora "Specter" Bell** activates her *Acoustic Stethoscope Perk*, doubling sweet-spot audio fidelity and expanding gate tolerance.
+- **Heist Payout Impact:** Successfully cracking the safe awards **+$450,000 in bearer bonds & diamonds** to "The Cut" payout screen and guarantees an S-Rank vault extraction!
 
-| Layer | Technology |
-|---|---|
-| Framework | React 19 + TypeScript 6 (strict mode) |
-| Build Tool | Vite 8.3 |
-| Image Editor | **[@unlayer/react-image-editor](https://github.com/unlayer/react-image-editor)** v1.0.2 |
-| State Management | Zustand 5 |
-| Client Storage | idb-keyval (IndexedDB) + localStorage |
-| Rendering Engine | Canvas 2D API (procedural blueprints, maps, briefing board, CCTV pursuit) |
-| Audio Engine | Web Audio API (real-time synthesizers, dynamics compressor limiter, sirens) |
-| Typography | **Pricedown** & **Chalet London/New York 1960** (Rockstar Games Official GTA Fonts) |
-| Testing | Vitest 5 (12/12 unit tests passing) |
-| Linting | oxlint |
+### 2. 🚨 VCPD / FBI "MOST WANTED" Mugshot & Evidence Board
+- **Dual-Mode 1920×1080 High-Resolution Canvas:**
+  - **FBI Corkboard Case File:** Pinboard with authentic cork texture, crime scene polaroids, evidence exhibit tags (*"EXHIBIT A: SAPPHIRE HARBOR VAULT BLUEPRINT"*), red yarn strings connecting targets and crew, procedural coffee ring stains, and classified stamps.
+  - **Retro VCPD Wanted Poster:** Iconic 80s/modern Vice City Police Department street bulletin with monochrome duo-tone crew mugshots, warning headers (*"ARMED & EXTREMELY DANGEROUS"*), active FBI bounties (up to $2,500,000), Florida criminal statutes, and police dispatch hotlines.
+- **Procedural Criminal Dossier:** Automatically generates Florida penal code statutes (Grand Larceny, Cyber Espionage, Explosives Trafficking), syndicate codenames, aliases, and booking numbers based on your assembled crew.
+- **Full React Image Editor Tie-In:** Click *"Customize Evidence Dossier"* to open `@unlayer/react-image-editor` pre-loaded with forensic tools—add red yarn annotations, classified watermarks, fingerprint stamps, evidence tags, and custom text before high-res PNG export.
 
-## Getting Started
+### 3. 🌊 Vice City Sunset Neon Shutter & Cinematic Blur Transition
+- **60fps Fluid Screen Transition:** Replaces harsh screen cuts with an ultra-smooth cinematic transition.
+- **Ocean Drive Anamorphic Sweep:** Dual-tone neon gradient sweep (**Ocean Drive Cyan `#00e5ff`** & **Sunset Pink `#ff2d78`**) glides horizontally across the screen like an anamorphic lens flare.
+- **Silky Blur & Scale Dynamics:** The outgoing screen gracefully blurs (`blur(10px)`) and scales down (`scale(0.97)`), while the incoming screen smoothly scales in (`scale(1.03) → scale(1.0)`) into crisp focus with zero pop-in.
 
-```bash
-# Install dependencies
-npm install
+### 4. 💰 "The Cut" Heist Payout & Crew Splitter
+- **Dynamic Loot Allocation:** Interactive cut distribution sliders for the **Mastermind**, chosen specialists (**Zara, Milo, Rico, Sable, Nora**), and **Syndicate Money Laundering / Fence fees**.
+- **Real-Time Web Audio Cash Tally:** Procedural ticking cash SFX as numbers ramp up.
+- **Dynamic Valuation:** Automatically factors in base target loot, grade multipliers, tactical bonuses (Ghost Operator / Kinetic Breach), and Safe-Cracking mini-game loot (+$450,000).
+- **Cryptographic Wire Transfer Slip:** Instant generation of a verifiable offshore transfer receipt complete with unique transaction hashes and download capability.
 
-# Start dev server
-npm run dev
+### 5. 📱 ViceGram / Bleeter 9:16 Viral Social Reel Generator
+- **Vertical Smartphone Getaway Canvas:** 9:16 aspect ratio video reel simulator tracking your getaway car drifting through Ocean Drive.
+- **Live Social Commentary Stream:** Procedural citizen reactions and memes (*"Bro really drifted past VCPD HQ 💀"*, *"Is that the Ocean Drive vault car?!"*).
+- **React Image Editor Integration:** Crop, stamp viral stickers, and overlay custom captions directly using `@unlayer/react-image-editor`.
 
-# Type-check
-npm run typecheck
+### 6. 📹 Weazel News Live CCTV Pursuit & Multi-Cam HUD
+- **Sky-Weazel 4 Helicopter Pursuit:** Real-time animated canvas tracking getaway vehicles through Vice City streets with police cruiser intercept physics, drifting tire smoke, and gyro-stabilized FLIR crosshairs.
+- **Multi-Cam Switcher:** Switch live feeds between *Sky-Weazel 4 Chopper*, *Street CCTV Intersection*, *Vault Security Feed*, and *Police Dashcam*.
+- **AI Voice News Anchor & Police Scanner:** Multi-voice Web Speech API news broadcast accompanied by synthesized police scanner radio dispatch chatter.
+- **Desynchronized 3-Cruiser Siren Engine:** Real-time Web Audio sirens with continuous frequency drift (Lead Wail, Flanker Yelp, Tactical Piercer) and manual police air horn bursts.
 
-# Run tests
-npm test
+### 7. 📊 Vercel Speed Insights Integration
+- Integrated `@vercel/speed-insights/react` directly in the application root (`<SpeedInsights />`) to deliver real-time Core Web Vitals monitoring, performance score tracking, and production telemetry.
 
-# Lint
-npm run lint
+---
 
-# Production build
-npm run build
-```
+## 🎨 Multi-Touchpoint React Image Editor Showcase
 
-## Asset Optimization
+Rather than using `@unlayer/react-image-editor` as a simple cosmetic previewer, **The Vice Syndicate integrates the editor across 7 core mission workflows**, making it the primary interactive driver of gameplay and visual storytelling:
 
-All visuals in `public/images/` are bundled directly in the repository and optimized for high performance:
-- **Total Payload:** Optimized from ~61.5 MB down to **12.89 MB (~79% reduction)**.
-- **Format:** Pristine 24-bit RGB/RGBA PNGs with Lanczos resampling and Deflate optimization — zero gradient banding, zero visual compression artifacts, and instant loading on web deployments.
-- **Included Assets:** 6 specialist crew portraits, 3 target reconnaissance visuals, 3 blueprint backdrops, title hero background, and transparent vector logo.
+| # | Heist Workflow | Screen / Modal | Editor Capabilities & Custom Toolset |
+|---|---|---|---|
+| **1** | **Infiltration Blueprint Planning** | `PlanScreen` (Stage 1) | Freehand tactical brush strokes analyzed by the BFS topological routing & Euclidean ink detection engine. |
+| **2** | **Getaway Navigation Planning** | `PlanScreen` (Stage 2) | Route plotting across Vice City street maps with roadblock collision raycasting and speed calculations. |
+| **3** | **Surveillance Reconnaissance** | `TargetScreen` | Marking up architectural target photos with directional arrows, tactical callouts, highlighters, and crops. |
+| **4** | **Undercover Crew Dossiers** | `CrewScreen` | Customizing operative mugshots with tactical balaclavas, stealth shades, disguises, and polaroid frames. |
+| **5** | **1920×1080 Master Briefing Board** | `BriefingScreen` | Stamping classified watermarks, operation codenames, syndicate seals, and exporting high-res operational dossiers. |
+| **6** | **VCPD & FBI Evidence Locker** | `ResultScreen` / Evidence Board | Forensic annotations: drawing connecting red yarn, blood spatter, fingerprint stamps, and "EXHIBIT A" tags over 1080p case files. |
+| **7** | **ViceGram Viral Social Reel** | `ResultScreen` / Viral Reel | 9:16 vertical smartphone crop, meme sticker stamps, filter grading, and viral headline text overlays before social sharing. |
 
-## 🎨 How React Image Editor Drives the Mathematical Analysis Engine
+### Deep Programmatic API Control (`src/editor/EditorModal.tsx`)
+The application wraps `@unlayer/react-image-editor` in a custom HUD interface with extensive runtime features:
+- **Dynamic Theme Switching:** Toggle seamlessly between `dark` and `light` themes via `updateOptions()`.
+- **Runtime Internationalization:** Instant locale switching (`en`, `es`, `fr`, `de`, `ja`).
+- **Dynamic Toolbar Docking:** Flip docking between `left` and `right` screen edges.
+- **Contextual Tool Configurations:** Mounts specialized toolsets tailored to the current context (`drawing`-only for blueprints, `crop`/`filter` for recon, full forensic suite for evidence dossiers).
+- **Change Detection & State Management:** Tracks unsaved changes via `hasChanges()`, allows instant image reset, and provides one-click snapshot exports.
 
-Rather than using `@unlayer/react-image-editor` as a cosmetic viewer, **Heist Planner makes the image editor the primary interactive controller of the simulation**. 
+---
 
-When players sketch infiltration paths through bank vaults or getaway routes across Vice City streets, **their brushstrokes are converted into mathematical trajectories that directly drive simulation scoring and heist outcomes.**
+## 📐 How React Image Editor Drives the Mathematical Analysis Engine
+
+When players sketch infiltration paths through bank vaults or getaway routes across Vice City streets, **their brushstrokes are converted into mathematical trajectories that directly drive simulation scoring and heist outcomes:**
 
 ```
 ┌───────────────────────────────────────┐
@@ -116,12 +119,10 @@ When players sketch infiltration paths through bank vaults or getaway routes acr
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
----
-
 ### Step-by-Step Mathematical Pipeline
 
 #### 1. Dual-Buffer Euclidean Ink Extraction (`src/analysis/ink.ts`)
-When the editor returns the updated canvas, the engine rasterizes both the pristine base blueprint (`baseData`) and the player's edited canvas (`editedData`) into raw `Uint8ClampedArray` pixel buffers. For every sampled coordinate cell, the engine calculates the Euclidean color distance in 3D RGB space:
+The engine rasterizes both the pristine base blueprint (`baseData`) and the player's edited canvas (`editedData`) into raw `Uint8ClampedArray` pixel buffers. For every sampled coordinate cell, the engine calculates the Euclidean color distance in 3D RGB space:
 
 $$\Delta E = \sqrt{(R_{\text{edited}} - R_{\text{base}})^2 + (G_{\text{edited}} - G_{\text{base}})^2 + (B_{\text{edited}} - B_{\text{base}})^2}$$
 
@@ -158,19 +159,12 @@ The specialists chosen during Crew Assembly directly modify the environmental ma
 * **Milo Torque (Safecracker):** Expands the mathematical vault reach radius by $+4$ grid cells, allowing looser path tolerances.
 * **Rico Valens (Driver):** Mitigates getaway path length penalties and reduces roadblock delays.
 * **Sable Cross (Muscle):** Absorbs guard patrol confrontation penalties.
+* **Nora "Specter" Bell (Infiltrator):** Doubles acoustic audio fidelity in the Safe-Cracking mini-game and expands tumbler lock tolerance.
 
 #### 6. Weighted Scoring Formula & Grade Assignment (`src/analysis/scoring.ts`)
 The final heist plan is graded on a weighted 100-point scale:
 
 $$\text{Final Score} = (\text{Completeness} \times 0.60) + (\text{Stealth} \times 0.30) + (\text{Efficiency} \times 0.10)$$
-
-* **Completeness (60%):** Evaluates objective achievement:
-  * Reached Entry: $+20$ pts
-  * Reached Vault: $+20$ pts
-  * Reached Exit: $+20$ pts
-* **Stealth (30%):** Starts at 30 pts, deducting weighted penalties for camera crossings and guard detections (mitigated by crew perks).
-* **Efficiency (10%):** Compares path length $L$ against the target's theoretical par distance $L_{\text{par}}$:
-  $$\text{Efficiency} = \max\left(0, 10 - \frac{|L - L_{\text{par}}|}{L_{\text{par}}} \times 10\right)$$
 
 | Score Range | Grade | Outcome | Status |
 |:---:|:---:|:---:|:---:|
@@ -181,51 +175,95 @@ $$\text{Final Score} = (\text{Completeness} \times 0.60) + (\text{Stealth} \time
 | **40 – 54** | **D** | Compromised Route | **FAILED** |
 | **< 40** | **F** | Disaster / Incomplete | **FAILED** |
 
-#### 7. Tactical Approach Mechanics: Subtle vs. Loud Branching (`src/analysis/scoring.ts` & `src/render/`)
+#### 7. Tactical Approach Mechanics: Subtle vs. Loud Branching
 The GTA V/Movie-style tactical choice dynamically reshapes both the canvas editor and the simulation mathematics:
 * **Plan A: The Subtle Route (Ghost Operator):**
   * **Blueprint Overlays:** Renders ventilation ducts, keycard bypass terminals, and precise CCTV cones.
   * **Mathematical Penalties:** Camera exposures carry a 1.5× penalty ($-\text{penalty} \times 1.5$) unless neutralized by the Hacker. Uncompromised runs earn a $+5$ point **GHOST OPERATOR** stealth bonus.
   * **Playback Telemetry:** Silent ingress with cyan stealth sensor pings and whisper telemetry.
-  * **Debrief:** Weazel News prints `ZERO ALARMS AT [TARGET]` with a green `GHOST HEIST` stamp.
 * **Plan B: The Loud Route (Kinetic Breach):**
   * **Blueprint Overlays:** Renders C4 structural weak points with blast radius arcs and SWAT intercept warning zones.
   * **Mathematical Penalties:** Ignores camera cones ($0$ camera detection penalty). Instead, guards/SWAT carry a $1.2\times$ confrontation penalty ($-\text{penalty} \times 1.2$), and high-speed blitz trajectories earn a $+5$ point **KINETIC BREACH** bonus.
   * **Playback Telemetry:** Kinetic C4 wall detonations, thermal lance vault breaching, and hot-pink breach telemetry.
-  * **Debrief:** Weazel News prints `BREAKING: C4 BLAST ROCKS [TARGET]` with a red `VAULT BLOWN` stamp.
 
 ---
 
-### Multi-Touchpoint React Image Editor Integration
+## 🛠️ Tech Stack
 
-`@unlayer/react-image-editor` is embedded across **5 distinct game workflows**:
+| Layer | Technology | Version | Purpose |
+|---|---|---|---|
+| **Framework** | React | `19.2.8` | Next-generation React with strict mode, hooks, and Concurrent Mode |
+| **Language** | TypeScript | `~6.0.2` | Strict type safety across mathematical models, state, and rendering |
+| **Build Tool** | Vite | `8.3.0` | Ultra-fast HMR and optimized Rolldown production bundling (< 1s build) |
+| **Image Editor** | **[@unlayer/react-image-editor](https://github.com/unlayer/react-image-editor)** | `^1.0.2` | Core creative engine for drawing, annotating, stamping, filtering & cropping |
+| **Performance** | **[@vercel/speed-insights](https://vercel.com/docs/speed-insights)** | `^2.0.0` | Real-time Core Web Vitals monitoring & production telemetry |
+| **State Management** | Zustand | `^5.0.15` | Centralized reactive store for mission configuration, crew, and scores |
+| **Animation Engine** | GSAP + `@gsap/react` | `^3.15.0` | High-performance 60fps UI animations, timeline triggers, and sweeps |
+| **Local Persistence** | `idb-keyval` | `^6.3.0` | Asynchronous IndexedDB storage for heavy blueprint canvas data |
+| **Audio Engine** | Web Audio API | Native | Pure procedural synthesizers: tumbler clicks, steam hiss, sirens, cash tickers |
+| **Voice Synthesis** | Web Speech API | Native | Multi-voice AI Weazel News anchors & VCPD police scanner dispatches |
+| **Graphics Engine** | HTML5 Canvas 2D | Native | Procedural blueprints, 1080p briefing boards, FBI corkboards, CCTV chases |
+| **Typography** | Fontsource + Rockstar Fonts | `^5.3.0` | Authentic **Pricedown**, **Chalet (London & NY 1960)**, Space Mono, Bebas Neue |
+| **Testing** | Vitest | `^5.0.1` | **58/58 unit tests passing** across 6 test suites |
+| **Linter** | oxlint | `^1.81.0` | High-speed Rust-based linter for clean, robust code |
 
-1. **Infiltration Planning Table:** Drawing tactical ingress/egress routes on procedural architectural blueprints.
-2. **Getaway Navigation Table:** Plotting high-speed escape trajectories across Vice City street maps.
-3. **Surveillance Recon (`TargetScreen`):** Annotating location photos with custom text, arrows, and filters.
-4. **Crew Dossiers (`CrewScreen`):** Customizing operative mugshots and polaroids with stickers and framing.
-5. **1920×1080 Master Briefing Board (`BriefingScreen`) & News Debrief (`ResultScreen`):** Adding stamps, classified watermarks, operation codenames, and final notes before exporting the mission dossier as a high-resolution PNG.
+---
 
-### Deep Programmatic API Control (`src/editor/EditorModal.tsx`)
+## 🚀 Getting Started
 
-The application wraps `@unlayer/react-image-editor` inside a custom HUD interface with extensive runtime control:
-* **Live Theme Switching:** Toggle dynamically between `dark` and `light` themes via `updateOptions()`.
-* **Internationalization:** Instant runtime locale switching (`en`, `es`, `fr`, `de`, `ja`).
-* **Dynamic Docking:** Flip toolbar docking between `left` and `right` positions.
-* **Contextual Tool Configurations:** Mounts customized toolsets tailored for each screen (`drawing`-only for blueprints, `crop`/`filter` for recon, full creative suite for briefings).
-* **State & Change Detection:** Tracks unsaved changes via `hasChanges()`, allows instant image reset, and provides one-click snapshot exports.
+### Prerequisites
+- Node.js `18.0.0` or higher
+- npm `9.0.0` or higher
 
-## Deployment
+### Installation & Development
 
-Static site — deploy to Vercel, Netlify, or any static host:
+```bash
+# Clone the repository
+git clone https://github.com/Subhash21022/GTA-6-HEIST-PLANNER-REACT-IMAGE-EDITOR-.git
+cd GTA-6-HEIST-PLANNER-REACT-IMAGE-EDITOR-
+
+# Install dependencies
+npm install
+
+# Launch development server
+npm run dev
+# Open http://localhost:5174 in your browser
+```
+
+### Verification & Testing
+
+```bash
+# Run unit test suite (58 unit tests)
+npm test
+
+# Type-check TypeScript codebase
+npm run typecheck
+
+# Run linter
+npm run lint
+
+# Compile production bundle
+npm run build
+```
+
+---
+
+## 📦 Production Deployment
+
+The project is built as an ultra-fast, zero-backend static single-page application (SPA). It can be deployed in seconds to any modern hosting platform:
 
 ```bash
 npm run build
-# Output in dist/
+# Production output is generated in the dist/ folder
 ```
 
-No environment variables, secrets, or backend required.
+### Vercel Deployment
+1. Connect your GitHub repository to [Vercel](https://vercel.com).
+2. Set Framework Preset to **Vite**.
+3. Deploy! Vercel Speed Insights is automatically pre-configured via `@vercel/speed-insights/react` for instant Core Web Vitals analytics.
 
-## License
+---
 
-[MIT](./LICENSE)
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE).
