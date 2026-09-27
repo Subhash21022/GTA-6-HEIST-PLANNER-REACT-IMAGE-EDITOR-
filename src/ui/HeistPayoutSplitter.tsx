@@ -68,6 +68,11 @@ export function HeistPayoutSplitter({
               🔥 THERMAL LANCE: +{formatCurrency(breakdown.thermalDrillBonus!)} ANTIQUE JEWELRY (+15% SCORE)
             </div>
           )}
+          {Boolean(breakdown.satelliteBonus) && (
+            <div className="payout-satellite-bonus-badge">
+              🛰️ ORBITAL SATELLITE INTEL: +{formatCurrency(breakdown.satelliteBonus!)} AIR RECON BONUS
+            </div>
+          )}
         </div>
         <div className="player-take-amount">
           <span className="player-take-number">{formatCurrency(breakdown.playerNetTake)}</span>

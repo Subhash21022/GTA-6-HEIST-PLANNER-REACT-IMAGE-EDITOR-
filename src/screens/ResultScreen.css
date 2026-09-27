@@ -455,3 +455,179 @@
   transform: translateY(-1px);
 }
 
+/* Satellite FLIR Recon Tab in ResultScreen */
+.satellite-result-panel {
+  width: 100%;
+  max-width: 960px;
+  background: rgba(4, 12, 18, 0.95);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  border-radius: var(--radius-md);
+  padding: clamp(16px, 3vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+.satellite-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.satellite-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sat-sub-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--color-cyan);
+}
+
+.sat-main-title {
+  font-family: var(--font-gta);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  letter-spacing: 1px;
+  color: #fff;
+  margin: 0;
+}
+
+.satellite-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.78rem;
+  color: var(--color-cyan);
+}
+
+.sat-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ffaa;
+  box-shadow: 0 0 8px #00ffaa;
+}
+
+.satellite-result-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.satellite-preview-frame {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  background: #02070d;
+}
+
+.satellite-result-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.satellite-img-tag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.85);
+  border-top: 1px solid rgba(0, 240, 255, 0.3);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: var(--color-cyan);
+  letter-spacing: 1px;
+}
+
+.satellite-result-empty {
+  padding: 40px 24px;
+  text-align: center;
+  background: rgba(0, 15, 25, 0.6);
+  border: 1px dashed rgba(0, 240, 255, 0.3);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.sat-empty-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.sat-empty-title {
+  font-family: var(--font-gta);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  color: var(--color-hot-pink);
+}
+
+.sat-empty-desc {
+  font-family: var(--font-subheading);
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.satellite-result-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.satellite-intel-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.satellite-intel-stat .stat-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+}
+
+.satellite-intel-stat .stat-val {
+  font-family: var(--font-gta);
+  font-size: 1.15rem;
+  color: #00ffaa;
+  text-shadow: 0 0 10px rgba(0, 255, 170, 0.4);
+}
+
+.sat-launch-btn {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.8), rgba(0, 160, 255, 0.9));
+  color: #000;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+  border: none;
+}
+
+.sat-launch-btn:hover {
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.6);
+  transform: translateY(-1px);
+}
+

@@ -38,7 +38,11 @@ export type SoundEffectName =
   | 'pinBreakthrough'
   | 'drillOverheatHiss'
   | 'drillJamBuzz'
-  | 'depositBoxUnlock';
+  | 'depositBoxUnlock'
+  | 'satelliteDownlinkChime'
+  | 'satelliteSpectrumSwitch'
+  | 'empJammerDeploy'
+  | 'satelliteTargetLocked';
 
 class SoundManager {
   private ctx: AudioContext | null = null;
@@ -395,6 +399,18 @@ class SoundManager {
           break;
         case 'depositBoxUnlock':
           this.synthDepositBoxUnlock(ctx, volumeScale);
+          break;
+        case 'satelliteDownlinkChime':
+          this.synthSatelliteDownlinkChime(ctx, volumeScale);
+          break;
+        case 'satelliteSpectrumSwitch':
+          this.synthSatelliteSpectrumSwitch(ctx, volumeScale);
+          break;
+        case 'empJammerDeploy':
+          this.synthEmpJammerDeploy(ctx, volumeScale);
+          break;
+        case 'satelliteTargetLocked':
+          this.synthSatelliteTargetLocked(ctx, volumeScale);
           break;
       }
     } catch {
@@ -1698,6 +1714,103 @@ class SoundManager {
       gain.connect(this.masterGain || ctx.destination);
       osc.start(noteTime);
       osc.stop(noteTime + 0.3);
+    });
+  }
+
+  // 39. Satellite Downlink Orbital Sync Chime (High-tech digital data chirps)
+  private synthSatelliteDownlinkChime(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const freqs = [1760, 2637, 3520];
+    freqs.forEach((freq, idx) => {
+      const startTime = t + idx * 0.045;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.22 * vol, startTime + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.09);
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + 0.1);
+    });
+  }
+
+  // 40. Satellite Spectrum Switch (CRT cathode pop & high-pass frequency glide)
+  private synthSatelliteSpectrumSwitch(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(800, t);
+    osc.frequency.exponentialRampToValueAtTime(2400, t + 0.06);
+
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(1200, t);
+
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.3 * vol, t + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.09);
+  }
+
+  // 41. EMP Jammer Deployment (Deep electromagnetic pulse hum & resonant sweep)
+  private synthEmpJammerDeploy(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Sub-bass resonance
+    const sub = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(80, t);
+    sub.frequency.exponentialRampToValueAtTime(35, t + 0.35);
+    subGain.gain.setValueAtTime(0.0001, t);
+    subGain.gain.exponentialRampToValueAtTime(0.55 * vol, t + 0.01);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+    sub.connect(subGain);
+    subGain.connect(this.masterGain || ctx.destination);
+    sub.start(t);
+    sub.stop(t + 0.42);
+
+    // High frequency phasing buzz
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(440, t);
+    osc.frequency.exponentialRampToValueAtTime(110, t + 0.3);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.25 * vol, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.32);
+    osc.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.35);
+  }
+
+  // 42. Satellite Target Locked (Tactical dual-tone lock confirmation)
+  private synthSatelliteTargetLocked(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    [1200, 1800].forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t + idx * 0.08);
+      gain.gain.setValueAtTime(0.0001, t + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.3 * vol, t + idx * 0.08 + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + idx * 0.08 + 0.12);
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+      osc.start(t + idx * 0.08);
+      osc.stop(t + idx * 0.08 + 0.13);
     });
   }
 }

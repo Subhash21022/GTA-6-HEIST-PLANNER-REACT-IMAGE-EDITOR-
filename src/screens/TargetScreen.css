@@ -133,22 +133,45 @@
   gap: 8px;
 }
 
-.target-recon-btn {
+.target-card-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.target-recon-btn,
+.target-satellite-btn {
+  flex: 1;
   font-family: var(--font-subheading);
   font-size: 0.72rem;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 8px 14px;
+  padding: 8px 12px;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.target-recon-btn {
   color: var(--color-cyan);
   border: 1px solid rgba(0, 240, 255, 0.2);
-  border-radius: var(--radius-sm);
-  min-height: 40px;
-  width: 100%;
 }
 
 .target-recon-btn:hover {
   background: var(--color-cyan-dim);
   border-color: var(--color-cyan);
+}
+
+.target-satellite-btn {
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.target-satellite-btn:hover {
+  background: rgba(0, 240, 255, 0.2) !important;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
 }
 
 .recon-badge {

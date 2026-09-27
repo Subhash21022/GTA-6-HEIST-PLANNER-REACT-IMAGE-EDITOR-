@@ -128,6 +128,21 @@
   box-shadow: 0 0 12px rgba(255, 94, 0, 0.15);
 }
 
+.payout-satellite-bonus-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #00f0ff;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  padding: 4px 10px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 4px;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+}
+
 .player-take-number {
   font-family: var(--font-gta);
   font-size: clamp(2rem, 5vw, 3rem);

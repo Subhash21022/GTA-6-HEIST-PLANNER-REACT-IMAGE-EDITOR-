@@ -159,6 +159,15 @@ export async function renderWireTransferReceipt(
       '#ea580c',
     );
   }
+  if (breakdown.satelliteBonus) {
+    drawLedgerRow(
+      'ORBITAL RECON INTEL (PROJECT OLYMPUS)',
+      `+${formatCurrency(breakdown.satelliteBonus)}`,
+      false,
+      true,
+      '#0284c7',
+    );
+  }
   drawLedgerRow('ACTUAL GROSS RECOVERED', formatCurrency(breakdown.actualGrossTake), false, true);
 
   // Subtle divider

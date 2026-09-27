@@ -62,11 +62,31 @@ Built for the **Build with React Image Editor Challenge** by [Unlayer](https://u
 - **Crew Specialist Synergy:** Equipping **Milo Torque** (Safecracker/Driller) or **Sable Cross** (Muscle) widens the sweet spot from 70%–85% to **65%–90%**, slows heat buildup, and reduces cooldown to 2.8s!
 - **Heist Loot Reward:** Melts all 4 secondary deposit box pins, unlocking **+$350,000 in antique jewelry & diamonds** in "The Cut" payout screen and awarding a **+15% bonus mission score**!
 
+### 9. 🛰️ Leonida Orbital Spy Satellite & Multi-Spectral FLIR Drone Recon (Project: KEYHOLE / OLYMPUS)
+- **High-Altitude Military Reconnaissance:** High-orbit military spy satellite pass (KH-12 Keyhole / USA-245) delivering 1920×1080 real-time reconnaissance over Vice City heist targets.
+- **Target-Specific Architectural Blueprints:** Every target now displays its OWN authentic architectural blueprint layout, rooms, walls, vault chamber, doors, camera FOV cones, and security patrols directly on the satellite imagery:
+  - *Sable Trust Bank:* Downtown financial district grid (Ocean Drive, Palm Blvd, canal) with Marble Lobby, Teller Island, Back Corridor, and reinforced steel vault.
+  - *The Gilded Flamingo Casino:* Grand neon Strip complex (Sunset Strip, Bayshore Ave) with Gaming Floor, VIP Lounge, Biometric Counting Room, and loading docks.
+  - *Villa Aurelia:* Coastal billionaire estate with Atlantic ocean surf, tropical gardens, luxury pool house, gallery wing with laser grid, and subterranean panic room.
+- **4 Multi-Spectral Optical Sensors with True Blueprint Reflection:**
+  - **Optical RGB (True Color):** High-resolution daytime satellite imagery with realistic aerial building finishes (marble, terrazzo, Spanish terracotta tiles, sparkling swimming pool water, manicured lawns) and a crystal-clear semi-transparent tactical blueprint overlay displaying all rooms, walls, vault hazard stripes, and readable tactical tags!
+  - **Thermal FLIR (White-Hot Infrared):** Radiometric heat signatures displaying active HVAC turbine heat exhaust plumes, electrical transformers, and patrolling guard biometric heat signatures.
+  - **Night Vision NVG (Gen-3 Phosphor):** High-gain light intensification with cathode phosphor blooming, noise, and CRT raster scanlines.
+  - **EM Wireframe (Ground-Penetrating Radar):** Isometric CAD structural wireframes revealing subterranean Level -2 reinforced vault chambers and perimeter defense grids.
+- **Planning Screen Tactical View Switcher:** Switch between `📄 CAD BLUEPRINT`, `🛰️ OPTICAL SPECTRUM`, and `🔥 THERMAL FLIR` directly on the planning board before opening React Image Editor.
+- **Tactical Electronic Countermeasures:**
+  - *Deploy EMP Jammers:* Knocks out rooftop security cameras and disorients sentries.
+  - *Designate Sniper Overwatch Nest:* Marks elevated tactical vantage points.
+  - *Designate Extraction LZ:* Pins helicopter extraction coordinates for rapid getaway.
+- **Procedural Web Audio Telemetry:** Synthesizes satellite downlink handshakes, optical aperture lens shifts, EMP capacitor charge discharges, and military radar target locks in real time.
+- **Deep React Image Editor Integration:** Click *"Tactical Markup in React Image Editor"* to launch `@unlayer/react-image-editor` equipped with military annotation tools—draw electronic countermeasures, place landing markers, annotate cones of fire, and export classified recon intel.
+- **Heist Economy & Intel Bonus:** Awards **+$250,000 Orbital Recon Intel Bonus** on "The Cut" payout screen, updates the mission objectives checklist, and items onto the Bank of Leonida wire transfer slip!
+
 ---
 
 ## 🎨 Multi-Touchpoint React Image Editor Showcase
 
-Rather than using `@unlayer/react-image-editor` as a simple cosmetic previewer, **The Vice Syndicate integrates the editor across 7 core mission workflows**, making it the primary interactive driver of gameplay and visual storytelling:
+Rather than using `@unlayer/react-image-editor` as a simple cosmetic previewer, **The Vice Syndicate integrates the editor across 8 core mission workflows**, making it the primary interactive driver of gameplay and visual storytelling:
 
 | # | Heist Workflow | Screen / Modal | Editor Capabilities & Custom Toolset |
 |---|---|---|---|
@@ -77,6 +97,7 @@ Rather than using `@unlayer/react-image-editor` as a simple cosmetic previewer, 
 | **5** | **1920×1080 Master Briefing Board** | `BriefingScreen` | Stamping classified watermarks, operation codenames, syndicate seals, and exporting high-res operational dossiers. |
 | **6** | **VCPD & FBI Evidence Locker** | `ResultScreen` / Evidence Board | Forensic annotations: drawing connecting red yarn, blood spatter, fingerprint stamps, and "EXHIBIT A" tags over 1080p case files. |
 | **7** | **ViceGram Viral Social Reel** | `ResultScreen` / Viral Reel | 9:16 vertical smartphone crop, meme sticker stamps, filter grading, and viral headline text overlays before social sharing. |
+| **8** | **Orbital Satellite Recon (Project Olympus)** | `SatelliteReconModal` / Target, Plan & Result | Multi-spectral tactical markup: annotating EMP blast radii, drawing sniper cones of fire, dropping extraction LZ beacons, and applying false-color filters. |
 
 ### Deep Programmatic API Control (`src/editor/EditorModal.tsx`)
 The application wraps `@unlayer/react-image-editor` in a custom HUD interface with extensive runtime features:

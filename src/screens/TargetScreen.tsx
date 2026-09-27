@@ -5,6 +5,7 @@ import { useStore } from '../store';
 import { TARGETS, type Target } from '../config/targets';
 import { COPY } from '../config/copy';
 import { EditorModal } from '../editor/EditorModal';
+import { SatelliteReconModal } from '../ui/SatelliteReconModal';
 import { RECON_TOOLS } from '../editor/toolConfigs';
 import type { ImageEditorSaveResult } from '@unlayer/react-image-editor';
 import { playSfx } from '../audio/soundManager';
@@ -32,6 +33,8 @@ export function TargetScreen() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [reconTarget, setReconTarget] = useState<Target | null>(null);
+  const [satelliteModalOpen, setSatelliteModalOpen] = useState(false);
+  const [satelliteTarget, setSatelliteTarget] = useState<Target | null>(null);
 
   useGSAP(() => {
     const ctx = containerRef.current;
@@ -121,17 +124,37 @@ export function TargetScreen() {
                 </div>
               </div>
             </button>
-            <button
-              className="btn btn-ghost target-recon-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                playSfx('cameraShutter');
-                setReconTarget(t);
-              }}
-              type="button"
-            >
-              Mark Blindspots
-            </button>
+            <div className="target-card-actions">
+              <button
+                className="btn btn-ghost target-recon-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playSfx('cameraShutter');
+                  setReconTarget(t);
+                }}
+                type="button"
+              >
+                Mark Blindspots
+              </button>
+              <button
+                className="btn btn-secondary target-satellite-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playSfx('satelliteDownlinkChime');
+                  setSatelliteTarget(t);
+                  setSatelliteModalOpen(true);
+                }}
+                type="button"
+                style={{
+                  borderColor: '#00f0ff',
+                  color: '#00f0ff',
+                  boxShadow: '0 0 10px rgba(0, 240, 255, 0.25)',
+                }}
+                title="Launch military orbital KH-12 spy satellite multi-spectral feed"
+              >
+                🛰️ SATELLITE FLIR
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -149,6 +172,15 @@ export function TargetScreen() {
           onCancel={handleReconCancel}
         />
       )}
+
+      <SatelliteReconModal
+        isOpen={satelliteModalOpen}
+        onClose={() => {
+          setSatelliteModalOpen(false);
+          setSatelliteTarget(null);
+        }}
+        targetOverride={satelliteTarget}
+      />
     </div>
   );
 }
