@@ -8,6 +8,7 @@ import { renderGetawayMap, drawSampleGetawayRoute } from '../render/map';
 import { analyseInfiltration, analyseGetaway, type AnalysisResult } from '../analysis';
 import { EditorModal } from '../editor/EditorModal';
 import { SafeCrackerModal } from '../ui/SafeCrackerModal';
+import { ThermalDrillModal } from '../ui/ThermalDrillModal';
 import { PLANNING_TOOLS } from '../editor/toolConfigs';
 import { normaliseImageToSize, dataUrlToImageData, createCanvas, canvasToDataUrl, getImageData } from '../utils/canvas';
 import { playSfx } from '../audio/soundManager';
@@ -24,6 +25,7 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
   const goBack = useStore((s) => s.goBack);
   const setScreen = useStore((s) => s.setScreen);
   const safeCracked = useStore((s) => s.safeCracked);
+  const thermalDrilled = useStore((s) => s.thermalDrilled);
   const addToast = useStore((s) => s.addToast);
   const persistState = useStore((s) => s.persistState);
 
@@ -41,6 +43,7 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
 
   const [editorOpen, setEditorOpen] = useState(false);
   const [safeModalOpen, setSafeModalOpen] = useState(false);
+  const [drillModalOpen, setDrillModalOpen] = useState(false);
   const [analysing, setAnalysing] = useState(false);
   const [base, setBase] = useState<{ dataUrl: string; imageData: ImageData } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -280,17 +283,34 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
               {COPY.sampleButton}
             </button>
             {isInfiltration && (
-              <button
-                className={`btn ${safeCracked ? 'btn-secondary safe-cracked-btn' : 'btn-primary safe-cracker-trigger-btn'}`}
-                onClick={() => {
-                  playSfx('select');
-                  setSafeModalOpen(true);
-                }}
-                type="button"
-                title="Crack the 3-tumbler vault combination for +$450,000 bonus loot & guaranteed S-Rank"
-              >
-                {safeCracked ? '💎 VAULT CRACKED (+$450K)' : '🔐 CRACK VAULT TUMBLER (+ $450K)'}
-              </button>
+              <>
+                <button
+                  className={`btn ${safeCracked ? 'btn-secondary safe-cracked-btn' : 'btn-primary safe-cracker-trigger-btn'}`}
+                  onClick={() => {
+                    playSfx('select');
+                    setSafeModalOpen(true);
+                  }}
+                  type="button"
+                  title="Crack the 3-tumbler vault combination for +$450,000 bonus loot & guaranteed S-Rank"
+                >
+                  {safeCracked ? '💎 VAULT CRACKED (+$450K)' : '🔐 CRACK VAULT TUMBLER (+ $450K)'}
+                </button>
+                <button
+                  className={`btn ${thermalDrilled ? 'btn-secondary safe-cracked-btn' : 'btn-primary safe-cracker-trigger-btn'}`}
+                  onClick={() => {
+                    playSfx('select');
+                    setDrillModalOpen(true);
+                  }}
+                  type="button"
+                  style={{
+                    background: thermalDrilled ? undefined : 'linear-gradient(135deg, #ff5e00 0%, #ff0044 100%)',
+                    borderColor: '#ff5e00',
+                  }}
+                  title="Feather the plasma thermal lance to melt deposit box pins for +$350,000 & +15% mission score"
+                >
+                  {thermalDrilled ? '🔥 DEPOSIT BOXES MELTED (+$350K)' : '🔥 THERMAL LANCE DRILL (+ $350K & +15%)'}
+                </button>
+              </>
             )}
             {currentImage && (
               <button
@@ -318,6 +338,9 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
                   </li>
                   <li className={safeCracked ? 'done' : ''}>
                     {safeCracked ? 'Vault safe cracked: S-Rank secured (+$450K)' : 'Optional: Crack vault tumbler (+ $450K)'}
+                  </li>
+                  <li className={thermalDrilled ? 'done' : ''}>
+                    {thermalDrilled ? 'Deposit boxes melted: +$350K & +15% Score' : 'Optional: Thermal lance deposit drill (+ $350K)'}
                   </li>
                   <li className={currentResult?.connectivity.exitReached ? 'done' : ''}>
                     Escape through an exit corridor
@@ -389,6 +412,12 @@ export function PlanningScreen({ stage }: PlanningScreenProps) {
         isOpen={safeModalOpen}
         onClose={() => setSafeModalOpen(false)}
         onSuccess={() => setSafeModalOpen(false)}
+      />
+
+      <ThermalDrillModal
+        isOpen={drillModalOpen}
+        onClose={() => setDrillModalOpen(false)}
+        onSuccess={() => setDrillModalOpen(false)}
       />
     </div>
   );

@@ -141,6 +141,24 @@ export async function renderWireTransferReceipt(
     true,
     '#059669',
   );
+  if (breakdown.safeCrackedBonus) {
+    drawLedgerRow(
+      'SAFE-CRACKING BONUS (DIAMONDS & BONDS)',
+      `+${formatCurrency(breakdown.safeCrackedBonus)}`,
+      false,
+      true,
+      '#0284c7',
+    );
+  }
+  if (breakdown.thermalDrillBonus) {
+    drawLedgerRow(
+      'THERMAL LANCE BONUS (ANTIQUE JEWELRY)',
+      `+${formatCurrency(breakdown.thermalDrillBonus)}`,
+      false,
+      true,
+      '#ea580c',
+    );
+  }
   drawLedgerRow('ACTUAL GROSS RECOVERED', formatCurrency(breakdown.actualGrossTake), false, true);
 
   // Subtle divider

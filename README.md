@@ -53,6 +53,15 @@ Built for the **Build with React Image Editor Challenge** by [Unlayer](https://u
 ### 7. 📊 Vercel Speed Insights Integration
 - Integrated `@vercel/speed-insights/react` directly in the application root (`<SpeedInsights />`) to deliver real-time Core Web Vitals monitoring, performance score tracking, and production telemetry.
 
+### 8. 🔥 Thermal Lance / Laser Drill Heat-Management (Fleeca Bank Style)
+- **High-Tension Precision Lock-Melting:** First-person view of the inner vault deposit gate pins with a high-temperature plasma drill / thermal lance.
+- **Heat-Management Mechanic:** Hold `[SPACE]` or left-click / touch to apply drilling pressure. Players must feather the trigger to keep the drill in the sweet spot (**70%–85% optimal heat**).
+- **Overheat & Jam Dynamics:** Pushing past 100% overheats and jams the drill bit for 4 seconds, disabling the trigger with sizzling steam clouds and alarm hisses. Drilling too weak runs out the 45-second silent alarm countdown!
+- **Dynamic 60fps Canvas Simulation:** Real-time flying molten metal sparks with velocity, gravity, and ember color decay, plus incandescent white-hot bore hole craters on each of the 4 titanium pins.
+- **Procedural Web Audio Engine:** Continuous plasma whine whose pitch and filter cutoff modulate dynamically with temperature, random molten spark crackles, heavy metallic pin breakthrough shears, overheat steam hisses, and victory fanfare.
+- **Crew Specialist Synergy:** Equipping **Milo Torque** (Safecracker/Driller) or **Sable Cross** (Muscle) widens the sweet spot from 70%–85% to **65%–90%**, slows heat buildup, and reduces cooldown to 2.8s!
+- **Heist Loot Reward:** Melts all 4 secondary deposit box pins, unlocking **+$350,000 in antique jewelry & diamonds** in "The Cut" payout screen and awarding a **+15% bonus mission score**!
+
 ---
 
 ## 🎨 Multi-Touchpoint React Image Editor Showcase
@@ -204,7 +213,7 @@ The GTA V/Movie-style tactical choice dynamically reshapes both the canvas edito
 | **Voice Synthesis** | Web Speech API | Native | Multi-voice AI Weazel News anchors & VCPD police scanner dispatches |
 | **Graphics Engine** | HTML5 Canvas 2D | Native | Procedural blueprints, 1080p briefing boards, FBI corkboards, CCTV chases |
 | **Typography** | Fontsource + Rockstar Fonts | `^5.3.0` | Authentic **Pricedown**, **Chalet (London & NY 1960)**, Space Mono, Bebas Neue |
-| **Testing** | Vitest | `^5.0.1` | **58/58 unit tests passing** across 6 test suites |
+| **Testing** | Vitest | `^5.0.1` | **60/60 unit tests passing** across 6 test suites |
 | **Linter** | oxlint | `^1.81.0` | High-speed Rust-based linter for clean, robust code |
 
 ---
@@ -233,7 +242,7 @@ npm run dev
 ### Verification & Testing
 
 ```bash
-# Run unit test suite (58 unit tests)
+# Run unit test suite (60 unit tests)
 npm test
 
 # Type-check TypeScript codebase

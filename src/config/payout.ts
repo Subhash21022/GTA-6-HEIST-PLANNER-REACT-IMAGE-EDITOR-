@@ -36,6 +36,7 @@ export interface HeistPayoutBreakdown {
   playerCutPercent: number;
   playerNetTake: number;
   safeCrackedBonus?: number;
+  thermalDrillBonus?: number;
 }
 
 export function getGradeMultiplier(grade: string): number {
@@ -69,6 +70,7 @@ export function calculatePayout(
   crew: CrewMember[] = [],
   customCuts: Record<string, number> = {},
   safeCracked: boolean = false,
+  thermalDrilled: boolean = false,
 ): HeistPayoutBreakdown {
   const targetName = target?.name || 'TARGET FACILITY';
   const potentialVaultTake = target?.baseTake || 2_500_000;
@@ -78,7 +80,8 @@ export function calculatePayout(
   const gradeMultiplier = getGradeMultiplier(effectiveGrade);
   const gradeEfficiencyPct = Math.round(gradeMultiplier * 100);
   const safeCrackedBonus = safeCracked ? 450_000 : 0;
-  const actualGrossTake = Math.round(potentialVaultTake * gradeMultiplier) + safeCrackedBonus;
+  const thermalDrillBonus = thermalDrilled ? 350_000 : 0;
+  const actualGrossTake = Math.round(potentialVaultTake * gradeMultiplier) + safeCrackedBonus + thermalDrillBonus;
 
   // Syndicate fence cut
   const syndicatePercent = SYNDICATE_CUT_PERCENT;
@@ -122,5 +125,6 @@ export function calculatePayout(
     playerCutPercent,
     playerNetTake,
     safeCrackedBonus,
+    thermalDrillBonus,
   };
 }

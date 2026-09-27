@@ -1,0 +1,522 @@
+/* ── THERMAL DRILL & LASER LANCE MINI-GAME MODAL STYLING ── */
+
+.thermal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.thermal-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 7, 12, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.thermal-modal-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 860px;
+  background: linear-gradient(180deg, #101520 0%, #0a0d14 100%);
+  border: 1px solid rgba(0, 229, 199, 0.25);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 229, 199, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.thermal-modal-container.modal-overheated {
+  border-color: rgba(239, 68, 68, 0.6);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(239, 68, 68, 0.3);
+  animation: overheatShake 0.35s infinite ease-in-out;
+}
+
+@keyframes overheatShake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, -2px); }
+}
+
+/* ── HEADER ── */
+.thermal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: rgba(14, 19, 28, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.thermal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.thermal-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-cyan, #00e5c7);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.thermal-heading {
+  margin: 0;
+  font-family: 'Pricedown', 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 170, 0, 0.4);
+}
+
+.thermal-meta-group {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* Silent Alarm Timer */
+.thermal-timer-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0.3rem 0.8rem;
+  background: rgba(20, 26, 38, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.timer-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.timer-digits {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.thermal-timer-box.timer-critical .timer-digits {
+  color: #ef4444;
+  animation: timerPulse 0.5s infinite alternate;
+}
+
+@keyframes timerPulse {
+  from { opacity: 0.6; text-shadow: 0 0 4px #ef4444; }
+  to { opacity: 1; text-shadow: 0 0 12px #ef4444; }
+}
+
+/* ── SPECIALIST CREW BANNER ── */
+.thermal-specialist-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(90deg, rgba(0, 229, 199, 0.12) 0%, rgba(16, 21, 32, 0.4) 100%);
+  border-bottom: 1px solid rgba(0, 229, 199, 0.2);
+}
+
+.specialist-avatar img {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 1px solid #00e5c7;
+  object-fit: cover;
+}
+
+.specialist-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.specialist-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #00e5c7;
+  letter-spacing: 1px;
+}
+
+.specialist-desc {
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+/* ── CANVAS SIMULATION ── */
+.thermal-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  background: #080b11;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  cursor: crosshair;
+}
+
+.thermal-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.canvas-hud-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.5rem 0.8rem;
+  background: rgba(10, 13, 19, 0.75);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.canvas-hud-corner.top-left {
+  top: 10px;
+  left: 10px;
+  border-left: 2px solid var(--color-cyan, #00e5c7);
+}
+
+.canvas-hud-corner.top-right {
+  top: 10px;
+  right: 10px;
+  text-align: right;
+  border-right: 2px solid #ffaa00;
+}
+
+/* ── HEAT GAUGE SECTION ── */
+.thermal-gauge-section {
+  padding: 1rem 1.5rem;
+  background: rgba(14, 18, 26, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.thermal-gauge-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+}
+
+.thermal-gauge-title {
+  color: #cbd5e1;
+}
+
+.thermal-gauge-title strong {
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+.thermal-gauge-hint {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+}
+
+.text-cyan {
+  color: #00e5c7 !important;
+  text-shadow: 0 0 8px rgba(0, 229, 199, 0.6);
+}
+
+.text-amber {
+  color: #f59e0b !important;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.text-red {
+  color: #ef4444 !important;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+}
+
+.text-gold {
+  color: #ffd700 !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+/* Thermal Bar Track */
+.thermal-bar-track {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  background: #0a0d14;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Sweet Spot Zone Indicator */
+.thermal-sweet-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 229, 199, 0.18);
+  border-left: 2px dashed #00e5c7;
+  border-right: 2px dashed #00e5c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 0 14px rgba(0, 229, 199, 0.25);
+  animation: sweetGlow 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes sweetGlow {
+  from { background: rgba(0, 229, 199, 0.14); }
+  to { background: rgba(0, 229, 199, 0.28); }
+}
+
+.sweet-zone-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px #00e5c7;
+  white-space: nowrap;
+}
+
+/* Dynamic Heat Bar Fill */
+.thermal-bar-fill {
+  height: 100%;
+  transition: width 0.04s linear;
+  position: relative;
+  z-index: 1;
+}
+
+.thermal-bar-fill.fill-normal {
+  background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+}
+
+.thermal-bar-fill.fill-sweet {
+  background: linear-gradient(90deg, #06b6d4 0%, #00e5c7 60%, #ffd700 100%);
+  box-shadow: 0 0 20px #00e5c7;
+}
+
+.thermal-bar-fill.fill-danger {
+  background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%);
+  box-shadow: 0 0 16px #ef4444;
+}
+
+.thermal-bar-fill.fill-overheated {
+  background: #ef4444;
+  box-shadow: 0 0 24px #ef4444;
+}
+
+.thermal-overheat-line {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #ff0044;
+  z-index: 3;
+}
+
+/* ── CONTROLS SECTION ── */
+.thermal-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: #0d121c;
+  gap: 1.5rem;
+}
+
+.thermal-control-tips {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  max-width: 440px;
+}
+
+.tip-badge {
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.thermal-trigger-btn {
+  flex: 1;
+  min-height: 52px;
+  font-family: 'Chalet London 1960', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.thermal-trigger-btn.btn-active {
+  background: #ff9900 !important;
+  color: #000 !important;
+  box-shadow: 0 0 20px #ff9900 !important;
+  transform: scale(0.98);
+}
+
+.thermal-trigger-btn.btn-sweet {
+  background: #00e5c7 !important;
+  color: #000 !important;
+  box-shadow: 0 0 25px #00e5c7 !important;
+  animation: triggerSweetPulse 0.4s infinite alternate;
+}
+
+@keyframes triggerSweetPulse {
+  from { box-shadow: 0 0 15px #00e5c7; }
+  to { box-shadow: 0 0 30px #00e5c7; }
+}
+
+.thermal-trigger-btn.btn-disabled {
+  background: #374151 !important;
+  color: #ef4444 !important;
+  border-color: #ef4444 !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.thermal-victory-btn {
+  flex: 1;
+  min-height: 52px;
+  background: linear-gradient(90deg, #ffd700 0%, #ff8800 100%) !important;
+  color: #000 !important;
+  font-family: 'Chalet London 1960', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6) !important;
+}
+
+/* ── VICTORY OVERLAY ── */
+.thermal-victory-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 8, 14, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.4s ease;
+}
+
+.victory-card {
+  max-width: 520px;
+  width: 100%;
+  background: #111827;
+  border: 1px solid #ffd700;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.25);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.victory-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 2px;
+}
+
+.victory-title {
+  margin: 0;
+  font-family: 'Pricedown', 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.victory-desc {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  margin: 0;
+}
+
+.victory-rewards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.reward-box {
+  background: rgba(17, 24, 39, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.8rem;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.reward-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.reward-val {
+  font-family: 'Pricedown', 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+.reward-sub {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 640px) {
+  .thermal-canvas-wrapper {
+    height: 260px;
+  }
+  .thermal-controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .victory-rewards-grid {
+    grid-template-columns: 1fr;
+  }
+}

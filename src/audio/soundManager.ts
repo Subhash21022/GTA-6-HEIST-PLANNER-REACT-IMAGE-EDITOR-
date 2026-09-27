@@ -32,7 +32,13 @@ export type SoundEffectName =
   | 'safeDialTick'
   | 'tumblerLockClank'
   | 'vaultSteamHiss'
-  | 'safeAlarmKlaxon';
+  | 'safeAlarmKlaxon'
+  | 'drillHum'
+  | 'thermalCrackle'
+  | 'pinBreakthrough'
+  | 'drillOverheatHiss'
+  | 'drillJamBuzz'
+  | 'depositBoxUnlock';
 
 class SoundManager {
   private ctx: AudioContext | null = null;
@@ -45,6 +51,12 @@ class SoundManager {
   private lastDriftTime: number = 0;
   private lastExplicitSoundTime: number = 0;
   private listeners: Set<(muted: boolean, volume: number) => void> = new Set();
+
+  // Continuous Thermal Drill audio nodes
+  private drillOsc: OscillatorNode | null = null;
+  private drillSubOsc: OscillatorNode | null = null;
+  private drillGain: GainNode | null = null;
+  private drillFilter: BiquadFilterNode | null = null;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -365,6 +377,24 @@ class SoundManager {
           break;
         case 'safeAlarmKlaxon':
           this.synthSafeAlarmKlaxon(ctx, volumeScale);
+          break;
+        case 'drillHum':
+          this.synthDrillHum(ctx, volumeScale);
+          break;
+        case 'thermalCrackle':
+          this.synthThermalCrackle(ctx, volumeScale);
+          break;
+        case 'pinBreakthrough':
+          this.synthPinBreakthrough(ctx, volumeScale);
+          break;
+        case 'drillOverheatHiss':
+          this.synthDrillOverheatHiss(ctx, volumeScale);
+          break;
+        case 'drillJamBuzz':
+          this.synthDrillJamBuzz(ctx, volumeScale);
+          break;
+        case 'depositBoxUnlock':
+          this.synthDepositBoxUnlock(ctx, volumeScale);
           break;
       }
     } catch {
@@ -1377,10 +1407,315 @@ class SoundManager {
       osc.stop(t + i * 0.18 + 0.16);
     }
   }
+
+  // 32. Continuous Thermal Drill: Start hum and thermal plasma whine
+  public startDrillHum(heat: number = 0): void {
+    if (this.isMuted) return;
+    const ctx = this.getAudioContext();
+    if (!ctx) return;
+
+    this.stopDrillHum();
+
+    try {
+      const t = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const sub = ctx.createOscillator();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      sub.type = 'triangle';
+
+      const baseFreq = 160 + heat * 540;
+      osc.frequency.setValueAtTime(baseFreq, t);
+      sub.frequency.setValueAtTime(baseFreq * 0.5, t);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(450 + heat * 2400, t);
+      filter.Q.setValueAtTime(2.5 + heat * 4.0, t);
+
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.28 * this.volume, t + 0.04);
+
+      osc.connect(filter);
+      sub.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+
+      osc.start(t);
+      sub.start(t);
+
+      this.drillOsc = osc;
+      this.drillSubOsc = sub;
+      this.drillFilter = filter;
+      this.drillGain = gain;
+    } catch {
+      // Audio playback restrictions fallback
+    }
+  }
+
+  // Modulate running drill pitch, resonance & distortion as heat fluctuates
+  public updateDrillHeat(heat: number): void {
+    if (!this.ctx || !this.drillOsc || !this.drillSubOsc || !this.drillFilter) return;
+    const t = this.ctx.currentTime;
+    const clampedHeat = Math.max(0, Math.min(1, heat));
+
+    const baseFreq = 160 + clampedHeat * 540;
+    this.drillOsc.frequency.setTargetAtTime(baseFreq, t, 0.03);
+    this.drillSubOsc.frequency.setTargetAtTime(baseFreq * 0.5, t, 0.03);
+
+    const filterCutoff = 450 + clampedHeat * 2600;
+    this.drillFilter.frequency.setTargetAtTime(filterCutoff, t, 0.03);
+    this.drillFilter.Q.setTargetAtTime(2.5 + clampedHeat * 5.0, t, 0.03);
+
+    // If in optimal melt sweet spot (0.7 to 0.85), slightly boost presence
+    if (this.drillGain) {
+      const isSweet = clampedHeat >= 0.7 && clampedHeat <= 0.85;
+      const targetGain = (isSweet ? 0.35 : 0.26) * this.volume;
+      this.drillGain.gain.setTargetAtTime(targetGain, t, 0.04);
+    }
+  }
+
+  // Smoothly stop running drill hum
+  public stopDrillHum(): void {
+    if (this.drillGain && this.ctx) {
+      const t = this.ctx.currentTime;
+      try {
+        this.drillGain.gain.setTargetAtTime(0.0001, t, 0.03);
+      } catch {}
+    }
+    const oldOsc = this.drillOsc;
+    const oldSub = this.drillSubOsc;
+    const oldGain = this.drillGain;
+    setTimeout(() => {
+      try {
+        oldOsc?.stop();
+        oldOsc?.disconnect();
+        oldSub?.stop();
+        oldSub?.disconnect();
+        oldGain?.disconnect();
+      } catch {}
+    }, 60);
+
+    this.drillOsc = null;
+    this.drillSubOsc = null;
+    this.drillFilter = null;
+    this.drillGain = null;
+  }
+
+  // 33. One-shot drill hum sample
+  private synthDrillHum(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(320, t);
+    osc.frequency.linearRampToValueAtTime(440, t + 0.15);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200, t);
+    filter.Q.setValueAtTime(3.0, t);
+
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.3 * vol, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.2);
+  }
+
+  // 34. Thermal crackle & molten sizzle (fast random bursts)
+  private synthThermalCrackle(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const bufferSize = Math.floor(ctx.sampleRate * 0.08);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (Math.random() > 0.65 ? 1.0 : 0.1);
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(2800, t);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.25 * vol, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.075);
+
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+
+    src.start(t);
+  }
+
+  // 35. Pin Melt Breakthrough (Heavy metallic shear + gas pop)
+  private synthPinBreakthrough(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Sub-bass rupture
+    const subOsc = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(140, t);
+    subOsc.frequency.exponentialRampToValueAtTime(38, t + 0.25);
+    subGain.gain.setValueAtTime(0.0001, t);
+    subGain.gain.exponentialRampToValueAtTime(0.65 * vol, t + 0.004);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+    subOsc.connect(subGain);
+    subGain.connect(this.masterGain || ctx.destination);
+    subOsc.start(t);
+    subOsc.stop(t + 0.32);
+
+    // Molten hiss blast
+    const bufferSize = Math.floor(ctx.sampleRate * 0.3);
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(3400, t);
+    filter.frequency.exponentialRampToValueAtTime(1200, t + 0.28);
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.45 * vol, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.masterGain || ctx.destination);
+    noise.start(t);
+
+    // High metal snap
+    const snapOsc = ctx.createOscillator();
+    const snapGain = ctx.createGain();
+    snapOsc.type = 'triangle';
+    snapOsc.frequency.setValueAtTime(920, t);
+    snapOsc.frequency.exponentialRampToValueAtTime(220, t + 0.09);
+    snapGain.gain.setValueAtTime(0.4 * vol, t);
+    snapGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.masterGain || ctx.destination);
+    snapOsc.start(t);
+    snapOsc.stop(t + 0.11);
+  }
+
+  // 36. Drill Overheat Sizzle & Jam Klaxon
+  private synthDrillOverheatHiss(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Steam hiss
+    const bufferSize = Math.floor(ctx.sampleRate * 0.65);
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(4200, t);
+    filter.frequency.exponentialRampToValueAtTime(1600, t + 0.6);
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.55 * vol, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.62);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.masterGain || ctx.destination);
+    noise.start(t);
+
+    // Overheat warning rasp
+    const buzzer = ctx.createOscillator();
+    const buzzGain = ctx.createGain();
+    buzzer.type = 'sawtooth';
+    buzzer.frequency.setValueAtTime(320, t);
+    buzzer.frequency.setValueAtTime(240, t + 0.12);
+    buzzer.frequency.setValueAtTime(180, t + 0.24);
+    buzzGain.gain.setValueAtTime(0.35 * vol, t);
+    buzzGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    buzzer.connect(buzzGain);
+    buzzGain.connect(this.masterGain || ctx.destination);
+    buzzer.start(t);
+    buzzer.stop(t + 0.48);
+  }
+
+  // 37. Drill Jam Buzz (Trigger lockout error)
+  private synthDrillJamBuzz(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(110, t);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(0.28 * vol, t + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+    osc.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.14);
+  }
+
+  // 38. Secondary Deposit Box Unlock Fanfare & Golden Chime
+  private synthDepositBoxUnlock(ctx: AudioContext, vol: number): void {
+    const t = ctx.currentTime;
+
+    // Vault heavy door thud
+    const thud = ctx.createOscillator();
+    const thudGain = ctx.createGain();
+    thud.type = 'sine';
+    thud.frequency.setValueAtTime(110, t);
+    thud.frequency.exponentialRampToValueAtTime(32, t + 0.35);
+    thudGain.gain.setValueAtTime(0.6 * vol, t);
+    thudGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+    thud.connect(thudGain);
+    thudGain.connect(this.masterGain || ctx.destination);
+    thud.start(t);
+    thud.stop(t + 0.4);
+
+    // Antique jewelry shimmer arpeggio (C-major pentatonic sparkle)
+    const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98];
+    notes.forEach((freq, idx) => {
+      const noteTime = t + 0.08 + idx * 0.06;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, noteTime);
+      gain.gain.setValueAtTime(0.0001, noteTime);
+      gain.gain.exponentialRampToValueAtTime(0.25 * vol, noteTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 0.28);
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.3);
+    });
+  }
 }
 
 export const soundManager = new SoundManager();
 
 export const playSfx = (name: SoundEffectName, volumeScale?: number): void => {
   soundManager.playSfx(name, volumeScale);
+};
+
+export const startDrillHum = (heat?: number): void => {
+  soundManager.startDrillHum(heat);
+};
+
+export const updateDrillHeat = (heat: number): void => {
+  soundManager.updateDrillHeat(heat);
+};
+
+export const stopDrillHum = (): void => {
+  soundManager.stopDrillHum();
 };
